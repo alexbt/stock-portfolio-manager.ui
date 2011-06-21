@@ -148,8 +148,6 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 	}
 
 	protected void addTransaction() {
-		if(true)
-		throw new NullPointerException();
 		boolean success = false;
 		if (!getDateField().getText().isEmpty() && !getPriceField().getText().isEmpty() && !getQuantityField().getText().isEmpty()) {
 			Object o = getSymbolField().getSelectedItem();

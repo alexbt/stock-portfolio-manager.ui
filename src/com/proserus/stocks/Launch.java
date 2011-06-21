@@ -20,7 +20,7 @@ public class Launch {
 	 */
 	public static void main(String[] args) {
 		// Window s;
-		Window.getInstance();
+		Window.getInstance().start();
 	}
 
 }

@@ -33,7 +33,6 @@ public class OverviewSymbolTable extends AbstractTable implements Observer, Mous
 	private OverviewSymbolModel tableModel = new OverviewSymbolModel();
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
 	HashMap<String, Color> colors = new HashMap<String, Color>();
-	private boolean filtered = false;
 
 	private static OverviewSymbolTable symbolTable = new OverviewSymbolTable();
 

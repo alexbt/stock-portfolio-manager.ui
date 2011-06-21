@@ -1,8 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/StockPortfolioBO"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/StockPortfolioBP"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/StockPortfolioLIBS"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/antlr-2.7.6.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/antlr-runtime-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/build.xml"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/ehcache-1.5.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/hibernate-core.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/hibernate-entitymanager.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/hibernate-jpa-2.0-api-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/hibernate3.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/hsqldb.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/javassist-3.12.0.GA.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/jbosscache-core-3.2.1.GA.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/JCalc_.class"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/jcommon-1.0.16.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/jfreechart-1.0.13.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/joda-time-1.6_part1.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/joda-time-1.6_part2.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/jta-1.1.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/key.bat"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/keystore.conf"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/portfolio.cert"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/shrink.bat"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/sign.bat"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/slf4j-jdk14-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/sqltool.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/Thumbs.db"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/uispec4j-2.4-jdk16.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/yguard.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/yguardlog.xml"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/yshrinklog.xml"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
