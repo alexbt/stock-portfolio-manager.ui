@@ -86,7 +86,7 @@
 	<!--====================================================-->
 	<!-- compile                                            -->
 	<!--====================================================-->
-	<target name="compile" depends="cleanbin">
+	<target name="compile" depends="">
 		<mkdir dir="${bin.dir}" />
 
 	<echo file="${src.dir}/com/proserus/stocks/view/general/Version.java" append="false">
@@ -142,7 +142,7 @@
 		</copy>
 
 
-		<jar destfile="${lib.dir}/../StockPortfolioSWING.jar" basedir="${output.dir}">
+		<jar destfile="${lib.dir}/../StockPortfolioSWING_${version}_${timestamp}.jar" basedir="${output.dir}">
 
 <manifest>
       <attribute name="Built-By" value="Alex Belisle Turcot"/>
