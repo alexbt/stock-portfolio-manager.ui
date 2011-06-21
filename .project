@@ -3,6 +3,9 @@
 	<name>StockPortfolioSWING</name>
 	<comment></comment>
 	<projects>
+		<project>StockPortfolioBO</project>
+		<project>StockPortfolioBP</project>
+		<project>StockPortfolioLIBS</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
