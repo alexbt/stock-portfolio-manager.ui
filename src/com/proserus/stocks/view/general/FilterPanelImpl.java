@@ -16,7 +16,6 @@ import java.util.Observer;
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-import javax.swing.event.ListDataListener;
 
 import org.jfree.data.time.Year;
 
@@ -71,12 +70,8 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 
 	private void populateYears(Year min) {
 		if (!min.equals(modelYears.getElementAt(modelYears.getSize()-1))) {
+			getYearField().setActionCommand("tmpOff");
 			Object o = modelYears.getSelectedItem();
-			
-			for(ListDataListener listener: modelYears.getListDataListeners()){
-				modelYears.removeListDataListener(listener);
-			}
-			getYearField().removeActionListener(this);
 			
 			modelYears.removeAllElements();
 			for (Year i = DateUtil.getCurrentYear(); i.getYear() >= min.getYear(); i = (Year) i.previous()) {
@@ -84,7 +79,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 			}
 			modelYears.addElement((new EmptyYear()));
 			modelYears.setSelectedItem(o);
-			getYearField().addActionListener(this);
+			getYearField().setActionCommand("changeYear");
 		}
 	}
 
