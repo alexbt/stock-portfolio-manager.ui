@@ -1,0 +1,165 @@
+<!--
+    TITLE: Ant Build script
+    DATE                AUTEUR                     HISTORIQUE
+    2006-08-27          Alex Belisle-Turcot        Version Initiale                     
+-->
+
+<project name="inspection" default="build-dev" basedir=".">
+
+	<tstamp>
+		<format property="timestamp" pattern="yyyy-MM-dd_kk'h'mm'm'ss's'" locale="en" />
+	</tstamp>
+
+	<property file="build.properties" />
+
+	<echo message="____________________________________" />
+	<echo message="Ant environnement : ${TODAY} (${timestamp})" />
+	<echo message="" />
+	<echo message="JVM version            : ${ant.java.version}" />
+	<echo message="" />
+
+	<echo message="Base directory         : ${basedir}" />
+	<echo message="Sources                : ${src.dir}" />
+	<echo message="Binaries               : ${bin.dir}" />
+	<echo message="" />
+	<echo message="____________________________________" />
+
+	<path id="compile.classpath">
+		<pathelement path="${lib.dir}/jcommon-1.0.16.jar" />
+		<pathelement path="${lib.dir}/joda-time-1.6_part1.jar" />
+		<pathelement path="${lib.dir}/joda-time-1.6_part2.jar" />
+                <pathelement path="${lib.dir}/antlr-runtime-3.0.jar" />
+                <pathelement path="${lib.dir}/jfreechart-1.0.13.jar" />
+                <pathelement path="${lib.dir}/commons-collections-3.2.1.jar" />
+                <pathelement path="${lib.dir}/commons-logging-1.0.4.jar" />
+ <pathelement path="${lib.dir}/antlr-2.7.6.jar" />
+ <pathelement path="${lib.dir}/dom4j-1.6.1.jar" />
+ <pathelement path="${lib.dir}/ejb3-persistence.jar" />
+ <pathelement path="${lib.dir}/hibernate-annotations.jar" />
+ <pathelement path="${lib.dir}/hibernate-commons-annotations.jar" />
+ <pathelement path="${lib.dir}/hibernate-core.jar" />
+ <pathelement path="${lib.dir}/hibernate-entitymanager.jar" />
+ <pathelement path="${lib.dir}/hsqldb.jar" />
+ <pathelement path="${lib.dir}/javassist-3.12.0.GA.jar" />
+ <pathelement path="${lib.dir}/jta-1.1.jar" />
+ <pathelement path="${lib.dir}/slf4j-api-1.6.1.jar" />
+ <pathelement path="${lib.dir}/slf4j-jdk14-1.6.1.jar" />
+ <pathelement path="${lib.dir}/log4j-1.2.16.jar" />
+
+		<!-- pathelement path="${lib.dir}/jfreechart-1.0.13.jar" / -->
+	</path>
+
+
+	<!--====================================================-->
+	<!-- build-dev                                          -->
+	<!--====================================================-->
+	<target name="build-dev" depends="toJar" description="cleanbin, compile, package and deploy">
+	</target>
+
+
+	<!--====================================================-->
+	<!-- build-rel                                          -->
+	<!--====================================================-->
+	<target name="build-rel" depends="compile,toJar" description="cleanbin, compile, package and deploy">
+	</target>
+
+	
+
+
+	<!--====================================================-->
+	<!-- cleanbin                                              -->
+	<!--====================================================-->
+	<target name="cleanbin" description="deletes binaries and outputs">
+		<mkdir dir="${bin.dir}" />
+		<mkdir dir="${output.dir}" />
+
+		<delete includeemptydirs="true">
+			<fileset dir="${bin.dir}" includes="**/*" />
+		</delete>
+		<delete dir="${output.dir}" />
+
+	</target>
+
+
+
+
+	<!--====================================================-->
+	<!-- compile                                            -->
+	<!--====================================================-->
+	<target name="compile" depends="cleanbin">
+		<mkdir dir="${bin.dir}" />
+
+	<echo file="${src.dir}/com/proserus/stocks/view/general/Version.java" append="false">
+     	 /** 
+     	    The content of this file (Build.java) is replaced every time the
+     	    java source files are compiled by the ant script. 
+
+     	    This is done in the build.xml ant script under the target "compile"
+     	    By doing so, the version are part of the build.
+     	 **/
+     	 package com.proserus.stocks.view.general;
+
+		interface Version {
+			public static String TIMESTAMP = "${timestamp}";
+			public static String VERSION = "${version}";
+
+		}
+    	</echo>
+
+
+		<javac listfiles="yes" debug="true" srcdir="${src.dir}" destdir="${bin.dir}">
+			<classpath refid="compile.classpath" />
+		</javac>
+
+	</target>
+
+
+
+	<!--====================================================-->
+	<!-- toJar                                              -->
+	<!--====================================================-->
+	<target name="toJar">
+		<mkdir dir="${output.dir}" />
+		<mkdir dir="${archives.dir}" />
+                <delete includeemptydirs="true">
+			<fileset dir="${archives.dir}" includes="**/*" />
+			<fileset dir="output" includes="**/*" />
+		</delete>
+
+		
+		<mkdir dir="${output.dir}/images" />
+
+		<copy todir="${output.dir}/com">
+			<fileset dir="${bin.dir}/com" />
+		</copy>
+
+		<copy todir="${archives.dir}">
+			<fileset file="${src.dir}/log4j.xml" />
+		</copy>
+
+		<copy todir="${output.dir}/images">
+			<fileset dir="src/images" />
+		</copy>
+
+
+		<jar destfile="${lib.dir}/../StockPortfolioSWING.jar" basedir="${output.dir}">
+
+<manifest>
+      <attribute name="Built-By" value="Alex Belisle Turcot"/>
+      <attribute name="Implementation-Vendor" value="Proserus inc."/>
+      <attribute name="Implementation-Title" value="Proserus Stocks Portfolio"/>
+      <attribute name="Implementation-Version" value="0.1 Beta - ${timestamp}"/> 
+      <attribute name="Class-Path" value="StockPortfolioBO.jar StockPortfolioBP.jar lib/joda-time-1.6_part1.jar lib/joda-time-1.6_part2.jar lib/jcommon-1.0.16.jar lib/slf4j-jdk14-1.6.1.jar lib/antlr-runtime-3.0.jar lib/commons-collections-3.2.1.jar lib/commons-logging-1.0.4.jar lib/jfreechart-1.0.13.jar lib/antlr-2.7.6.jar lib/dom4j-1.6.1.jar lib/ejb3-persistence.jar lib/hibernate-annotations.jar lib/hibernate-commons-annotations.jar lib/hibernate-core.jar lib/hibernate-entitymanager.jar lib/hsqldb.jar lib/javassist-3.12.0.GA.jar lib/jta-1.1.jar lib/slf4j-api-1.6.1.jar lib/log4j-1.2.16.jar"/>
+      <attribute name="Main-Class" value="com.proserus.stocks.Launch"/>
+
+    </manifest>
+
+		</jar>
+
+
+
+
+	</target>
+
+
+</project>
