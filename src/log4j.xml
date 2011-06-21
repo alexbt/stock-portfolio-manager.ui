@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+    <appender name="logAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="./logs/traces.log"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%t] %C{1}.%M(%L) - %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="calculsAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="./logs/calculs.log"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %C{1} - %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="stacktraceAppender" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="./logs/stacktraces.log"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %C{1} - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="com.proserus">
+        <level value="debug"/>
+        <appender-ref ref="logAppender"/>
+    </logger>
+    
+    <logger name="calculs.com.proserus">
+        <level value="debug"/>
+        <appender-ref ref="calculsAppender"/>
+        <appender-ref ref="logAppender"/>
+    </logger>
+    
+    <logger name="stacktrace.com.proserus">
+        <level value="debug"/>
+        <appender-ref ref="logAppender"/>
+    </logger>
+    
+</log4j:configuration>
