@@ -49,7 +49,7 @@ public class Menu extends JMenuBar implements ActionListener {
 	private Window window = Window.getInstance();
 
 	private static Menu menu = new Menu();
-	private static String MESSAGE = "Proserus Stocks Portfolio was created by:\n" + "Alex Bélisle-Turcot\n"
+	private static String MESSAGE = "Stock Portfolio Manager was created by:\n" + "Alex Bélisle-Turcot\n"
 	        + "alex.belisleturcot@proserus.com\n\n" + "Version: " + Version.VERSION + "\n" + "Build: "
 	        + Version.TIMESTAMP + "\n\n"
 	        + "This product includes/uses:\n" + "   - Joda-Time: joda-time.sourceforge.net\n" +

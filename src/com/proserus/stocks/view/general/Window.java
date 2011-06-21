@@ -26,7 +26,7 @@ public class Window extends JFrame implements WindowListener, Observer,PropertyC
 
 	private static final String CONTROL_HIGHLIGHT = "controlHighlight";
 
-	private static final String PROSERUS_STOCKS_PORTFOLIO_0_1_BETA = "Proserus Stocks Portfolio " + Version.VERSION;
+	private static final String PROSERUS_STOCKS_PORTFOLIO_0_1_BETA = "Stock Portfolio Manager " + Version.VERSION;
 
 	static private Window window = new Window();
 	
