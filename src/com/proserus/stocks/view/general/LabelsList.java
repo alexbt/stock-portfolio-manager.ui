@@ -104,6 +104,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 		IS_LINKED_TO_TRANSACTION = true;
 		setSize(10, 15);
 		setSelectedItems(transaction);
+		// setVisible(true);
 	}
 
 	public LabelsList(JComponent startExternal, boolean popup, boolean linkedToTransaction, Component parent, boolean filtering) {
@@ -136,7 +137,6 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 		if (IS_POPUP && IS_LINKED_TO_TRANSACTION) {
 			setVisible(true);
 		}
-		// setVisible(true);
 	}
 
 	public void setAddEnabled(boolean flag) {

@@ -86,9 +86,6 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 		quantityField.setColumns(10);
 		
 		labelsList = new LabelsList();
-		if(!(labelsList instanceof LabelsList)){
-			throw new ClassCastException();
-		}
 		
 		JLabel tagsLabel = new JLabel("Tags:");
 		GroupLayout groupLayout = new GroupLayout(this);
