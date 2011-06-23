@@ -31,19 +31,17 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import com.proserus.stocks.bp.FilterBp;
-import com.proserus.stocks.bp.SharedFilter;
 import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.bp.TransactionsBp;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.model.transactions.TransactionType;
 import com.proserus.stocks.view.common.AbstractEditableTable;
 import com.proserus.stocks.view.common.SortedComboBoxModel;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.common.verifiers.DateVerifier;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 import com.proserus.stocks.view.general.LabelsList;
-import com.proserus.stocks.view.general.Window;
 
 public class TransactionTable extends AbstractEditableTable implements Observer, ActionListener, MouseListener {
 
@@ -51,19 +49,14 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 
 	private static final String ZERO = "0";
 
-	private PortfolioController controller = PortfolioControllerImpl.getInstance();
+	private PortfolioController controller = ViewControllers.getController();
 
 	private TransactionTableModel tableModel = new TransactionTableModel();
 	private LabelsList labl = null;
 	// http://72.5.124.102/thread.jspa?messageID=4220319
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
 	private TableRowSorter<TransactionTableModel> sorter;
-	private String selectedSymbol = "";
-	private String selectedYear = "";
-	private String[] custom = new String[] {};
-	private String[] selectedLabels = new String[] {};
 	HashMap<String, Color> colors = new HashMap<String, Color>();
-	private boolean filtered = false;
 
 	private static TransactionTable transactionTable = new TransactionTable();
 	private SortedComboBoxModel comboTickers = new SortedComboBoxModel();
@@ -93,25 +86,10 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 		}
 
 		sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
-
-		// getColumnModel().getColumn(getColumnCount()-1).set
-		// getColumnModel().getColumn(getColumnCount()-1).setCellEditor(new
-		// DefaultCellEditor(new JTextField()));
-
 		sportColumn = getColumnModel().getColumn(0);
-
-		// getColumnModel().getColumn(6).getagetInputMap().put(KeyStroke.getKeyStroke("F2"),
-		// .
-		// evt.getSource()evt.
-
 		sportColumn.setCellEditor(new MyDateEditor());
-		// TableCellEditor ch = new LabelsEditor(c);
-		// sportColumn.setCellEditor(ch);
-		// setSize(600, 400);
 		setVisible(true);
-
 		setFirstRowSorted(false);
-
 	}
 
 	@Override
@@ -122,7 +100,8 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 	@Override
 	public void update(Observable arg0, Object UNUSED) {
 		if (arg0 instanceof TransactionsBp) {
-			tableModel.setData(controller.getTransactions(SharedFilter.getInstance()).toArray());
+			tableModel.setData(controller.getTransactions(ViewControllers.getSharedFilter()).toArray());
+			getRootPane().validate();
 			// TODO Redesign Filter/SharedFilter
 		} else if (arg0 instanceof SymbolsBp) {
 			TableColumn sportColumn = getColumnModel().getColumn(1);
@@ -146,22 +125,17 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 		}
 
 		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-		        boolean hasFocus, int row, int column) {
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			if (value instanceof Float) {
 				setText(format.format(value));
 			} else if (value instanceof Date) {
 				setText(dateFormat.format(value));
-			}else if (value instanceof BigDecimal) {
+			} else if (value instanceof BigDecimal) {
 				setText(format.format(value));
 			}
 
-			if (row % 2 != 0) {
-				// Component c = super.prepareRenderer(this, row, column);
-				// c.setBackground(Color.yellow);
-			}
 			return this;
 		}
 	}
@@ -172,7 +146,7 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
 		} else if (rowIndex % 2 == 0) {
-			c.setBackground(ColorSettingsDialog.getColor(SharedFilter.getInstance().isFiltered()));
+			c.setBackground(ColorSettingsDialog.getColor(ViewControllers.getSharedFilter().isFiltered()));
 		} else {
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
 		}
@@ -184,21 +158,15 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 		super.mouseClicked(evt);
 		if (getSelectedColumn() == 7 && evt.getButton() == MouseEvent.BUTTON1) {
 			getModel().getValueAt(getSelectedRow(), 7);
-			// ((JComponent)evt.getSource()).setFocusable(false);
-			// getColumnModel().getColumn(6).getCellEditor().cancelCellEditing();
-			JWindow jj = new JWindow(Window.getInstance());
-			labl = new LabelsList(sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow())),
-			        true, true, jj, false);
-			jj.add(labl);
 
-			jj.setSize(150, 117);
-			// jj.requestFocus();
+			JWindow window = new JWindow(ViewControllers.getWindow());
+			labl = new LabelsList(sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow())), true, true, window, false);
+			window.add(labl);
+
+			window.setSize(150, 117);
 			Point p = MouseInfo.getPointerInfo().getLocation();
-			jj.setLocation(p);
-			jj.setVisible(true);
-			// this.clearSelection();
-
-			// jj.grabFocus();
+			window.setLocation(p);
+			window.setVisible(true);
 		}
 	}
 
@@ -208,12 +176,10 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 		if (e.getSource() instanceof JComboBox) {
 			Object o = ((JComboBox) e.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {
-				FilterBp filter = SharedFilter.getInstance();
+				FilterBp filter = ViewControllers.getSharedFilter();
 				if (((Symbol) o).getId() != null) {
 					filter.setSymbol((Symbol) o);
-				}
-
-				else {
+				} else {
 					filter.setSymbol(null);
 				}
 			}
@@ -222,15 +188,13 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 
 	@Override
 	protected void delete() {
-		controller.remove(sorter.getModel().getTransaction(
-		        getRowSorter().convertRowIndexToModel(getSelectedRow())));
+		controller.remove(sorter.getModel().getTransaction(getRowSorter().convertRowIndexToModel(getSelectedRow())));
 	}
 }
 
 class DateCellRenderer extends DefaultTableCellRenderer implements TableCellRenderer {
 	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-	        int row, int column) {
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		if (value instanceof Date) {
 			// Use SimpleDateFormat class to get a formatted String from Date
@@ -249,13 +213,15 @@ class DateCellRenderer extends DefaultTableCellRenderer implements TableCellRend
 		super();
 	}
 }
-	class MyDateEditor extends DefaultCellEditor {
+
+class MyDateEditor extends DefaultCellEditor {
 	DateFormat parseFormat;
 	DateFormat editFormat;
 	Date data;
 	DateVerifier dateVerifier = new DateVerifier();
+
 	public MyDateEditor() {
-		//TODO use INputVerifier ? DateVerifier
+		// TODO use INputVerifier ? DateVerifier
 		super(new JTextField());
 		getComponent().setName("Table.editor");
 		// TODO should actually check for null
@@ -265,13 +231,13 @@ class DateCellRenderer extends DefaultTableCellRenderer implements TableCellRend
 
 	@Override
 	public boolean stopCellEditing() {
-		String s = (String) super.getCellEditorValue();
-		if ("".equals(s)) {
+		String str = (String) super.getCellEditorValue();
+		if ("".equals(str)) {
 			super.stopCellEditing();
 		}
-		s = s.replaceAll("[^0-9]", "");
+		str = str.replaceAll("[^0-9]", "");
 		try {
-			data  = parseFormat.parse(s);
+			data = parseFormat.parse(str);
 		} catch (ParseException e) {
 			((JComponent) getComponent()).setBorder(new LineBorder(Color.red));
 			return false;

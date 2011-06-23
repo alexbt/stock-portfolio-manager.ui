@@ -24,6 +24,7 @@ import javax.swing.GroupLayout.ParallelGroup;
 
 import com.proserus.stocks.model.common.ObservableModel;
 import com.proserus.stocks.view.common.AbstractDialog;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class ColorSettingsDialog extends AbstractDialog implements ActionListener {
 	private static final String TABBED_PANE_SELECTED = "TabbedPane.selected";
@@ -64,7 +65,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 
 	private static final String FILTERED_TABLE_COLOR = "Filtered Rows: ";
 
-	private Window window = Window.getInstance();
+	private Window window = ViewControllers.getWindow();
 
 	private static Color defaultColor = new Color(204, 204, 204);
 	private static Color filteredColor = new Color(150, 190, 255);

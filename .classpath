@@ -42,5 +42,18 @@
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/yguard.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/yguardlog.xml"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/yshrinklog.xml"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/javax.inject.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-assistedinject-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-grapher-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-jmx-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-jndi-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-multibindings-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-persist-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-servlet-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-spring-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-struts2-plugin-3.0.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-throwingproviders-3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

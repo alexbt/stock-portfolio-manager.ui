@@ -14,10 +14,9 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import com.proserus.stocks.bp.SharedFilter;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.view.common.AbstractTable;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
 public class OverviewCurrencyTable extends AbstractTable implements Observer {
@@ -27,7 +26,7 @@ public class OverviewCurrencyTable extends AbstractTable implements Observer {
 
 	private static final String ZERO = "0";
 
-	private PortfolioController sumController = PortfolioControllerImpl.getInstance();
+	private PortfolioController sumController = ViewControllers.getController();
 
 	private OverviewCurrencyModel tableModel = new OverviewCurrencyModel();
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
@@ -60,12 +59,12 @@ public class OverviewCurrencyTable extends AbstractTable implements Observer {
 
 	@Override
 	public void update(Observable arg0, Object UNUSED) {
-		Collection col = sumController.getCurrencyAnalysis(SharedFilter.getInstance());
+		Collection col = sumController.getCurrencyAnalysis(ViewControllers.getSharedFilter());
 		// TODO Redesign FIlter/SharedFilter
 		tableModel.setData(col);
 		setPreferredScrollableViewportSize(new Dimension(200, ROW_SIZE * col.size()));
 		setToolTipText(col.toString());
-		validate();
+		getRootPane().validate();
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class OverviewCurrencyTable extends AbstractTable implements Observer {
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
 		} else if (rowIndex % 2 == 0) {
-			c.setBackground(ColorSettingsDialog.getColor(SharedFilter.getInstance().isFiltered()));
+			c.setBackground(ColorSettingsDialog.getColor(ViewControllers.getSharedFilter().isFiltered()));
 		} else {
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
 		}

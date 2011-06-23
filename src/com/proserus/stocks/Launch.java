@@ -1,6 +1,7 @@
 package com.proserus.stocks;
 
-import com.proserus.stocks.view.general.Window;
+import com.google.inject.Guice;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class Launch {
 
@@ -20,7 +21,9 @@ public class Launch {
 	 */
 	public static void main(String[] args) {
 		// Window s;
-		Window.getInstance().start();
+		ViewControllers controllers = Guice.createInjector(new SwingModule()).getInstance(ViewControllers.class);
+		controllers.getWindow().start();
+		controllers.getController().refresh();
 	}
 
 }

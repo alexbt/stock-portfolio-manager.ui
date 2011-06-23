@@ -15,8 +15,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.view.common.DialogImpl;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.summaries.OverviewCurrencyTable;
 import com.proserus.stocks.view.summaries.OverviewSymbolTable;
 import com.proserus.stocks.view.summaries.PerformanceCurrencyTable;
@@ -120,9 +120,9 @@ public class Tab extends JTabbedPane implements ActionListener {
 			} else if (arg0.getActionCommand().equals("addSymbol")) {
 				new DialogImpl(new AddEditSymbolPanelImpl(true),"Add a symbol").setVisibile(true);
 			} else if (arg0.getActionCommand().equals("updatePrices")) {
-				PortfolioControllerImpl.getInstance().updatePrices();
+				ViewControllers.getController().updatePrices();
 			} else if (arg0.getActionCommand().equals("updateOldPrices")) {
-					PortfolioControllerImpl.getInstance().updateHistoricalPrices();
+				ViewControllers.getController().updateHistoricalPrices();
 			}
 		}
 	}

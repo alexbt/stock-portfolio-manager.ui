@@ -6,11 +6,10 @@ import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import com.proserus.stocks.bp.DateUtil;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.HistoricalPrice;
 import com.proserus.stocks.model.symbols.Symbol;
-import com.proserus.stocks.view.general.Window;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class SymbolsTableModel extends AbstractTableModel {
 	
@@ -157,11 +156,11 @@ public class SymbolsTableModel extends AbstractTableModel {
 		if (column == i++) {
 			String oldValue = s.getTicker();
 			s.setTicker((String) value);
-			PortfolioControllerImpl.getInstance().addSymbol(s);
+			ViewControllers.getController().addSymbol(s);
 			//TODO do not compare like this ==> Fixed
-			if(!PortfolioControllerImpl.getInstance().addSymbol(s).equals(s)){
+			if(!ViewControllers.getController().addSymbol(s).equals(s)){
 				s.setTicker(oldValue);
-				JOptionPane.showConfirmDialog(Window.getInstance(), THE_SYMBOL_ALREADY_EXIST, CANNOT_ADD_SYMBOL,
+				JOptionPane.showConfirmDialog(ViewControllers.getWindow(), THE_SYMBOL_ALREADY_EXIST, CANNOT_ADD_SYMBOL,
 				        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
 			}
 		} else {
@@ -175,7 +174,7 @@ public class SymbolsTableModel extends AbstractTableModel {
 			} else if (column == i++) {
 				s.setCustomPriceFirst((Boolean) value);
 			}
-			PortfolioControllerImpl.getInstance().updateSymbol(s);
+			ViewControllers.getController().updateSymbol(s);
 		}
 	}
 }

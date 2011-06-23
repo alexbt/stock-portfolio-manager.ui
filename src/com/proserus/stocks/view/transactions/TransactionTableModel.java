@@ -6,22 +6,20 @@ import java.util.Date;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
-import com.proserus.stocks.exceptions.InvalidTransactionException;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.model.transactions.Transaction;
 import com.proserus.stocks.model.transactions.TransactionType;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class TransactionTableModel extends AbstractTableModel {
 	private static final String EMPTY_STR = "";
 
 	private static final long serialVersionUID = 20080113L;
 
-	private PortfolioController transactionController = PortfolioControllerImpl.getInstance();
+	private PortfolioController transactionController = ViewControllers.getController();
 
-	public static final String[] COLUMN_NAMES = { "Date", "Symbol", "type","Quantity", "Price", "Commission", "total",
-	        "Tags" };
+	public static final String[] COLUMN_NAMES = { "Date", "Symbol", "type", "Quantity", "Price", "Commission", "total", "Tags" };
 
 	// Arrays of Contractors (kept as Object)
 	private Object[] data = null;
@@ -103,7 +101,7 @@ public class TransactionTableModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object obj, int row, int col) {
-		//TODO NullPointer when no data...
+		// TODO NullPointer when no data...
 		setColValue((Transaction) data[row], obj, col);
 		fireTableCellUpdated(row, col);
 	}
@@ -152,33 +150,29 @@ public class TransactionTableModel extends AbstractTableModel {
 		case 7:
 			return transaction.getLabelsValues().toString().replaceAll("\\[\\]", "");
 		}
-		
+
 		throw new AssertionError();
 	}
 
 	private void setColValue(final Transaction t, Object value, int column) {
 		int i = 0;
-		try {
-			if (column == i++) {
-				t.setDate((Date) value);
-			} else if (column == i++) {
-				t.setSymbol((Symbol) value);
-			} else if (column == i++) {
-				t.setType((TransactionType) value);
-			} else if (column == i++) {
-				t.setQuantity((BigDecimal) value);
-			} else if (column == i++) {
-				t.setPrice((BigDecimal) value);
-			} else if (column == i++) {
-				t.setCommission((BigDecimal) value);
-			} else if (column == i++) {
+		if (column == i++) {
+			t.setDate((Date) value);
+		} else if (column == i++) {
+			t.setSymbol((Symbol) value);
+		} else if (column == i++) {
+			t.setType((TransactionType) value);
+		} else if (column == i++) {
+			t.setQuantity((BigDecimal) value);
+		} else if (column == i++) {
+			t.setPrice((BigDecimal) value);
+		} else if (column == i++) {
+			t.setCommission((BigDecimal) value);
+		} else if (column == i++) {
 
-			} else if (column == i++) {
-				t.setLabels((Collection) value);
-			}
-			transactionController.updateTransaction(t);
-		} catch (InvalidTransactionException e) {
-			// TODO e.printStackTrace();
+		} else if (column == i++) {
+			t.setLabels((Collection) value);
 		}
+		transactionController.updateTransaction(t);
 	}
 }

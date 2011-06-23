@@ -22,15 +22,14 @@ import javax.swing.JTextField;
 import org.jfree.data.time.Year;
 
 import com.proserus.stocks.bp.SymbolsBp;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.HistoricalPriceImpl;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.AbstractDialog;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.common.verifiers.NumberVerifier;
 import com.proserus.stocks.view.common.verifiers.SymbolVerifier;
 import com.proserus.stocks.view.common.verifiers.YearVerifier;
-import com.proserus.stocks.view.general.Window;
 
 public class SymbolsModificationView extends AbstractDialog implements ActionListener, FocusListener,Observer {
 
@@ -54,7 +53,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		setSize(595, 600);
 		setResizable(false);
 		init();
-		PortfolioControllerImpl.getInstance().addSymbolsObserver(this);
+		ViewControllers.getController().addSymbolsObserver(this);
 	}
 	
 	public void setSymbol(Symbol s){
@@ -141,7 +140,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 			h.setPrice(BigDecimal.ZERO);
 			h.setYear(new Year(Integer.parseInt(year.getText())));
 			symbol.addPrice(h);
-			PortfolioControllerImpl.getInstance().updateSymbol(symbol);
+			ViewControllers.getController().updateSymbol(symbol);
 			year.setText("");
 			customPrice.setText("");
 			}
@@ -158,8 +157,8 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 			symbol.setTicker(northPanel.getSymbolField().getText());
 			symbol.setName("");
 			//TODO do not compare like this ==> Fixed
-			if(!PortfolioControllerImpl.getInstance().addSymbol(symbol).equals(symbol)){
-				JOptionPane.showConfirmDialog(Window.getInstance(), THE_SYMBOL_ALREADY_EXIST, CANNOT_ADD_SYMBOL,
+			if(!ViewControllers.getController().addSymbol(symbol).equals(symbol)){
+				JOptionPane.showConfirmDialog(ViewControllers.getWindow(), THE_SYMBOL_ALREADY_EXIST, CANNOT_ADD_SYMBOL,
 				        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
 				symbol.setTicker(oldValue);
 				northPanel.getSymbolField().setText(oldValue);
@@ -167,13 +166,13 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		} else {
 			if (e.getSource().equals(northPanel.getCompanyNameField()) && !northPanel.getCompanyNameField().equals(symbol.getName())){
 				symbol.setName(northPanel.getCompanyNameField().getText());
-				PortfolioControllerImpl.getInstance().updateSymbol(symbol);
+				ViewControllers.getController().updateSymbol(symbol);
 			}else if (e.getSource().equals(northPanel.getUseCustomPriceField()) && !northPanel.getUseCustomPriceField().equals(symbol.isCustomPriceFirst())){
 				symbol.setCustomPriceFirst(northPanel.getUseCustomPriceField().isSelected());
-				PortfolioControllerImpl.getInstance().updateSymbol(symbol);
+				ViewControllers.getController().updateSymbol(symbol);
 			}else if (e.getSource().equals(northPanel.getCurrencyField()) && !northPanel.getCurrencyField().equals(symbol.getCurrency())){
 				symbol.setCurrency((CurrencyEnum)northPanel.getCurrencyField().getSelectedItem());
-				PortfolioControllerImpl.getInstance().updateSymbol(symbol);
+				ViewControllers.getController().updateSymbol(symbol);
 			}
 		}
 	}

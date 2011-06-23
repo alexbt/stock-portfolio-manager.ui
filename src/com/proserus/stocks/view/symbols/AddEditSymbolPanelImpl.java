@@ -10,12 +10,11 @@ import java.util.Observer;
 
 import javax.swing.JOptionPane;
 
-import com.proserus.stocks.controllers.CurrencyControllerImpl;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.DefaultCurrency;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.AbstractDialog;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implements ActionListener, Observer, KeyListener{
 
@@ -33,7 +32,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 			getCurrencyField().addItem(cur);
 		}
 		
-		CurrencyControllerImpl.getInstance().addCurrenciesObserver(this);
+		ViewControllers.getCurrencyController().addCurrenciesObserver(this);
 		if (buttonVisible) {
 			getAddButton().addActionListener(this);
 			getAddButton().setActionCommand("add");
@@ -76,7 +75,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 	public void setVisible(boolean flag) {
 		super.setVisible(flag);
 		if (flag) {
-			getCurrencyField().setSelectedItem(CurrencyControllerImpl.getInstance().getDefaultCurrency());
+			getCurrencyField().setSelectedItem(ViewControllers.getCurrencyController().getDefaultCurrency());
 			getSymbolField().requestFocus();
 		}
 	}
@@ -91,7 +90,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 					s.setName(getCompanyNameField().getText());
 					s.setCustomPriceFirst(getUseCustomPriceField().isSelected());
 
-					PortfolioControllerImpl.getInstance().addSymbol(s);
+					ViewControllers.getController().addSymbol(s);
 					
 					getSymbolField().setText("");
 					getCurrencyField().setSelectedItem("");
@@ -112,7 +111,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 	    Symbol s = null;
 	    Object o = getSymbolField().getText();
 	    if (o instanceof String) {
-	    	s = PortfolioControllerImpl.getInstance().getSymbol(o.toString());
+	    	s = ViewControllers.getController().getSymbol(o.toString());
 	    	if(s==null){
 	    		s= new EmptySymbol();
 	    	}
@@ -133,7 +132,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 	@Override
 	public void update(Observable arg0, Object UNUSED) {
 		if (arg0 instanceof DefaultCurrency) {
-			getCurrencyField().setSelectedItem(CurrencyControllerImpl.getInstance().getDefaultCurrency());
+			getCurrencyField().setSelectedItem(ViewControllers.getCurrencyController().getDefaultCurrency());
 		}
 	}
 

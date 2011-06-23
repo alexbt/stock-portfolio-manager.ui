@@ -6,14 +6,12 @@ import java.util.logging.Logger;
 
 import javax.swing.JDialog;
 
-import com.proserus.stocks.view.general.Window;
-
 abstract public class AbstractDialog extends JDialog implements KeyListener {
 	private static Logger LOGGER = Logger.getLogger(AbstractDialog.class.toString());
 
 	public AbstractDialog() {
-		super(Window.getInstance());
-		setIconImage(Window.getInstance().getIconImage());
+		super(ViewControllers.getWindow());
+		setIconImage(ViewControllers.getWindow().getIconImage());
 		addKeyListener(this);
 		setFocusable(true);
 		centerOnScreen();
@@ -29,7 +27,7 @@ abstract public class AbstractDialog extends JDialog implements KeyListener {
 	}
 
 	protected void centerOnScreen() {
-		setLocationRelativeTo(Window.getInstance());
+		setLocationRelativeTo(ViewControllers.getWindow());
 		/*
 		 * Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); int w = getSize().width; int h = getSize().height; int x =
 		 * (dim.width - w) / 2; int y = (dim.height - h) / 2;
@@ -39,7 +37,7 @@ abstract public class AbstractDialog extends JDialog implements KeyListener {
 	}
 
 	public void setVisibile(boolean flag) {
-		setLocationRelativeTo(Window.getInstance());
+		setLocationRelativeTo(ViewControllers.getWindow());
 		super.setVisible(flag);
 	}
 

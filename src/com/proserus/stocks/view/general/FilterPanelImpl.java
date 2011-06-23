@@ -21,13 +21,12 @@ import org.jfree.data.time.Year;
 
 import com.proserus.stocks.bp.DateUtil;
 import com.proserus.stocks.bp.FilterBp;
-import com.proserus.stocks.bp.SharedFilter;
 import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.bp.TransactionsBp;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.EmptyYear;
 import com.proserus.stocks.view.common.SortedComboBoxModel;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.symbols.EmptySymbol;
 
 /**
@@ -49,11 +48,11 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		getLabelList().setListColor(getLabelList().getBackground());
 		getLabelList().setHorizontal(true);
 		getLabelList().setModeFilter(true);
-		PortfolioControllerImpl.getInstance().addLabelsObserver(getLabelList());
+		ViewControllers.getController().addLabelsObserver(getLabelList());
 
-		PortfolioControllerImpl.getInstance().addTransactionsObserver(this);
-		PortfolioControllerImpl.getInstance().addFilterObserver(this);
-		PortfolioControllerImpl.getInstance().addTransactionObserver(this);
+		ViewControllers.getController().addTransactionsObserver(this);
+		ViewControllers.getController().addFilterObserver(this);
+		ViewControllers.getController().addTransactionObserver(this);
 
 		getLabelList().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -64,7 +63,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		populateSymbols();
 
 		getSymbolField().setModel(modelSymbols);
-		PortfolioControllerImpl.getInstance().addSymbolsObserver(this);
+		ViewControllers.getController().addSymbolsObserver(this);
 		getSymbolField().addActionListener(this);
 	}
 
@@ -84,7 +83,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 	}
 
 	private void populateSymbols() {
-		Iterator<Symbol> iter = PortfolioControllerImpl.getInstance().getSymbols().iterator();
+		Iterator<Symbol> iter = ViewControllers.getController().getSymbols().iterator();
 		modelSymbols.removeAllElements();
 		while (iter.hasNext()) {
 			modelSymbols.addElement(iter.next());
@@ -98,16 +97,16 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		if (arg0.getSource().equals(getYearField()) && arg0.getActionCommand().compareTo("changeYear") == 0) {
 			Year selectedYear = (Year) ((JComboBox) arg0.getSource()).getSelectedItem();
 			if (!selectedYear.toString().isEmpty()) {
-				SharedFilter.getInstance().setYear(selectedYear);
+				ViewControllers.getSharedFilter().setYear(selectedYear);
 			} else {
-				SharedFilter.getInstance().setYear(null);
+				ViewControllers.getSharedFilter().setYear(null);
 			}
 		}
 
 		if (arg0.getSource() instanceof JComboBox) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {
-				FilterBp filter = SharedFilter.getInstance();
+				FilterBp filter = ViewControllers.getSharedFilter();
 				if (((Symbol) o).getId() != null) {
 					filter.setSymbol((Symbol) o);
 				}
@@ -122,11 +121,11 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 	@Override
 	public void update(Observable arg0, Object UNUSED) {
 		if (arg0 instanceof TransactionsBp) {
-			populateYears(PortfolioControllerImpl.getInstance().getFirstYear());
+			populateYears(ViewControllers.getController().getFirstYear());
 		} else if (arg0 instanceof SymbolsBp) {
 			Object o = modelSymbols.getSelectedItem();
 			modelSymbols.removeAllElements();
-			for (Symbol symbol : PortfolioControllerImpl.getInstance().getSymbols()) {
+			for (Symbol symbol : ViewControllers.getController().getSymbols()) {
 				modelSymbols.addElement(symbol);
 			}
 			Symbol s = new EmptySymbol();
@@ -145,9 +144,9 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		// textField.getSource()).getText().length();
 		// NOW BETTER ?
 		if (!((JTextField) textField.getSource()).getText().isEmpty()) {
-			PortfolioControllerImpl.getInstance().setCustomFilter((((JTextField) textField.getSource()).getText()));
+			ViewControllers.getController().setCustomFilter((((JTextField) textField.getSource()).getText()));
 		} else {
-			PortfolioControllerImpl.getInstance().setCustomFilter("");
+			ViewControllers.getController().setCustomFilter("");
 		}
 
 	}

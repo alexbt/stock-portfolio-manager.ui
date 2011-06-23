@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import javax.swing.table.AbstractTableModel;
 
 import com.proserus.stocks.bp.DateUtil;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.model.symbols.HistoricalPrice;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class SymbolsModifModel extends AbstractTableModel {
 	private static final long serialVersionUID = 20080113L;
@@ -131,6 +131,6 @@ public class SymbolsModifModel extends AbstractTableModel {
 
 	private void setColValue(HistoricalPrice h, Object value, int column) {
 		h.setCustomPrice((BigDecimal)value);
-		PortfolioControllerImpl.getInstance().update(h);
+		ViewControllers.getController().update(h);
 	}
 }

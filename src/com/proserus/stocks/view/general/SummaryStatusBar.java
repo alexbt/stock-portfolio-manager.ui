@@ -30,15 +30,15 @@ import org.joda.time.DateTime;
 
 import com.proserus.stocks.bp.SymbolUpdateEnum;
 import com.proserus.stocks.bp.SymbolsBp;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class SummaryStatusBar extends JPanel implements Observer {
 	private static final String ONE_SPACE = " ";
 
 	private static final long serialVersionUID = 20080113L;
 
-	private PortfolioController controller = PortfolioControllerImpl.getInstance();
+	private PortfolioController controller = ViewControllers.getController();
 
 	private static final String TOTAL_PRICE = "Last price update: ";
 	private static final String TOTAL_PROFIT = "Last historical price update: ";

@@ -39,13 +39,10 @@ import javax.swing.ListSelectionModel;
 
 import com.proserus.stocks.bp.FilterBp;
 import com.proserus.stocks.bp.LabelsBp;
-import com.proserus.stocks.bp.SharedFilter;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
-import com.proserus.stocks.exceptions.InvalidLabelsTransactionException;
-import com.proserus.stocks.exceptions.InvalidTransactionException;
 import com.proserus.stocks.model.transactions.Label;
 import com.proserus.stocks.model.transactions.Transaction;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class LabelsList extends JPanel implements KeyListener, Observer, MouseListener {
 	private static final String DO_YOU_WANT_TO_REMOVE_THE_TAG = "Do you want to remove the tag ";
@@ -58,7 +55,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 
 	private static final String TICKER_PATTERN = "[a-zA-Z0-9]";
 
-	private PortfolioController transactionController = PortfolioControllerImpl.getInstance();
+	private PortfolioController transactionController = ViewControllers.getController();
 
 	private JScrollPane js;
 	private JList list = new JList();
@@ -76,13 +73,15 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 	private boolean UPDATE_TRANSACTION;
 
 	private boolean removedEnabled = true;
-	
+
 	public boolean isRemovedEnabled() {
-    	return removedEnabled;
-    }
+		return removedEnabled;
+	}
+
 	public void setRemovedEnabled(boolean removedEnabled) {
-    	this.removedEnabled = removedEnabled;
-    }
+		this.removedEnabled = removedEnabled;
+	}
+
 	public LabelsList() {
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		IS_LINKED_TO_TRANSACTION = true;
@@ -95,8 +94,8 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 		setSize(10, 15);
 		setVisible(true);
 	}
-	public LabelsList(Transaction transaction, boolean popup, boolean linkedToTransaction, Component parent,
-	        boolean filtering) {
+
+	public LabelsList(Transaction transaction, boolean popup, boolean linkedToTransaction, Component parent, boolean filtering) {
 		this((JComponent) null, popup, linkedToTransaction, parent, filtering);
 		// FILTER_MODE = true;
 		UPDATE_TRANSACTION = true;
@@ -107,8 +106,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 		setSelectedItems(transaction);
 	}
 
-	public LabelsList(JComponent startExternal, boolean popup, boolean linkedToTransaction, Component parent,
-	        boolean filtering) {
+	public LabelsList(JComponent startExternal, boolean popup, boolean linkedToTransaction, Component parent, boolean filtering) {
 		if (filtering)
 			FILTER_MODE = true;
 		this.parent = parent;
@@ -126,46 +124,45 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		// if (IS_POPUP && !filtering) {
-if(IS_LINKED_TO_TRANSACTION){
-			
-		
-		addnew.addKeyListener(this);
-		addnew.setInputVerifier(new DateVerifier());
-		add(addnew, BorderLayout.NORTH);
-}
+		if (IS_LINKED_TO_TRANSACTION) {
+
+			addnew.addKeyListener(this);
+			addnew.setInputVerifier(new DateVerifier());
+			add(addnew, BorderLayout.NORTH);
+		}
 		list.setVisibleRowCount(6);
 		// }
 
-		
 		if (IS_POPUP && IS_LINKED_TO_TRANSACTION) {
 			setVisible(true);
 		}
-//		setVisible(true);
+		// setVisible(true);
 	}
 
-	public void setAddEnabled(boolean flag){
+	public void setAddEnabled(boolean flag) {
 		addnew.setVisible(flag);
 	}
-	
-	public void setModeFilter(boolean flag){
+
+	public void setModeFilter(boolean flag) {
 		FILTER_MODE = flag;
 	}
-	
+
 	public void setListColor(Color bg) {
-	    list.setBackground(bg);
-	    setBackground(bg);
+		list.setBackground(bg);
+		setBackground(bg);
 	}
-	public void setHorizontal(boolean flag){
-		if(flag){
+
+	public void setHorizontal(boolean flag) {
+		if (flag) {
 			list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 			list.setVisibleRowCount(-1);
 			list.setFixedCellHeight(25);
-		}else{
+		} else {
 			list.setLayoutOrientation(JList.VERTICAL);
 		}
-	
+
 	}
-	
+
 	public void addLetter(char car) {
 		if (car == KeyEvent.VK_ENTER) {
 			labels = getSelectedValues();
@@ -210,8 +207,8 @@ if(IS_LINKED_TO_TRANSACTION){
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.addMouseListener(this);
 		list.addKeyListener(this);
-//		list.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-//		js.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		// list.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		// js.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 	}
 
 	private void setClosedOnClick() {
@@ -220,12 +217,8 @@ if(IS_LINKED_TO_TRANSACTION){
 			public void eventDispatched(AWTEvent awe) {
 				MouseEvent me = (MouseEvent) awe;
 
-				if (isVisible()
-				        && me.getClickCount() >= 1
-				        && me.getSource() != startExternalComp
-				        && me.getSource() != addnew
-				        && !(me.getSource() instanceof javax.swing.JDialog && ((javax.swing.JDialog) me.getSource())
-				                .getTitle().contains("tag"))) {
+				if (isVisible() && me.getClickCount() >= 1 && me.getSource() != startExternalComp && me.getSource() != addnew
+				        && !(me.getSource() instanceof javax.swing.JDialog && ((javax.swing.JDialog) me.getSource()).getTitle().contains("tag"))) {
 
 					if (explore((Component) me.getSource(), js)) {
 						if (IS_LINKED_TO_TRANSACTION && SET_CHANGED) {
@@ -297,18 +290,14 @@ if(IS_LINKED_TO_TRANSACTION){
 					colLabel.add(check.get());
 				}
 			}
-			try {
-				transaction.setLabels(colLabel);
-				transactionController.updateTransaction(transaction);
-			} catch (InvalidLabelsTransactionException e) {
-			} catch (InvalidTransactionException e) {
-			}
+			transaction.setLabels(colLabel);
+			transactionController.updateTransaction(transaction);
 		} catch (NullPointerException e) {
 		}
 	}
 
 	public void setSelectedItems(Transaction transaction) {
-		for (Label label: transaction.getLabelsValues()){
+		for (Label label : transaction.getLabelsValues()) {
 			labels.put(label.getName(), label);
 		}
 		for (int i = 0; i < list.getModel().getSize(); i++) {
@@ -323,29 +312,18 @@ if(IS_LINKED_TO_TRANSACTION){
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		if (arg0.getSource().equals(addnew) && arg0.getKeyCode() == KeyEvent.VK_ENTER
-		        && addnew.getInputVerifier().verify(addnew) && addnew.getText().compareTo(EMPTY_STR) != 0) {
+		if (arg0.getSource().equals(addnew) && arg0.getKeyCode() == KeyEvent.VK_ENTER && addnew.getInputVerifier().verify(addnew)
+		        && addnew.getText().compareTo(EMPTY_STR) != 0) {
 			labels = getSelectedValues();
-			// list.getModel().
 
 			Label l = new Label();
 			l.setName(addnew.getText());
 			labels.put(l.toString(), l);
 			l = transactionController.addLabel(l);
-			// setSelectedItems(labels);
-			//transactionController.addLabel(addnew.getText());
 
 			if (UPDATE_TRANSACTION) {
-				try {
-					transaction.addLabel(l);
-					transactionController.updateTransaction(transaction);
-				} catch (InvalidLabelsTransactionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InvalidTransactionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				transaction.addLabel(l);
+				transactionController.updateTransaction(transaction);
 			}
 			addnew.setText(EMPTY_STR);
 		}
@@ -354,20 +332,20 @@ if(IS_LINKED_TO_TRANSACTION){
 	@Override
 	public void setVisible(boolean flag) {
 		super.setVisible(flag);
-		if(!NEW_TRANSACTION){
-		AWTEventListener[] listeners = Toolkit.getDefaultToolkit().getAWTEventListeners();
-		for (AWTEventListener listener : listeners) {
-			Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
-		}
+		if (!NEW_TRANSACTION) {
+			AWTEventListener[] listeners = Toolkit.getDefaultToolkit().getAWTEventListeners();
+			for (AWTEventListener listener : listeners) {
+				Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
+			}
 
-		setClosedOnClick();
-		if (flag) {
-			addnew.requestFocus();
+			setClosedOnClick();
+			if (flag) {
+				addnew.requestFocus();
 
-		}
-		if (parent != null) {
-			parent.setVisible(flag);
-		}
+			}
+			if (parent != null) {
+				parent.setVisible(flag);
+			}
 		}
 
 	}
@@ -431,15 +409,16 @@ if(IS_LINKED_TO_TRANSACTION){
 		if (item == null || event == null || item.getIcon() == null || item.getIcon().getLocation() == null) {
 			return;
 		}
-		if ((item.getIcon().getLocation().getX()!=0) && item.getIcon().getLocation().getX() < event.getPoint().getX()) {
+		if ((item.getIcon().getLocation().getX() != 0) && item.getIcon().getLocation().getX() < event.getPoint().getX()) {
 
 			// FIXME set the position where the cursor is currently.
-			int n = JOptionPane.showConfirmDialog(this, DO_YOU_WANT_TO_REMOVE_THE_TAG + item.toString() + " ?",
-			        REMOVING_TAG, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			int n = JOptionPane.showConfirmDialog(this, DO_YOU_WANT_TO_REMOVE_THE_TAG + item.toString() + " ?", REMOVING_TAG,
+			        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if (n == JOptionPane.YES_OPTION) {
-				/*if (summaryController.getFilterLabels().getLabels().contains(item.toString())) {
-					summaryController.setFilterLabels(item.toString());
-				}*/
+				/*
+				 * if (summaryController.getFilterLabels().getLabels().contains(item.toString())) {
+				 * summaryController.setFilterLabels(item.toString()); }
+				 */
 				transactionController.remove(item.get());
 			}
 		} else {
@@ -448,38 +427,30 @@ if(IS_LINKED_TO_TRANSACTION){
 
 			SET_CHANGED = true;
 
-			/*if (filtering) {
-				summaryController.setFilterLabels(item.toString());
-			}*/
+			/*
+			 * if (filtering) { summaryController.setFilterLabels(item.toString()); }
+			 */
 			if (list.getCellBounds(index, index) != null) {
 				list.repaint(list.getCellBounds(index, index));
 			}
 		}
 		Label label = item.get();
-		FilterBp filter = SharedFilter.getInstance();
+		FilterBp filter = ViewControllers.getSharedFilter();
 		if (item.isSelected()) {
 			labels.put(item.get().toString(), label);
-			if(FILTER_MODE){
+			if (FILTER_MODE) {
 				filter.addLabel(label);
-			}	
+			}
 		} else {
 			labels.remove(label.getName());
-			if(FILTER_MODE){
+			if (FILTER_MODE) {
 				filter.removeLabel(label);
-			}	
+			}
 		}
 
 		if (UPDATE_TRANSACTION) {
-			try {
-				transaction.setLabels(labels.values());
-				transactionController.updateTransaction(transaction);
-			} catch (InvalidLabelsTransactionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvalidTransactionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			transaction.setLabels(labels.values());
+			transactionController.updateTransaction(transaction);
 		}
 		// if(index!=0)
 		//
@@ -516,8 +487,8 @@ class CheckListItem implements Comparable {
 	public String toString() {
 		return label.toString();
 	}
-	
-	public Label get(){
+
+	public Label get() {
 		return label;
 	}
 
@@ -545,13 +516,12 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 		this.IS_POPUP = IS_POPUP;
 	}
 
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-	        boolean hasFocus) {
+	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
 		JPanel panel = new JPanel(new BorderLayout());
 		setEnabled(list.isEnabled());
 		setSelected(((CheckListItem) value).isSelected());
 		setFont(list.getFont());
-		
+
 		panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		if (list.getSelectedIndex() == index) {
@@ -572,8 +542,8 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 			}
 
 			((CheckListItem) value).setIcon(dd);
-			
-			if(list.getLayoutOrientation() != JList.HORIZONTAL_WRAP){
+
+			if (list.getLayoutOrientation() != JList.HORIZONTAL_WRAP) {
 				panel.add(dd, BorderLayout.EAST);
 			}
 		} else {

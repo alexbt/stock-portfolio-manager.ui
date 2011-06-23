@@ -17,10 +17,10 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import com.proserus.stocks.bp.SymbolsBp;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.AbstractDialog;
 import com.proserus.stocks.view.common.AbstractEditableTable;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
 public class SymbolsModifTable extends AbstractEditableTable implements Observer, KeyListener {
@@ -56,7 +56,7 @@ public class SymbolsModifTable extends AbstractEditableTable implements Observer
 		setRowHeight(getRowHeight() + 5);
 		setVisible(true);
 		
-		PortfolioControllerImpl.getInstance().addSymbolsObserver(this);
+		ViewControllers.getController().addSymbolsObserver(this);
 
 		addKeyListener(this);
 

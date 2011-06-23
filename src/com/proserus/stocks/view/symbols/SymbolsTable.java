@@ -23,11 +23,11 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import com.proserus.stocks.bp.SymbolsBp;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.AbstractEditableTable;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
 public class SymbolsTable extends AbstractEditableTable implements Observer, KeyListener {
@@ -39,7 +39,7 @@ public class SymbolsTable extends AbstractEditableTable implements Observer, Key
 
 	private static final String ZERO = "0";
 
-	private PortfolioController controller = PortfolioControllerImpl.getInstance();
+	private PortfolioController controller = ViewControllers.getController();
 
 	private SymbolsTableModel tableModel;;
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
@@ -90,6 +90,7 @@ public class SymbolsTable extends AbstractEditableTable implements Observer, Key
 			Collection<Symbol> col = controller.getSymbols();
 			Object[] array = col.toArray().length == 0 ? null : col.toArray();
 			tableModel.setData(array);
+			getRootPane().validate();
 		}
 	}
 

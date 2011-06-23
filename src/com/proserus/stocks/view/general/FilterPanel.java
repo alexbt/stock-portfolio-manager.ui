@@ -22,15 +22,14 @@ import javax.swing.JTextField;
 import org.jfree.data.time.Year;
 
 import com.proserus.stocks.bp.DateUtil;
-import com.proserus.stocks.bp.FilterBp;
 import com.proserus.stocks.bp.SharedFilter;
 import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.bp.TransactionsBp;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.EmptyYear;
 import com.proserus.stocks.view.common.SortedComboBoxModel;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.symbols.EmptySymbol;
 
 public class FilterPanel extends JPanel implements ActionListener, Observer, KeyListener {
@@ -43,7 +42,7 @@ public class FilterPanel extends JPanel implements ActionListener, Observer, Key
 
 	private static final String IMAGES_TAGS_GIF = "images/tags.gif";
 
-	private PortfolioController controller = PortfolioControllerImpl.getInstance();
+	private PortfolioController controller = ViewControllers.getController();
 
 	// private JTextField txt = new JTextField();
 	private SortedComboBoxModel modelYears = new SortedComboBoxModel(new FilterYearComparator());
@@ -52,7 +51,7 @@ public class FilterPanel extends JPanel implements ActionListener, Observer, Key
 	private JButton button;
 	private LabelsList labelsList = null;
 	private JTextField filterLabels = new JTextField(EMPTY_STR);
-	private Year firstYear = PortfolioControllerImpl.getInstance().getFirstYear();
+	private Year firstYear = controller.getFirstYear();
 
 	public FilterPanel() {
 		URL url = getClass().getClassLoader().getResource(IMAGES_TAGS_GIF);
@@ -172,22 +171,21 @@ public class FilterPanel extends JPanel implements ActionListener, Observer, Key
 		if (arg0.getSource().equals(years) && arg0.getActionCommand().compareTo("changeYear") == 0) {
 			Year selectedYear = (Year) ((JComboBox) arg0.getSource()).getSelectedItem();
 			if (!selectedYear.toString().isEmpty()) {
-				SharedFilter.getInstance().setYear(selectedYear);
+				ViewControllers.getSharedFilter().setYear(selectedYear);
 			}else{
-				SharedFilter.getInstance().setYear(null);
+				ViewControllers.getSharedFilter().setYear(null);
 			}
 		} else if (arg0.getSource().equals(button)) {
 			throw new AssertionError();
 		}if (arg0.getSource() instanceof JComboBox) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {
-				FilterBp filter = SharedFilter.getInstance();
 				if (((Symbol) o).getId() != null) {
-					filter.setSymbol((Symbol) o);
+					ViewControllers.getSharedFilter().setSymbol((Symbol) o);
 				}
 
 				else {
-					filter.setSymbol(null);
+					ViewControllers.getSharedFilter().setSymbol(null);
 				}
 			}
 		}
@@ -196,7 +194,7 @@ public class FilterPanel extends JPanel implements ActionListener, Observer, Key
 	@Override
 	public void update(Observable arg0, Object UNUSED) {
 		if (arg0 instanceof SharedFilter) {
-			filterLabels.setText(SharedFilter.getInstance().toString());
+			filterLabels.setText(ViewControllers.getSharedFilter().toString());
 		} else if (arg0 instanceof TransactionsBp) {
 			if (!firstYear.equals(controller.getFirstYear())) {
 				populateYears(controller.getFirstYear());

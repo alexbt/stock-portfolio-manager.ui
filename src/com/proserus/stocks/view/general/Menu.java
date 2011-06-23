@@ -13,9 +13,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.dao.PersistenceManager;
 import com.proserus.stocks.view.common.DialogImpl;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.summaries.OverviewSymbolModel;
 import com.proserus.stocks.view.summaries.OverviewSymbolTable;
 import com.proserus.stocks.view.summaries.PerformanceCurrencyModel;
@@ -46,7 +46,7 @@ public class Menu extends JMenuBar implements ActionListener {
 
 	private static final String FILE = "File";
 
-	private Window window = Window.getInstance();
+	private Window window = ViewControllers.getWindow();
 
 	private static Menu menu = new Menu();
 	private static String MESSAGE = "Stock Portfolio Manager was created by:\n" + "Alex Bélisle-Turcot\n"
@@ -308,10 +308,10 @@ public class Menu extends JMenuBar implements ActionListener {
 			new DialogImpl(new AddEditSymbolPanelImpl(true), "Add a symbol").setVisibile(true);
 
 		}else if (menuItem.getName().compareTo("updatePrices") == 0) {
-			PortfolioControllerImpl.getInstance().updatePrices();
+			ViewControllers.getController().updatePrices();
 
 		}else if (menuItem.getName().compareTo("updateOldPrices") == 0) {
-			PortfolioControllerImpl.getInstance().updateHistoricalPrices();
+			ViewControllers.getController().updateHistoricalPrices();
 
 		} else if (menuItem.getName().compareTo(ABOUT) == 0) {
 			JOptionPane.showMessageDialog(window, MESSAGE, "About Proserus Stocks Portfolio",

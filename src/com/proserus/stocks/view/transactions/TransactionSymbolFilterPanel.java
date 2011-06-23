@@ -25,13 +25,11 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.proserus.stocks.bp.FilterBp;
-import com.proserus.stocks.bp.SharedFilter;
 import com.proserus.stocks.bp.SymbolsBp;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.SortedComboBoxModel;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.symbols.EmptySymbol;
 
 public class TransactionSymbolFilterPanel extends JPanel implements Observer, ActionListener {
@@ -41,7 +39,7 @@ public class TransactionSymbolFilterPanel extends JPanel implements Observer, Ac
 
 	private SortedComboBoxModel model = new SortedComboBoxModel();
 
-	private PortfolioController controller = PortfolioControllerImpl.getInstance();
+	private PortfolioController controller = ViewControllers.getController();
 
 	public TransactionSymbolFilterPanel() {
 		FlowLayout ff = new FlowLayout();
@@ -72,13 +70,11 @@ public class TransactionSymbolFilterPanel extends JPanel implements Observer, Ac
 		if (e.getSource() instanceof JComboBox) {
 			Object o = ((JComboBox) e.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {
-				FilterBp filter = SharedFilter.getInstance();
 				if (((Symbol) o).getId() != null) {
-					filter.setSymbol((Symbol) o);
+					ViewControllers.getSharedFilter().setSymbol((Symbol) o);
 				}
-
 				else {
-					filter.setSymbol(null);
+					ViewControllers.getSharedFilter().setSymbol(null);
 				}
 			}
 		}

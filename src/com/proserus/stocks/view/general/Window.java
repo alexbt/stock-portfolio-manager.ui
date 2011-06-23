@@ -28,8 +28,6 @@ public class Window extends JFrame implements WindowListener, Observer,PropertyC
 
 	private static final String PROSERUS_STOCKS_PORTFOLIO_0_1_BETA = "Stock Portfolio Manager " + Version.VERSION;
 
-	static private Window window = new Window();
-	
 	JSplitPane split;
 
 //TODO Add icons
@@ -65,12 +63,9 @@ public class Window extends JFrame implements WindowListener, Observer,PropertyC
 //		split.setDividerLocation(1);
 	}
 
-	private Window() {
+	public Window() {
 	}
 
-	static public Window getInstance() {
-		return window;
-	}
 
 	@Override
 	public void windowActivated(WindowEvent arg0) {

@@ -19,8 +19,6 @@ import javax.swing.JTextField;
 import org.joda.time.format.DateTimeFormat;
 
 import com.proserus.stocks.bp.TransactionsBp;
-import com.proserus.stocks.controllers.CurrencyControllerImpl;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.DefaultCurrency;
 import com.proserus.stocks.model.symbols.Symbol;
@@ -30,6 +28,7 @@ import com.proserus.stocks.model.transactions.TransactionType;
 import com.proserus.stocks.utils.BigDecimalUtils;
 import com.proserus.stocks.view.common.AbstractDialog;
 import com.proserus.stocks.view.common.SortedComboBoxModel;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.common.verifiers.DateVerifier;
 import com.proserus.stocks.view.common.verifiers.NumberVerifier;
 import com.proserus.stocks.view.common.verifiers.SymbolVerifier;
@@ -47,7 +46,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			getCurrencyField().addItem(cur);
 		}
 		getCurrencyField().setSelectedItem(DefaultCurrency.DEFAULT_CURRENCY);
-		CurrencyControllerImpl.getInstance().addCurrenciesObserver(this);
+		ViewControllers.getCurrencyController().addCurrenciesObserver(this);
 
 		getAddButton().addActionListener(this);
 		getAddButton().setActionCommand("add");
@@ -63,7 +62,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		
 		getLabelsList().setAddEnabled(true);
 		getLabelsList().setHorizontal(false);
-		PortfolioControllerImpl.getInstance().addLabelsObserver(getLabelsList());
+		ViewControllers.getController().addLabelsObserver(getLabelsList());
 
 		// getTypeField().addActionListener(this);
 		// getTypeField().setActionCommand("type");
@@ -71,7 +70,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			getTypeField().addItem(transactionType);
 		}
 
-		PortfolioControllerImpl.getInstance().addTransactionObserver(this);
+		ViewControllers.getController().addTransactionObserver(this);
 
 		getSymbolField().addKeyListener(this);
 		getAddButton().addKeyListener(this);
@@ -153,7 +152,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			Object o = getSymbolField().getSelectedItem();
 			if ((o instanceof String && !((String) o).isEmpty()) || o instanceof Symbol) {
 				Transaction t = createTransaction(createSymbol(o), getLabelsList().getSelectedValues().values());
-				PortfolioControllerImpl.getInstance().addTransaction(t);
+				ViewControllers.getController().addTransaction(t);
 				success = true;
 				emptyAllFields();
 			}
@@ -209,7 +208,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 	@Override
 	public void update(Observable transactions, Object UNUSED) {
 		if (transactions instanceof TransactionsBp) {
-			getSymbolField().setModel(new SortedComboBoxModel(PortfolioControllerImpl.getInstance().getSymbols().toArray()));
+			getSymbolField().setModel(new SortedComboBoxModel(ViewControllers.getController().getSymbols().toArray()));
 			getSymbolField().addItem(new EmptySymbol());
 			getSymbolField().setSelectedIndex(0);
 		}
@@ -227,7 +226,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 	    Symbol s = null;
 	    Object o = getSymbolField().getEditor().getItem();
 	    if (o instanceof String) {
-	    	s = PortfolioControllerImpl.getInstance().getSymbol(o.toString());
+	    	s = ViewControllers.getController().getSymbol(o.toString());
 	    	if(s==null){
 	    		s= new EmptySymbol();
 	    	}

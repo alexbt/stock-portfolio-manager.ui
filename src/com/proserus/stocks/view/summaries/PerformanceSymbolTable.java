@@ -15,10 +15,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
-import com.proserus.stocks.bp.SharedFilter;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.view.common.AbstractTable;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
 public class PerformanceSymbolTable extends AbstractTable implements Observer {
@@ -31,7 +30,7 @@ public class PerformanceSymbolTable extends AbstractTable implements Observer {
 
 	private static final String ZERO = "0";
 
-	private PortfolioController controller = PortfolioControllerImpl.getInstance();
+	private PortfolioController controller = ViewControllers.getController();
 	
 	private PerformanceSymbolModel tableModel = new PerformanceSymbolModel();
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
@@ -64,9 +63,10 @@ public class PerformanceSymbolTable extends AbstractTable implements Observer {
 	@Override
 	public void update(Observable arg0, Object UNUSED) {
 		// TODO Redesign Filter/SharedFilter
-			Collection col = controller.getSymbolAnalysis(SharedFilter.getInstance());
+			Collection col = controller.getSymbolAnalysis(ViewControllers.getSharedFilter());
 			tableModel.setData(col);
 			setToolTipText(col.toString());
+			getRootPane().validate();
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class PerformanceSymbolTable extends AbstractTable implements Observer {
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
 		} else if (rowIndex % 2 == 0) {
-			c.setBackground(ColorSettingsDialog.getColor(SharedFilter.getInstance().isFiltered()));
+			c.setBackground(ColorSettingsDialog.getColor(ViewControllers.getSharedFilter().isFiltered()));
 		} else {
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
 		}

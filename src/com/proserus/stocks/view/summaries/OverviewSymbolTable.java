@@ -17,10 +17,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
-import com.proserus.stocks.bp.SharedFilter;
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.view.common.AbstractTable;
+import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
 public class OverviewSymbolTable extends AbstractTable implements Observer, MouseListener {
@@ -28,7 +27,7 @@ public class OverviewSymbolTable extends AbstractTable implements Observer, Mous
 
 	private static final String ZERO = "0";
 
-	private PortfolioController controller = PortfolioControllerImpl.getInstance();
+	private PortfolioController controller = ViewControllers.getController();
 	
 	private OverviewSymbolModel tableModel = new OverviewSymbolModel();
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
@@ -61,10 +60,11 @@ public class OverviewSymbolTable extends AbstractTable implements Observer, Mous
 
 	@Override
 	public void update(Observable arg0, Object UNUSED) {
-		Collection col = controller.getSymbolAnalysis(SharedFilter.getInstance());
-		tableModel.setData(controller.getSymbolAnalysis(SharedFilter.getInstance()));
+		Collection col = controller.getSymbolAnalysis(ViewControllers.getSharedFilter());
+		tableModel.setData(controller.getSymbolAnalysis(ViewControllers.getSharedFilter()));
 		// Redesign filters
 		setToolTipText(col.toString());
+		getRootPane().validate();
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class OverviewSymbolTable extends AbstractTable implements Observer, Mous
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
 		} else if (rowIndex % 2 == 0) {
-			c.setBackground(ColorSettingsDialog.getColor(SharedFilter.getInstance().isFiltered()));
+			c.setBackground(ColorSettingsDialog.getColor(ViewControllers.getSharedFilter().isFiltered()));
 		} else {
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
 		}

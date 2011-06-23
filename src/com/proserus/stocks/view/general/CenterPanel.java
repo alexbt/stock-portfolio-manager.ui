@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.proserus.stocks.controllers.PortfolioControllerImpl;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class CenterPanel extends JPanel implements ActionListener{
 	
@@ -33,9 +33,9 @@ public class CenterPanel extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		 if (arg0.getSource().equals(updateInternet)) {
-			PortfolioControllerImpl.getInstance().updatePrices();
+			 ViewControllers.getController().updatePrices();
 		} else if (arg0.getSource().equals(updateHistorical)) {
-			PortfolioControllerImpl.getInstance().updateHistoricalPrices();
+			ViewControllers.getController().updateHistoricalPrices();
 		}
 	}
 
