@@ -1,9 +1,12 @@
 package com.proserus.stocks;
 
+import org.apache.log4j.Logger;
+
 import com.google.inject.Guice;
 import com.proserus.stocks.view.common.ViewControllers;
 
 public class Launch {
+	private static Logger LOGGER = Logger.getLogger("stacktrace." + Launch.class.getName());
 
 	// Get exchange rate from web
 	// Set default Currency
@@ -21,9 +24,22 @@ public class Launch {
 	 */
 	public static void main(String[] args) {
 		// Window s;
-		ViewControllers controllers = Guice.createInjector(new SwingModule()).getInstance(ViewControllers.class);
-		controllers.getWindow().start();
-		controllers.getController().refresh();
+		try {
+			ViewControllers controllers = Guice.createInjector(new SwingModule()).getInstance(ViewControllers.class);
+			controllers.getWindow().start();
+			controllers.getController().refresh();
+		} catch (RuntimeException e) {
+			LOGGER.fatal(e);
+			LOGGER.fatal(e.getCause());
+			throw e;
+		} catch (Error e) {
+			LOGGER.fatal(e);
+			LOGGER.fatal(e.getCause());
+			throw e;
+		} catch (Throwable e) {
+			LOGGER.fatal(e);
+			LOGGER.fatal(e.getCause());
+		}
 	}
 
 }
