@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 
 import org.joda.time.format.DateTimeFormat;
 
-import com.proserus.stocks.bp.TransactionsBp;
+import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.DefaultCurrency;
 import com.proserus.stocks.model.symbols.Symbol;
@@ -70,7 +70,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			getTypeField().addItem(transactionType);
 		}
 
-		ViewControllers.getController().addTransactionObserver(this);
+		ViewControllers.getController().addSymbolsObserver(this);
 
 		getSymbolField().addKeyListener(this);
 		getAddButton().addKeyListener(this);
@@ -97,7 +97,9 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		getQuantityField().addFocusListener(this);
 		getCommissionField().addFocusListener(this);
 		
-		getCompanyNameField().setDisabledTextColor(Color.BLACK);     	
+		getCompanyNameField().setDisabledTextColor(Color.BLACK);  
+		
+		populateSymbolDropdown();
 	}
 
 	@Override
@@ -208,12 +210,16 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 	@Override
 	public void update(Observable transactions, Object UNUSED) {
-		if (transactions instanceof TransactionsBp) {
-			getSymbolField().setModel(new SortedComboBoxModel(ViewControllers.getController().getSymbols().toArray()));
-			getSymbolField().addItem(new EmptySymbol());
-			getSymbolField().setSelectedIndex(0);
+		if (transactions instanceof SymbolsBp) {
+			populateSymbolDropdown();
 		}
 	}
+
+	private void populateSymbolDropdown() {
+	    getSymbolField().setModel(new SortedComboBoxModel(ViewControllers.getController().getSymbols().toArray()));
+	    getSymbolField().addItem(new EmptySymbol());
+	    getSymbolField().setSelectedIndex(0);
+    }
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
