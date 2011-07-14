@@ -155,6 +155,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 				ViewControllers.getController().addTransaction(t);
 				success = true;
 				emptyAllFields();
+				getDateField().requestFocus();
 			}
 		}
 
