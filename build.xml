@@ -53,7 +53,7 @@
 	<!--====================================================-->
 	<!-- build-dev                                          -->
 	<!--====================================================-->
-	<target name="build-dev" depends="toJar" description="updateversion, cleanbin, compile, package and deploy">
+	<target name="build-dev" depends="updateversion, toJar" description="updateversion, cleanbin, compile, package and deploy">
 	</target>
 
 
