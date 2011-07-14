@@ -314,6 +314,8 @@ public class Menu extends JMenuBar implements ActionListener {
 			System.exit(0);
 
 		} else if (menuItem.getName().compareTo(IMPORT) == 0) {
+			
+			//TODO move code to reusable location
 			JFileChooser fc = new JFileChooser(new File("stock-portfolio_export.csv"));
 			fc.addChoosableFileFilter(new CsvFileFilter());
 			fc.setApproveButtonText("Import");
@@ -324,6 +326,8 @@ public class Menu extends JMenuBar implements ActionListener {
 			}
 
 		} else if (menuItem.getName().compareTo(EXPORT) == 0) {
+			//TODO move code to reusable location
+			
 			JFileChooser fc = new JFileChooser(new File("stock-portfolio_export.csv"));
 			fc.addChoosableFileFilter(new CsvFileFilter());
 			fc.setApproveButtonText("Export");
