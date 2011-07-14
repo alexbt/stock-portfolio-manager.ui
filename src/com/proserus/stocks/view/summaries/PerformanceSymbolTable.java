@@ -63,10 +63,10 @@ public class PerformanceSymbolTable extends AbstractTable implements Observer {
 	@Override
 	public void update(Observable arg0, Object UNUSED) {
 		// TODO Redesign Filter/SharedFilter
-			Collection col = controller.getSymbolAnalysis(ViewControllers.getSharedFilter());
-			tableModel.setData(col);
-			setToolTipText(col.toString());
-			getRootPane().validate();
+		Collection col = controller.getSymbolAnalysis(ViewControllers.getSharedFilter());
+		tableModel.setData(col);
+		setToolTipText(col.toString());
+		getRootPane().validate();
 	}
 
 	@Override
@@ -99,8 +99,8 @@ public class PerformanceSymbolTable extends AbstractTable implements Observer {
 
 		PrecisionCellRenderer(int precision) {
 			format = NumberFormat.getNumberInstance();
-			format.setMaximumFractionDigits(precision);
-			format.setMinimumFractionDigits(precision);
+			format.setMaximumFractionDigits(8);
+			format.setMinimumFractionDigits(2);
 		}
 
 		@Override
