@@ -107,7 +107,7 @@
      	 **/
      	 package com.proserus.stocks.view.general;
 
-		interface Version {
+		public interface Version {
 			public static String TIMESTAMP = "${timestamp}";
 			public static String VERSION = "${version}";
 
