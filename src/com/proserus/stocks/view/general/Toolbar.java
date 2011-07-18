@@ -10,8 +10,7 @@ import com.proserus.stocks.view.actions.AddSymbolAction;
 import com.proserus.stocks.view.actions.AddTransactionAction;
 import com.proserus.stocks.view.actions.ExportToCsvAction;
 import com.proserus.stocks.view.actions.ImportFromCsvAction;
-import com.proserus.stocks.view.actions.RemoveSymbolAction;
-import com.proserus.stocks.view.actions.RemoveTransactionAction;
+import com.proserus.stocks.view.actions.ShowSettingsAction;
 import com.proserus.stocks.view.actions.UpdateOldPricesAction;
 import com.proserus.stocks.view.actions.UpdatePriceAction;
 
@@ -19,14 +18,13 @@ public class Toolbar extends JToolBar{
 	
 	public Toolbar(){
         addTransaction();
-		//removeTransaction();
 		addSymbol();
 		updateCurrentPrice();
-		//removeSymbol();
 		updateOldPrices();
 		
 		importCsv();
 		exportCsv();
+		colorSettings();
 	}
 
 	private void updateOldPrices() {
@@ -37,16 +35,6 @@ public class Toolbar extends JToolBar{
 		button.setToolTipText("Updates Historical Prices From Yahoo");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/HistoricalPrices.png")));
 		button.setMnemonic(KeyEvent.VK_O);
-		add(button);
-    }
-
-	private void removeSymbol() {
-	    JButton button = new JButton();
-		button.setActionCommand("removeSymbol");
-		button.setContentAreaFilled(false);
-		button.setAction(new RemoveSymbolAction());
-		button.setToolTipText("Remove Selected Symbol");
-		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
 		add(button);
     }
 
@@ -84,17 +72,6 @@ public class Toolbar extends JToolBar{
 		add(button);
     }
 
-	private void removeTransaction() {
-	    JButton button;
-	    button = new JButton();
-		button.setActionCommand("removeTransaction");
-		button.setContentAreaFilled(false);
-		button.setAction(new RemoveTransactionAction());
-		button.setToolTipText("Remove Selected Transaction");
-		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
-		add(button);
-    }
-	
 	private void importCsv() {
 	    JButton button;
 	    button = new JButton();
@@ -114,6 +91,17 @@ public class Toolbar extends JToolBar{
 		button.setAction(new ExportToCsvAction());
 		button.setToolTipText("Export");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Export.png")));
+		add(button);
+    }
+	
+	private void colorSettings() {
+	    JButton button;
+	    button = new JButton();
+		button.setActionCommand("settings");
+		button.setContentAreaFilled(false);
+		button.setAction(new ShowSettingsAction());
+		button.setToolTipText("Color Settings");
+		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Settings.png")));
 		add(button);
     }
 

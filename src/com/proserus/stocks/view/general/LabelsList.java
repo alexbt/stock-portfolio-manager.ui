@@ -509,7 +509,7 @@ class CheckListItem implements Comparable {
 // Handles rendering cells in the list using a check box
 
 class CheckListRenderer extends JCheckBox implements ListCellRenderer {
-	private static final String IMAGES_CANCEL_GIF = "images/cancel.gif";
+	private static final String IMAGES_CANCEL_GIF = "images/RemoveSmall.png";
 	private boolean IS_POPUP;
 
 	public CheckListRenderer(boolean IS_POPUP) {
@@ -532,7 +532,7 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 			}
 			ImageBackgroundPanel dd = new ImageBackgroundPanel(img);
 			dd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			dd.setPreferredSize(new Dimension(16, 16));
+			dd.setPreferredSize(new Dimension(20, 20));
 			if (IS_POPUP) {
 				setBackground(ColorSettingsDialog.getColor(true));
 				dd.setBackground(ColorSettingsDialog.getColor(true));
@@ -550,8 +550,6 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 			setBackground(list.getBackground());
 		}
 
-		// this.setIcon(new ImageIcon("cancel.gif"));
-		// setForeground(list.getForeground());
 		setText(value.toString());
 		panel.add(this, BorderLayout.CENTER);
 
@@ -570,6 +568,6 @@ class ImageBackgroundPanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(image, 0, 0, this);
+		g.drawImage(image, 0, 3, this);
 	}
 }

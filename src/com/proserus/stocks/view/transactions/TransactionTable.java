@@ -157,6 +157,17 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 
 	@Override
 	public void mouseClicked(MouseEvent evt) {
+		if (getSelectedColumn() == 7 && evt.getButton() == MouseEvent.BUTTON1) {
+			Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
+			JWindow window = new JWindow(ViewControllers.getWindow());
+			labl = new LabelsList(t, true, true, window, false);
+			window.add(labl);
+
+			window.setSize(150, 117);
+			Point p = MouseInfo.getPointerInfo().getLocation();
+			window.setLocation(p);
+			window.setVisible(true);
+		}
 	}
 
 	@Override
@@ -184,19 +195,9 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 
 	@Override
     public void mousePressed(MouseEvent evt) {
-		Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
 		if(!evt.isAltGraphDown() && !evt.isControlDown()){
+			Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
 			controller.setSelection(t);
-		}
-		if (getSelectedColumn() == 7 && evt.getButton() == MouseEvent.BUTTON1) {
-			JWindow window = new JWindow(ViewControllers.getWindow());
-			labl = new LabelsList(t, true, true, window, false);
-			window.add(labl);
-
-			window.setSize(150, 117);
-			Point p = MouseInfo.getPointerInfo().getLocation();
-			window.setLocation(p);
-			window.setVisible(true);
 		}
     }
 

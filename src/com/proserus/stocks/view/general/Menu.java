@@ -156,10 +156,10 @@ public class Menu extends JMenuBar {
 
 		initMenuTables();
 
-//		menu = new JMenu(HELP);
-//		menu.setMnemonic(KeyEvent.VK_H);
-//
-//		add(menu);
+		menu = new JMenu(HELP);
+		menu.setMnemonic(KeyEvent.VK_H);
+
+		add(menu);
 
 		// a group of JMenuItems
 		menuItem = new JMenuItem(GUI_SETTINGS, KeyEvent.VK_C);
