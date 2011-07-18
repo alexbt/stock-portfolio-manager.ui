@@ -161,7 +161,6 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		super.actionPerformed(e);
 		if (e.getSource() instanceof JComboBox) {
 			Object o = ((JComboBox) e.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {

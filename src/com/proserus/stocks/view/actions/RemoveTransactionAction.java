@@ -1,4 +1,4 @@
-package com.proserus.stocks.view.common;
+package com.proserus.stocks.view.actions;
 
 import java.awt.event.ActionEvent;
 import java.util.Observable;
@@ -9,6 +9,7 @@ import javax.swing.AbstractAction;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.ItemSelection;
 import com.proserus.stocks.model.transactions.Transaction;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class RemoveTransactionAction extends AbstractAction implements Observer  {
 	private PortfolioController controller = ViewControllers.getController();

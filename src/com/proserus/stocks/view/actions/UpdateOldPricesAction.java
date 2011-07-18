@@ -1,8 +1,10 @@
-package com.proserus.stocks.view.common;
+package com.proserus.stocks.view.actions;
 
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class UpdateOldPricesAction extends AbstractAction  {
 

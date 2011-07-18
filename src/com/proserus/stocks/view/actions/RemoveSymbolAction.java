@@ -1,4 +1,4 @@
-package com.proserus.stocks.view.common;
+package com.proserus.stocks.view.actions;
 
 import java.awt.event.ActionEvent;
 import java.util.Observable;
@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.ItemSelection;
 import com.proserus.stocks.model.symbols.Symbol;
+import com.proserus.stocks.view.common.ViewControllers;
 
 public class RemoveSymbolAction extends AbstractAction implements Observer {
 	private PortfolioController controller = ViewControllers.getController();

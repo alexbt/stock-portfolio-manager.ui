@@ -1,7 +1,5 @@
 package com.proserus.stocks.view.common;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -13,8 +11,8 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 
-abstract public class AbstractTable extends JTable implements ActionListener {
-	
+abstract public class AbstractTable extends JTable {
+
 	/**
 	 * Last date this class was modified
 	 */
@@ -27,30 +25,27 @@ abstract public class AbstractTable extends JTable implements ActionListener {
 	public AbstractTable() {
 	}
 
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() instanceof JMenuItem) {
-			JMenuItem item = ((JMenuItem) e.getSource());
-			if (!item.isSelected()) {
-				for (int i = 0; i < getColumnModel().getColumnCount(); i++) {
-					String name = getModel().getColumnName(getColumnModel().getColumn(i).getModelIndex());
-					if (name.compareTo(item.getText()) == 0) {
-						removedColumns.put(item.getText(), getColumnModel().getColumn(i));
-						getColumnModel().removeColumn(getColumnModel().getColumn(i));
-					}
+	public void showHideColumn(JMenuItem item) {
+		if (!item.isSelected()) {
+			for (int i = 0; i < getColumnModel().getColumnCount(); i++) {
+				String name = getModel().getColumnName(getColumnModel().getColumn(i).getModelIndex());
+				if (name.compareTo(item.getText()) == 0) {
+					removedColumns.put(item.getText(), getColumnModel().getColumn(i));
+					getColumnModel().removeColumn(getColumnModel().getColumn(i));
 				}
-			} else {
-				getColumnModel().addColumn(removedColumns.get(item.getText()));
-				for (int i = 0; i < getModel().getColumnCount(); i++) {
-					String name = getModel().getColumnName(i);
-					if (name.compareTo(item.getText()) == 0) {
-						try {
-							getColumnModel().moveColumn(getColumnModel().getColumnCount() - 1, i);
-						} catch (IllegalArgumentException e2) {
+			}
+		} else {
+			getColumnModel().addColumn(removedColumns.get(item.getText()));
+			for (int i = 0; i < getModel().getColumnCount(); i++) {
+				String name = getModel().getColumnName(i);
+				if (name.compareTo(item.getText()) == 0) {
+					try {
+						getColumnModel().moveColumn(getColumnModel().getColumnCount() - 1, i);
+					} catch (IllegalArgumentException e2) {
 
-						}
-						removedColumns.remove(item.getText());
-						break;
 					}
+					removedColumns.remove(item.getText());
+					break;
 				}
 			}
 		}

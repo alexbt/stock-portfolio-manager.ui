@@ -12,6 +12,7 @@ import java.util.Observer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 
@@ -49,7 +50,13 @@ public class Window extends JFrame implements WindowListener, Observer,PropertyC
 //		UIManager.put("SplitPane.dividerSize", new Integer(70));
 //		SwingUtilities.updateComponentTreeUI(window);
 		
-		add(FilterPanelImpl.getInstance(), BorderLayout.NORTH);
+		JPanel north = new JPanel();
+		north.setLayout(new BorderLayout());
+		north.add(FilterPanelImpl.getInstance(), BorderLayout.SOUTH);
+		
+		north.add(new Toolbar(), BorderLayout.NORTH);
+		
+		add(north, BorderLayout.NORTH);
 		add(new SummaryStatusBar(), BorderLayout.SOUTH);
 		FilterPanelImpl.getInstance().setVisible(false);
 		add(new Tab(), BorderLayout.CENTER);

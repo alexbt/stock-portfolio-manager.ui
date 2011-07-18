@@ -9,8 +9,8 @@
      	 package com.proserus.stocks.view.general;
 
 		interface Version {
-			public static String TIMESTAMP = "2011-07-17_23h10m44s";
-			public static String VERSION = "0.13Beta";
+			public static String TIMESTAMP = "2011-07-18_08h15m01s";
+			public static String VERSION = "0.14Beta";
 
 		}
     	

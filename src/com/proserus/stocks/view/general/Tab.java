@@ -3,7 +3,6 @@ package com.proserus.stocks.view.general;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -14,12 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
-import com.proserus.stocks.view.common.AddSymbolAction;
-import com.proserus.stocks.view.common.AddTransactionAction;
-import com.proserus.stocks.view.common.RemoveSymbolAction;
-import com.proserus.stocks.view.common.RemoveTransactionAction;
-import com.proserus.stocks.view.common.UpdateOldPricesAction;
-import com.proserus.stocks.view.common.UpdatePriceAction;
+import com.proserus.stocks.view.actions.RemoveSymbolAction;
+import com.proserus.stocks.view.actions.RemoveTransactionAction;
 import com.proserus.stocks.view.summaries.OverviewCurrencyTable;
 import com.proserus.stocks.view.summaries.OverviewSymbolTable;
 import com.proserus.stocks.view.summaries.PerformanceCurrencyTable;
@@ -29,7 +24,7 @@ import com.proserus.stocks.view.transactions.TransactionTable;
 
 public class Tab extends JTabbedPane {
 	private static final String TABBED_PANE_SELECTED = "TabbedPane.selected";
-	private static final String SYMBOLS = "Watch List";
+	private static final String SYMBOLS = "Symbols / Watch List";
 	private static final String TRANSACTIONS = "Transactions";
 	private static final String OVERVIEW = "Overview";
 
@@ -57,17 +52,11 @@ public class Tab extends JTabbedPane {
 		flow.setAlignment(FlowLayout.LEFT);
 		// TransactionSymbolFilterPanel symbolFilter = new TransactionSymbolFilterPanel(TransactionTable.getInstance());
 		// panel.add(symbolFilter, BorderLayout.NORTH);
-		JButton button = new JButton();
-		button.setMnemonic(KeyEvent.VK_A);
-		button.setContentAreaFilled(false);
-		button.setAction(new AddTransactionAction());
-		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/AddTransaction.png")));
-		button.setActionCommand("addTransaction");
-		button.setToolTipText("Add a Transaction");
+		JButton button;
+
 		//button.addActionListener(this);
 		JPanel pan = new JPanel();
 		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
-		pan.add(button);
 		
 		button = new JButton();
 		button.setActionCommand("removeTransaction");
@@ -88,42 +77,13 @@ public class Tab extends JTabbedPane {
 		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
 		
 		button = new JButton();
-		button.setActionCommand("addSymbol");
-		button.setContentAreaFilled(false);
-		button.setAction(new AddSymbolAction());
-		button.setToolTipText("Add a Symbol");
-		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/AddSymbol.png")));
-		button.setMnemonic(KeyEvent.VK_A);
-		pan.add(button);
-		
-		button = new JButton();
-		button.setActionCommand("removeTransaction");
+		button.setActionCommand("removeSymbol");
 		button.setContentAreaFilled(false);
 		button.setAction(new RemoveSymbolAction());
 		button.setToolTipText("Remove Selected Symbol");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
 		pan.add(button);
 		
-		
-		button = new JButton();
-		button.setActionCommand("updatePrices");
-		button.setContentAreaFilled(false);
-		button.setAction(new UpdatePriceAction());
-		button.setToolTipText("Updates Current Price From Yahoo");
-		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/RefreshPrice.png")));
-		button.setMnemonic(KeyEvent.VK_P);
-		pan.add(button);
-		button.setMnemonic(KeyEvent.VK_P);
-		
-		button = new JButton();
-		button.setActionCommand("updateOldPrices");
-		button.setContentAreaFilled(false);
-		button.setAction(new UpdateOldPricesAction());
-		button.setToolTipText("Updates Historical Prices From Yahoo");
-		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/HistoricalPrices.png")));
-		button.setMnemonic(KeyEvent.VK_O);
-		pan.add(button);
-		button.setMnemonic(KeyEvent.VK_O);
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(pan, BorderLayout.NORTH);
