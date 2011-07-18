@@ -125,9 +125,4 @@ public class PerformanceSymbolTable extends AbstractTable implements Observer {
 			return this;
 		}
 	}
-
-	@Override
-	protected void delete() {
-
-	}
 }

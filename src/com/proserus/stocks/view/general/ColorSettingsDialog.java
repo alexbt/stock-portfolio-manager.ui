@@ -43,7 +43,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 
 	private static final String UI_PROPERTIES = "ui.properties";
 
-	private static final String IMAGES_BOOK_GIF = "images/book.gif";
+	private static final String IMAGES_BOOK_GIF = "images/Logo.gif";//TODO move
 
 	private static final String GUI_SETTINGS = "Color Settings";
 

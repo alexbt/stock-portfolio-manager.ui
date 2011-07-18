@@ -3,8 +3,6 @@ package com.proserus.stocks.view.summaries;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Collection;
@@ -22,7 +20,7 @@ import com.proserus.stocks.view.common.AbstractTable;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
-public class OverviewSymbolTable extends AbstractTable implements Observer, MouseListener {
+public class OverviewSymbolTable extends AbstractTable implements Observer {
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
@@ -55,7 +53,6 @@ public class OverviewSymbolTable extends AbstractTable implements Observer, Mous
 
 		setRowSorter(new TableRowSorter<OverviewSymbolModel>(tableModel));
 		setFirstRowSorted(true);
-		addMouseListener(this);
 	}
 
 	@Override
@@ -118,38 +115,5 @@ public class OverviewSymbolTable extends AbstractTable implements Observer, Mous
 			}
 			return this;
 		}
-	}
-
-	@Override
-	protected void delete() {
-
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent evt) {
-//		if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() > 1) {
-//			int row = getRowSorter().convertRowIndexToModel(((JTable) evt.getComponent()).getSelectedRow());
-//			new SyncTransactionsView((((SummaryTableModel) getRowSorter().getModel()).getSummary(row)));
-//		}
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-
-	}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-
 	}
 }

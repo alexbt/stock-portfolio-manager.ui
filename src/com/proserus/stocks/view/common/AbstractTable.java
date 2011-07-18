@@ -14,6 +14,7 @@ import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 
 abstract public class AbstractTable extends JTable implements ActionListener {
+	
 	/**
 	 * Last date this class was modified
 	 */
@@ -22,8 +23,6 @@ abstract public class AbstractTable extends JTable implements ActionListener {
 	HashMap<String, TableColumn> removedColumns = new HashMap<String, TableColumn>();
 
 	private static Logger LOGGER = Logger.getLogger(AbstractTable.class.toString());
-
-	protected abstract void delete();
 
 	public AbstractTable() {
 	}

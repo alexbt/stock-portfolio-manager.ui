@@ -20,7 +20,7 @@ import com.proserus.stocks.model.common.ObservableModel;
 
 public class Window extends JFrame implements WindowListener, Observer,PropertyChangeListener {
 
-	private static final String IMAGES_BOOK_GIF = "images/book.gif";
+	private static final String IMAGES_BOOK_GIF = "images/Logo.gif";//TODO move
 
 	private static final String COMBO_BOX_SELECTION_BACKGROUND = "ComboBox.selectionBackground";
 

@@ -3,30 +3,31 @@ package com.proserus.stocks.view.general;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 
-import com.proserus.stocks.view.common.DialogImpl;
-import com.proserus.stocks.view.common.ViewControllers;
+import com.proserus.stocks.view.common.AddSymbolAction;
+import com.proserus.stocks.view.common.AddTransactionAction;
+import com.proserus.stocks.view.common.RemoveSymbolAction;
+import com.proserus.stocks.view.common.RemoveTransactionAction;
+import com.proserus.stocks.view.common.UpdateOldPricesAction;
+import com.proserus.stocks.view.common.UpdatePriceAction;
 import com.proserus.stocks.view.summaries.OverviewCurrencyTable;
 import com.proserus.stocks.view.summaries.OverviewSymbolTable;
 import com.proserus.stocks.view.summaries.PerformanceCurrencyTable;
 import com.proserus.stocks.view.summaries.PerformanceSymbolTable;
-import com.proserus.stocks.view.symbols.AddEditSymbolPanelImpl;
 import com.proserus.stocks.view.symbols.SymbolsTable;
-import com.proserus.stocks.view.transactions.AddTransactionPanelImpl;
 import com.proserus.stocks.view.transactions.TransactionTable;
 
-public class Tab extends JTabbedPane implements ActionListener {
+public class Tab extends JTabbedPane {
 	private static final String TABBED_PANE_SELECTED = "TabbedPane.selected";
 	private static final String SYMBOLS = "Watch List";
 	private static final String TRANSACTIONS = "Transactions";
@@ -56,13 +57,26 @@ public class Tab extends JTabbedPane implements ActionListener {
 		flow.setAlignment(FlowLayout.LEFT);
 		// TransactionSymbolFilterPanel symbolFilter = new TransactionSymbolFilterPanel(TransactionTable.getInstance());
 		// panel.add(symbolFilter, BorderLayout.NORTH);
-		JButton button = new JButton("Add");
+		JButton button = new JButton();
 		button.setMnemonic(KeyEvent.VK_A);
+		button.setContentAreaFilled(false);
+		button.setAction(new AddTransactionAction());
+		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/AddTransaction.png")));
 		button.setActionCommand("addTransaction");
-		button.addActionListener(this);
+		button.setToolTipText("Add a Transaction");
+		//button.addActionListener(this);
 		JPanel pan = new JPanel();
 		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
 		pan.add(button);
+		
+		button = new JButton();
+		button.setActionCommand("removeTransaction");
+		button.setContentAreaFilled(false);
+		button.setAction(new RemoveTransactionAction());
+		button.setToolTipText("Remove Selected Transaction");
+		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
+		pan.add(button);
+		
 		
 		panel.add(pan, BorderLayout.NORTH);
 		panel.add(ff, BorderLayout.CENTER);
@@ -73,24 +87,41 @@ public class Tab extends JTabbedPane implements ActionListener {
 		pan = new JPanel();
 		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
 		
-		button = new JButton("Add");
+		button = new JButton();
 		button.setActionCommand("addSymbol");
+		button.setContentAreaFilled(false);
+		button.setAction(new AddSymbolAction());
+		button.setToolTipText("Add a Symbol");
+		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/AddSymbol.png")));
 		button.setMnemonic(KeyEvent.VK_A);
-		button.addActionListener(this);
+		pan.add(button);
+		
+		button = new JButton();
+		button.setActionCommand("removeTransaction");
+		button.setContentAreaFilled(false);
+		button.setAction(new RemoveSymbolAction());
+		button.setToolTipText("Remove Selected Symbol");
+		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
 		pan.add(button);
 		
 		
-		button = new JButton("Update Prices");
+		button = new JButton();
 		button.setActionCommand("updatePrices");
+		button.setContentAreaFilled(false);
+		button.setAction(new UpdatePriceAction());
+		button.setToolTipText("Updates Current Price From Yahoo");
+		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/RefreshPrice.png")));
 		button.setMnemonic(KeyEvent.VK_P);
-		button.addActionListener(this);
 		pan.add(button);
 		button.setMnemonic(KeyEvent.VK_P);
 		
-		button = new JButton("Update Old Prices");
+		button = new JButton();
 		button.setActionCommand("updateOldPrices");
+		button.setContentAreaFilled(false);
+		button.setAction(new UpdateOldPricesAction());
+		button.setToolTipText("Updates Historical Prices From Yahoo");
+		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/HistoricalPrices.png")));
 		button.setMnemonic(KeyEvent.VK_O);
-		button.addActionListener(this);
 		pan.add(button);
 		button.setMnemonic(KeyEvent.VK_O);
 		
@@ -110,20 +141,5 @@ public class Tab extends JTabbedPane implements ActionListener {
 		// TODO chart
 		// addTab("Charts", demo);
 
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		if (arg0.getSource() instanceof JButton) {
-			if (arg0.getActionCommand().equals("addTransaction")) {
-				new DialogImpl(new AddTransactionPanelImpl(),"Add a transaction").setVisibile(true);
-			} else if (arg0.getActionCommand().equals("addSymbol")) {
-				new DialogImpl(new AddEditSymbolPanelImpl(true),"Add a symbol").setVisibile(true);
-			} else if (arg0.getActionCommand().equals("updatePrices")) {
-				ViewControllers.getController().updatePrices();
-			} else if (arg0.getActionCommand().equals("updateOldPrices")) {
-				ViewControllers.getController().updateHistoricalPrices();
-			}
-		}
 	}
 }

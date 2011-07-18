@@ -377,7 +377,7 @@ public class Menu extends JMenuBar implements ActionListener {
 		} else if (menuItem.getName().compareTo(ABOUT) == 0) {
 			//TODO get icon from window.. but in fact, should be moved to a more logical reusable place..
 			JOptionPane.showMessageDialog(window, MESSAGE, "About Proserus Stocks Portfolio", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(
-			        getClass().getClassLoader().getResource("images/logo-web4.gif")));
+			        getClass().getClassLoader().getResource("images/LogoProserus.gif")));
 
 		} else if (menuItem.getName().compareTo(SETTINGS) == 0) {
 			ColorSettingsDialog.getInstance().setVisible(true);

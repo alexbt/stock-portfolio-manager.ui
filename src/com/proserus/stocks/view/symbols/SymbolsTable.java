@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Collection;
@@ -15,7 +16,6 @@ import java.util.Observer;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
@@ -26,15 +26,11 @@ import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.Symbol;
-import com.proserus.stocks.view.common.AbstractEditableTable;
+import com.proserus.stocks.view.common.AbstractTable;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
-public class SymbolsTable extends AbstractEditableTable implements Observer, KeyListener {
-	private static final String CANNOT_REMOVE_SYMBOL = "Cannot remove symbol";
-
-	private static final String THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS = "The symbol is currently used in transactions";
-
+public class SymbolsTable extends AbstractTable implements Observer, KeyListener,MouseListener {
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
@@ -45,10 +41,7 @@ public class SymbolsTable extends AbstractEditableTable implements Observer, Key
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
 	private HashMap<String, Color> colors = new HashMap<String, Color>();
 	private TableRowSorter<SymbolsTableModel> sorter;
-	private boolean filtered = false;
 	
-	private SymbolsModificationView symbolModifView;
-
 	private static SymbolsTable symbolTable = new SymbolsTable();
 
 	static public SymbolsTable getInstance() {
@@ -81,6 +74,7 @@ public class SymbolsTable extends AbstractEditableTable implements Observer, Key
 		addKeyListener(this);
 
 		setFirstRowSorted();
+		addMouseListener(this);
 		validate();
 	}
 
@@ -100,7 +94,6 @@ public class SymbolsTable extends AbstractEditableTable implements Observer, Key
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
 		} else if (rowIndex % 2 == 0) {
-//			c.setBackground(ColorSettingsDialog.getColor(SharedFilter.getInstance().isSymbolFiltered()));
 			c.setBackground(ColorSettingsDialog.getColor(false));
 		} else {
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
@@ -116,11 +109,6 @@ public class SymbolsTable extends AbstractEditableTable implements Observer, Key
 
 	@Override
 	public void mouseClicked(MouseEvent evt) {
-		super.mouseClicked(evt);
-		if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2 && getSelectedColumn() == 2) {
-			int row = getRowSorter().convertRowIndexToModel(getSelectedRow());
-			new SymbolsModificationView(tableModel.getSymbol(row)).setVisibile(true);
-		}
 	}
 
 	private static class PrecisionCellRenderer extends DefaultTableCellRenderer {
@@ -150,15 +138,6 @@ public class SymbolsTable extends AbstractEditableTable implements Observer, Key
 	}
 
 	@Override
-	protected void delete() {
-		if (controller.remove(tableModel.get(getRowSorter().convertRowIndexToModel(getSelectedRow())))) {
-		} else {
-			JOptionPane.showConfirmDialog(this, THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS, CANNOT_REMOVE_SYMBOL,
-			        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-		}
-	}
-
-	@Override
 	public void keyReleased(KeyEvent arg0) {
 		if (arg0.getKeyCode() == KeyEvent.VK_DELETE && getSelectedRow() > -1) {
 
@@ -169,4 +148,28 @@ public class SymbolsTable extends AbstractEditableTable implements Observer, Key
 	public void keyTyped(KeyEvent arg0) {
 	}
 
+	@Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+	@Override
+    public void mouseExited(MouseEvent e) {
+    }
+
+	@Override
+    public void mousePressed(MouseEvent evt) {
+		int row = getRowSorter().convertRowIndexToModel(getSelectedRow());
+		Symbol symbol = tableModel.getSymbol(row);
+		
+		if(!evt.isAltGraphDown() && !evt.isControlDown()){
+			controller.setSelection(symbol);
+		}
+		if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2 && getSelectedColumn() == 2) {
+			new SymbolsModificationView(symbol).setVisibile(true);
+		}
+    }
+
+	@Override
+    public void mouseReleased(MouseEvent e) {
+    }
 }

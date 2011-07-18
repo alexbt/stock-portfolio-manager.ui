@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -19,17 +18,11 @@ import javax.swing.table.TableRowSorter;
 import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.AbstractDialog;
-import com.proserus.stocks.view.common.AbstractEditableTable;
+import com.proserus.stocks.view.common.AbstractTable;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
-public class SymbolsModifTable extends AbstractEditableTable implements Observer, KeyListener {
-	private static final String CANNOT_REMOVE_SYMBOL = "Cannot remove symbol";
-
-	private static final String THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS = "The symbol is currently used in transactions";
-
-	private static final String ONE_SPACE = " ";
-
+public class SymbolsModifTable extends AbstractTable implements Observer, KeyListener {
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
@@ -119,24 +112,10 @@ public class SymbolsModifTable extends AbstractEditableTable implements Observer
 	}
 
 	@Override
-	protected void delete() {
-		// if (symbolController.remove(tableModel.get(getRowSorter().convertRowIndexToModel(getSelectedRow())))) {
-		// } else {
-		// JOptionPane.showConfirmDialog(this, THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS, CANNOT_REMOVE_SYMBOL,
-		// JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-		// }
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent evt) {
-	}
-
-	@Override
 	public void keyReleased(KeyEvent arg0) {
 	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 	}
-
 }

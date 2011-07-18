@@ -13,8 +13,6 @@ import com.proserus.stocks.model.transactions.TransactionType;
 import com.proserus.stocks.view.common.ViewControllers;
 
 public class TransactionTableModel extends AbstractTableModel {
-	private static final String EMPTY_STR = "";
-
 	private static final long serialVersionUID = 20080113L;
 
 	private PortfolioController transactionController = ViewControllers.getController();

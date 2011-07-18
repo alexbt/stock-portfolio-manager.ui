@@ -35,15 +35,16 @@ import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.bp.TransactionsBp;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.symbols.Symbol;
+import com.proserus.stocks.model.transactions.Transaction;
 import com.proserus.stocks.model.transactions.TransactionType;
-import com.proserus.stocks.view.common.AbstractEditableTable;
+import com.proserus.stocks.view.common.AbstractTable;
 import com.proserus.stocks.view.common.SortedComboBoxModel;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.common.verifiers.DateVerifier;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 import com.proserus.stocks.view.general.LabelsList;
 
-public class TransactionTable extends AbstractEditableTable implements Observer, ActionListener, MouseListener {
+public class TransactionTable extends AbstractTable implements Observer, ActionListener, MouseListener {
 
 	private static final String ONE = "1";
 
@@ -90,6 +91,7 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 		sportColumn.setCellEditor(new MyDateEditor());
 		setVisible(true);
 		setFirstRowSorted(false);
+		addMouseListener(this);
 	}
 
 	@Override
@@ -155,19 +157,6 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 
 	@Override
 	public void mouseClicked(MouseEvent evt) {
-		super.mouseClicked(evt);
-		if (getSelectedColumn() == 7 && evt.getButton() == MouseEvent.BUTTON1) {
-			getModel().getValueAt(getSelectedRow(), 7);
-
-			JWindow window = new JWindow(ViewControllers.getWindow());
-			labl = new LabelsList(sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow())), true, true, window, false);
-			window.add(labl);
-
-			window.setSize(150, 117);
-			Point p = MouseInfo.getPointerInfo().getLocation();
-			window.setLocation(p);
-			window.setVisible(true);
-		}
 	}
 
 	@Override
@@ -187,9 +176,36 @@ public class TransactionTable extends AbstractEditableTable implements Observer,
 	}
 
 	@Override
-	protected void delete() {
-		controller.remove(sorter.getModel().getTransaction(getRowSorter().convertRowIndexToModel(getSelectedRow())));
-	}
+    public void mouseEntered(MouseEvent e) {
+    }
+
+	@Override
+    public void mouseExited(MouseEvent e) {
+    }
+
+	@Override
+    public void mousePressed(MouseEvent evt) {
+		Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
+		if(!evt.isAltGraphDown() && !evt.isControlDown()){
+			controller.setSelection(t);
+		}
+		if (getSelectedColumn() == 7 && evt.getButton() == MouseEvent.BUTTON1) {
+			JWindow window = new JWindow(ViewControllers.getWindow());
+			labl = new LabelsList(t, true, true, window, false);
+			window.add(labl);
+
+			window.setSize(150, 117);
+			Point p = MouseInfo.getPointerInfo().getLocation();
+			window.setLocation(p);
+			window.setVisible(true);
+		}
+    }
+
+	@Override
+    public void mouseReleased(MouseEvent e) {
+	    int i=0;
+    }
+
 }
 
 class DateCellRenderer extends DefaultTableCellRenderer implements TableCellRenderer {

@@ -111,9 +111,4 @@ public class PerformanceCurrencyTable extends AbstractTable implements Observer 
 			return this;
 		}
 	}
-
-	@Override
-	protected void delete() {
-
-	}
 }
