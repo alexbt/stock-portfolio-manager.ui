@@ -157,6 +157,10 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 
 	@Override
 	public void mouseClicked(MouseEvent evt) {
+		if(getSelectedRow() < 0){
+			return;
+		}
+		
 		if (getSelectedColumn() == 7 && evt.getButton() == MouseEvent.BUTTON1) {
 			Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
 			JWindow window = new JWindow(ViewControllers.getWindow());
@@ -195,6 +199,10 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 
 	@Override
     public void mousePressed(MouseEvent evt) {
+		if(getSelectedRow() < 0){
+			return;
+		}
+		
 		if(!evt.isAltGraphDown() && !evt.isControlDown()){
 			Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
 			controller.setSelection(t);

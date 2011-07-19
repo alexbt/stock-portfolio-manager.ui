@@ -158,6 +158,9 @@ public class SymbolsTable extends AbstractTable implements Observer, KeyListener
 
 	@Override
     public void mousePressed(MouseEvent evt) {
+		if(getSelectedRow() < 0){
+			return;
+		}
 		int row = getRowSorter().convertRowIndexToModel(getSelectedRow());
 		Symbol symbol = tableModel.getSymbol(row);
 		
