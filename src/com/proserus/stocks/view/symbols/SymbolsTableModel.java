@@ -138,7 +138,7 @@ public class SymbolsTableModel extends AbstractTableModel {
 		HistoricalPrice h = symbol.getPrice(DateUtil.getCurrentYear());
 
 		if (column == i++) {
-			return symbol.getTicker() + (symbol.isCustomPriceFirst() ? "*" : "");
+			return symbol.getTicker();
 		} else if (column == i++) {
 			return symbol.getName();
 		} else if (column == i++) {

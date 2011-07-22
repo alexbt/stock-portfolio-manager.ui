@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
@@ -42,8 +41,6 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 	private static final String COMMA_STR = ",";
 
 	private static final String UI_PROPERTIES = "ui.properties";
-
-	private static final String IMAGES_BOOK_GIF = "images/Logo.gif";//TODO move
 
 	private static final String GUI_SETTINGS = "Color Settings";
 
@@ -108,6 +105,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 		par = group.createParallelGroup();
 		for (JButton b : buttons) {
 			b.addActionListener(this);
+			b.addKeyListener(this);
 			par.addComponent(b);
 		}
 		hGroup.addGroup(par);
@@ -125,15 +123,9 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 		setModal(true);
 		add(panel);
 		setTitle(GUI_SETTINGS);
-		setIconImage(new ImageIcon(getClass().getClassLoader().getResource(IMAGES_BOOK_GIF)).getImage());
 
 		setResizable(false);
 		pack();
-
-	}
-
-	public void setVisible(boolean flag) {
-		super.setVisibile(flag);
 	}
 
 	/*

@@ -6,9 +6,6 @@
 
 <project name="inspection" default="build-dev" basedir=".">
 
-	<tstamp>
-		<format property="timestamp" pattern="yyyy-MM-dd_kk'h'mm'm'ss's'" locale="en" />
-	</tstamp>
 
 	<property file="build.properties" />
 
@@ -24,36 +21,11 @@
 	<echo message="" />
 	<echo message="____________________________________" />
 
-	<path id="compile.classpath">
-		<pathelement path="${lib.dir}/jcommon-1.0.16.jar" />
-		<pathelement path="${lib.dir}/joda-time-1.6_part1.jar" />
-		<pathelement path="${lib.dir}/joda-time-1.6_part2.jar" />
-                <pathelement path="${lib.dir}/antlr-runtime-3.0.jar" />
-                <pathelement path="${lib.dir}/jfreechart-1.0.13.jar" />
-                <pathelement path="${lib.dir}/commons-collections-3.2.1.jar" />
-                <pathelement path="${lib.dir}/commons-logging-1.0.4.jar" />
- <pathelement path="${lib.dir}/antlr-2.7.6.jar" />
- <pathelement path="${lib.dir}/dom4j-1.6.1.jar" />
- <pathelement path="${lib.dir}/ejb3-persistence.jar" />
- <pathelement path="${lib.dir}/hibernate-annotations.jar" />
- <pathelement path="${lib.dir}/hibernate-commons-annotations.jar" />
- <pathelement path="${lib.dir}/hibernate-core.jar" />
- <pathelement path="${lib.dir}/hibernate-entitymanager.jar" />
- <pathelement path="${lib.dir}/hsqldb.jar" />
- <pathelement path="${lib.dir}/javassist-3.12.0.GA.jar" />
- <pathelement path="${lib.dir}/jta-1.1.jar" />
- <pathelement path="${lib.dir}/slf4j-api-1.6.1.jar" />
- <pathelement path="${lib.dir}/slf4j-jdk14-1.6.1.jar" />
- <pathelement path="${lib.dir}/log4j-1.2.16.jar" />
-
-		<!-- pathelement path="${lib.dir}/jfreechart-1.0.13.jar" / -->
-	</path>
-
 
 	<!--====================================================-->
 	<!-- build-dev                                          -->
 	<!--====================================================-->
-	<target name="build-dev" depends="updateversion, toJar" description="updateversion, cleanbin, compile, package and deploy">
+	<target name="build-dev" depends="cleanbin, updateversion, compile, toJar" description="updateversion, cleanbin, compile, package and deploy">
 	</target>
 
 
@@ -91,7 +63,7 @@
 	</target>
 
 
-<!--====================================================-->
+	 <!--====================================================-->
 	<!-- update version                                            -->
 	<!--====================================================-->
 	<target name="updateversion" depends="">

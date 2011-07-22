@@ -131,7 +131,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 	public void actionPerformed(ActionEvent e) {
 		if (!year.getText().isEmpty() && !customPrice.getText().isEmpty()) {
 			if(symbol.getMapPrices().containsKey(new Year(Integer.parseInt(year.getText())))){
-				JOptionPane.showConfirmDialog(this, "Year " + year.getText() + " already exists", "Error adding Price", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.showConfirmDialog(this, "A price for year " + year.getText() + " already exists", "Error adding Price", JOptionPane.DEFAULT_OPTION,
 				        JOptionPane.WARNING_MESSAGE);
 				year.setText("");
 			}else{

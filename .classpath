@@ -7,7 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/StockPortfolioLIBS"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/antlr-2.7.6.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/antlr-runtime-3.0.jar"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/build.xml"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/dom4j-1.6.1.jar"/>
@@ -28,20 +27,11 @@
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/joda-time-1.6_part1.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/joda-time-1.6_part2.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/jta-1.1.jar"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/key.bat"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/keystore.conf"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/portfolio.cert"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/shrink.bat"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/sign.bat"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/slf4j-jdk14-1.6.1.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/sqltool.jar"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/Thumbs.db"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/uispec4j-2.4-jdk16.jar"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/yguard.jar"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/yguardlog.xml"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/yshrinklog.xml"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/javax.inject.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/aopalliance.jar"/>

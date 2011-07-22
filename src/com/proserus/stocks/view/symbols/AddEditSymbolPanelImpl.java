@@ -20,8 +20,6 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 
 	private static final String REQUIRED_FIELD_S_MISSING = "Required field(s) missing";
 
-	private static final String THE_SYMBOL_ALREADY_EXIST = "The symbol already exist";
-
 	private static final String CANNOT_ADD_SYMBOL = "Cannot add symbol";
 	
 	private boolean disableWhenExist = true;

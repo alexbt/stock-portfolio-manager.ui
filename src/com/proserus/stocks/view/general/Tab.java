@@ -15,6 +15,7 @@ import javax.swing.UIManager;
 
 import com.proserus.stocks.view.actions.RemoveSymbolAction;
 import com.proserus.stocks.view.actions.RemoveTransactionAction;
+import com.proserus.stocks.view.actions.ShowEditSymbolAction;
 import com.proserus.stocks.view.summaries.OverviewCurrencyTable;
 import com.proserus.stocks.view.summaries.OverviewSymbolTable;
 import com.proserus.stocks.view.summaries.PerformanceCurrencyTable;
@@ -82,6 +83,14 @@ public class Tab extends JTabbedPane {
 		button.setAction(new RemoveSymbolAction());
 		button.setToolTipText("Remove Selected Symbol");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
+		pan.add(button);
+		
+		button = new JButton();
+		button.setActionCommand("editSymbol");
+		button.setContentAreaFilled(false);
+		button.setAction(new ShowEditSymbolAction());
+		button.setToolTipText("Edit Selected Symbol");
+		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/EditSymbol.png")));
 		pan.add(button);
 		
 		

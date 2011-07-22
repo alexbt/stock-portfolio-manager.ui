@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.AbstractAction;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -26,6 +27,7 @@ import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.Symbol;
+import com.proserus.stocks.view.actions.ShowEditSymbolAction;
 import com.proserus.stocks.view.common.AbstractTable;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
@@ -41,7 +43,7 @@ public class SymbolsTable extends AbstractTable implements Observer, KeyListener
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
 	private HashMap<String, Color> colors = new HashMap<String, Color>();
 	private TableRowSorter<SymbolsTableModel> sorter;
-	
+	private AbstractAction openSymbol = new ShowEditSymbolAction();
 	private static SymbolsTable symbolTable = new SymbolsTable();
 
 	static public SymbolsTable getInstance() {
@@ -168,7 +170,7 @@ public class SymbolsTable extends AbstractTable implements Observer, KeyListener
 			controller.setSelection(symbol);
 		}
 		if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2 && getSelectedColumn() == 2) {
-			new SymbolsModificationView(symbol).setVisibile(true);
+			openSymbol.actionPerformed(null);
 		}
     }
 
