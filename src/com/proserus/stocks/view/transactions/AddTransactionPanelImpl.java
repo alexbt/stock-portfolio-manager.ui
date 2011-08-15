@@ -30,7 +30,6 @@ import com.proserus.stocks.view.common.AbstractDialog;
 import com.proserus.stocks.view.common.SortedComboBoxModel;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.common.verifiers.NumberVerifier;
-import com.proserus.stocks.view.common.verifiers.SymbolVerifier;
 import com.proserus.stocks.view.symbols.EmptySymbol;
 
 public class AddTransactionPanelImpl extends AbstractAddTransactionPanel implements ActionListener, Observer, KeyListener {
@@ -93,7 +92,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 		getSymbolField().setEditable(true);
 		getSymbolField().getEditor().getEditorComponent().addKeyListener(this);
-		((JTextField) (getSymbolField().getEditor().getEditorComponent())).setInputVerifier(new SymbolVerifier());
+		//((JTextField) (getSymbolField().getEditor().getEditorComponent())).setInputVerifier(new SymbolVerifier());
 		
 		NumberVerifier verif = new NumberVerifier();
 		getPriceField().setInputVerifier(verif);
@@ -317,7 +316,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 			}
 
-			if (!dest.isEnabled()) {
+			if (!dest.isEnabled() && !arg0.getSource().equals(source1)) {
 				dest.setEnabled(true);
 				dest.setText("");
 			}
@@ -337,7 +336,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			} catch (NumberFormatException e) {
 
 			}
-			if (!dest.isEnabled()) {
+			if (!dest.isEnabled() && !arg0.getSource().equals(source1)) {
 				dest.setEnabled(true);
 				dest.setText("");
 			}

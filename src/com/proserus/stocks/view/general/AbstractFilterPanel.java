@@ -1,10 +1,10 @@
 package com.proserus.stocks.view.general;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.GroupLayout.Alignment;
 
 public class AbstractFilterPanel extends JPanel{
 	private LabelsList labelList;
@@ -32,7 +32,7 @@ public class AbstractFilterPanel extends JPanel{
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(labelList, GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
+						.addComponent(labelList, GroupLayout.DEFAULT_SIZE, 10, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(yearLabel)
 							.addGap(18)
@@ -51,7 +51,7 @@ public class AbstractFilterPanel extends JPanel{
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(5)
-					.addComponent(labelList, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+					.addComponent(labelList, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(symbolLabel)
@@ -60,7 +60,7 @@ public class AbstractFilterPanel extends JPanel{
 						.addComponent(yearLabel)
 						.addComponent(transactionTypeLabel)
 						.addComponent(transactionTypeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(185, Short.MAX_VALUE))
+					.addContainerGap(10, Short.MAX_VALUE))
 		);
 		setLayout(groupLayout);
 	}
