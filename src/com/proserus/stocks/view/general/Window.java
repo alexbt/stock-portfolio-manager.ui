@@ -52,9 +52,12 @@ public class Window extends JFrame implements WindowListener, Observer,PropertyC
 		
 		JPanel north = new JPanel();
 		north.setLayout(new BorderLayout());
-		north.add(FilterPanelImpl.getInstance(), BorderLayout.SOUTH);
+		
+		JPanel blah = new JPanel(new BorderLayout());
+		blah.add(FilterPanelImpl.getInstance(), BorderLayout.NORTH);
 		
 		north.add(new Toolbar(), BorderLayout.NORTH);
+		north.add(blah, BorderLayout.CENTER);
 		
 		add(north, BorderLayout.NORTH);
 		add(new SummaryStatusBar(), BorderLayout.SOUTH);

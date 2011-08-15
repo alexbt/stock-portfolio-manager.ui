@@ -22,8 +22,8 @@ public class ExportToCsvAction extends AbstractAction  {
     public void actionPerformed(ActionEvent arg0) {
 		JFileChooser fc = new JFileChooser(new File("stock-portfolio_export.csv"));
 		fc.addChoosableFileFilter(new CsvFileFilter());
-		fc.setApproveButtonText("Export");
-		fc.showSaveDialog(window);
+		fc.setDialogTitle("Export");
+		fc.showDialog(window, "Export");
 		File file = fc.getSelectedFile();
 		
 		if(file != null){

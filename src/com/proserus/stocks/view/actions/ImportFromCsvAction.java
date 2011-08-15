@@ -21,10 +21,13 @@ public class ImportFromCsvAction extends AbstractAction  {
 		JFileChooser fc = new JFileChooser(new File("stock-portfolio_export.csv"));
 		fc.addChoosableFileFilter(new CsvFileFilter());
 		fc.setApproveButtonText("Import");
-		fc.showOpenDialog(window);
+		fc.showDialog(window, "Import");
 		File file = fc.getSelectedFile();
 		if(file!=null){
 			controller.importTransactions(file);
+//			JOptionPane.showConfirmDialog(null, "Import results", (transactionOk - transactionWarning) + " transactions were imported with sucess\n"
+//			        + transactionWarning + " transactions were imported with a warning\n" + transactionError
+//			        + " transactions could not be imported, check traces.log for details\n", JOptionPane.DEFAULT_OPTION, icon);
 		}
     }
 

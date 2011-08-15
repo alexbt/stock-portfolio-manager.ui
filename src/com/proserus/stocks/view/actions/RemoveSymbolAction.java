@@ -26,12 +26,16 @@ public class RemoveSymbolAction extends AbstractAction implements Observer {
 	
 	@Override
     public void actionPerformed(ActionEvent arg0) {
-		if (controller.remove(controller.getSelection().getSelectedSymbol())) {
-			controller.setSelection((Symbol)null);
-		} else {
-			JOptionPane.showConfirmDialog(null, THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS, CANNOT_REMOVE_SYMBOL,
-			        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-		}
+		int n = JOptionPane.showConfirmDialog(null, "Do you want to remove the selected symbol ?", "Removing symbol",
+	            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+	    if (n == JOptionPane.YES_OPTION) {
+	    	if (controller.remove(controller.getSelection().getSelectedSymbol())) {
+				controller.setSelection((Symbol)null);
+			} else {
+				JOptionPane.showConfirmDialog(null, THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS, CANNOT_REMOVE_SYMBOL,
+				        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+			}
+	    }
     }
 	
 	@Override

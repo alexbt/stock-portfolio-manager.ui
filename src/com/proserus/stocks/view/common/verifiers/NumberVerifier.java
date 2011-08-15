@@ -11,6 +11,8 @@ public class NumberVerifier extends InputVerifier {
 	private static final String EMPTY_STR = "";
 	static private String OPTIONAL_PRICE = "[0-9]*\\.?[0-9]*";
 
+	private double minimumValue = 0;
+
 	@Override
 	public boolean verify(JComponent input) {
 		JTextField number = ((JTextField) input);
@@ -20,10 +22,11 @@ public class NumberVerifier extends InputVerifier {
 			return true;
 		} else if (number.getText().matches(OPTIONAL_PRICE)) {
 			try {
-				Float.parseFloat(number.getText());
-				number.setBackground(Color.white);
-				number.setToolTipText(EMPTY_STR);
-				return true;
+				if(Float.parseFloat(number.getText()) >= minimumValue){
+					number.setBackground(Color.white);
+					number.setToolTipText(EMPTY_STR);
+					return true;
+				}
 			} catch (NumberFormatException e) {
 
 			}

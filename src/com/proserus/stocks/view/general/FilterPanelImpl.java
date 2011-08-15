@@ -24,6 +24,7 @@ import com.proserus.stocks.bp.FilterBp;
 import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.bp.TransactionsBp;
 import com.proserus.stocks.model.symbols.Symbol;
+import com.proserus.stocks.model.transactions.TransactionType;
 import com.proserus.stocks.view.common.EmptyYear;
 import com.proserus.stocks.view.common.SortedComboBoxModel;
 import com.proserus.stocks.view.common.ViewControllers;
@@ -43,7 +44,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 	}
 
 	private FilterPanelImpl() {
-		setBorder(BorderFactory.createLineBorder(Color.black));
+		setBorder(BorderFactory.createLineBorder(Color.red));
 		getLabelList().setAddEnabled(false);
 		getLabelList().setListColor(getLabelList().getBackground());
 		getLabelList().setHorizontal(true);
@@ -65,6 +66,12 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		getSymbolField().setModel(modelSymbols);
 		ViewControllers.getController().addSymbolsObserver(this);
 		getSymbolField().addActionListener(this);
+		
+		getTransactionTypeField().addItem("");
+		for (TransactionType transactionType : TransactionType.values()) {
+			getTransactionTypeField().addItem(transactionType);
+		}
+		getTransactionTypeField().addActionListener(this);
 	}
 
 	private void populateYears(Year min) {
@@ -101,9 +108,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 			} else {
 				ViewControllers.getSharedFilter().setYear(null);
 			}
-		}
-
-		if (arg0.getSource() instanceof JComboBox) {
+		} else if (arg0.getSource().equals(getSymbolField())) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {
 				FilterBp filter = ViewControllers.getSharedFilter();
@@ -115,6 +120,16 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 					filter.setSymbol(null);
 				}
 			}
+		}else if (arg0.getSource().equals(getTransactionTypeField())) {
+			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
+			FilterBp filter = ViewControllers.getSharedFilter();
+			TransactionType type=null;
+			if(o instanceof TransactionType){
+				type = (TransactionType)o;
+			}
+			
+			filter.setTransactionType(type);
+				
 		}
 	}
 

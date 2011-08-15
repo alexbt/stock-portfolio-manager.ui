@@ -10,7 +10,7 @@ import com.proserus.stocks.model.analysis.SymbolAnalysis;
 public class PerformanceSymbolModel extends AbstractTableModel {
 	private static final long serialVersionUID = 20080113L;
 
-	public static final String[] COLUMN_NAMES = { "Symbol", "Cost Basis", "Mkt Value", "Mkt Growth (%)", "Capital Gain",
+	public static final String[] COLUMN_NAMES = { "Symbol", "Total Cost Basis", "Mkt Value", "Mkt Growth (%)", "Capital Gain",
  "Dividend", "Dividend (%)", "Overall Return (%)", "Annual Rate Monthly Compound (%)" };
 
 	private Object[] data = null;
@@ -100,25 +100,34 @@ public class PerformanceSymbolModel extends AbstractTableModel {
 	private Object getColValue(final SymbolAnalysis summary, final int column) {
 		int i = 0;
 		
-		if (column == i++) {
-			return summary.getSymbol().getTicker();
-		} else if (column == i++) {
-			return summary.getCurrentCost();
-		} else if (column == i++) {
-			return summary.getMarketValue();
-		} else if (column == i++) {
-			return summary.getMarketGrowth();
-		} else if (column == i++) {
-			return summary.getCapitalGain();
-		} else if (column == i++) {
-			return summary.getDividend();
-		} else if (column == i++) {
-			return summary.getDividendYield();
-		} else if (column == i++) {
-			return summary.getOverallReturn();
-		} else if (column == i++) {
-			return summary.getAnnualizedReturn();
+		Object result = null;
+		
+			if (column == i++) {
+				result = summary.getSymbol().getTicker();
+			} else if (column == i++) {
+				result = summary.getCostBasis();
+			} else if (column == i++) {
+				result = summary.getMarketValue();
+			} else if (column == i++) {
+				result = summary.getMarketGrowth();
+			} else if (column == i++) {
+				result = summary.getCapitalGain();
+			} else if (column == i++) {
+				result = summary.getDividend();
+			} else if (column == i++) {
+				result = summary.getDividendYield();
+			} else if (column == i++) {
+				result = summary.getOverallReturn();
+			} else if (column == i++) {
+				result = summary.getAnnualizedReturn();
+			}
+			else{
+				throw new AssertionError();
+			}
+		
+		if(result==null){
+			result = "Infinite ";
 		}
-		throw new AssertionError();
+		return result;
 	}
 }

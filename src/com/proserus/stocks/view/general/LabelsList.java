@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -18,7 +20,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +38,8 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 
+import sun.awt.CausedFocusEvent;
+
 import com.proserus.stocks.bp.FilterBp;
 import com.proserus.stocks.bp.LabelsBp;
 import com.proserus.stocks.controllers.iface.PortfolioController;
@@ -44,7 +47,12 @@ import com.proserus.stocks.model.transactions.Label;
 import com.proserus.stocks.model.transactions.Transaction;
 import com.proserus.stocks.view.common.ViewControllers;
 
-public class LabelsList extends JPanel implements KeyListener, Observer, MouseListener {
+public class LabelsList extends JPanel implements KeyListener, Observer, MouseListener, FocusListener {
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 201108112014L;
+
 	private static final String DO_YOU_WANT_TO_REMOVE_THE_TAG = "Do you want to remove the tag ";
 
 	private static final String REMOVING_TAG = "Removing tag";
@@ -59,21 +67,22 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 
 	private JScrollPane js;
 	private JList list = new JList();
-	private JComponent startExternalComp = null;
-	private JTextField addnew = new JTextField();
-	private boolean IS_POPUP = false;
-	private boolean IS_LINKED_TO_TRANSACTION = false;
-	private boolean NEW_TRANSACTION = false;
-	private boolean SET_CHANGED = false;
-	private boolean filtering = false;
+	private JTextField newLabelField = new JTextField();
 	private HashMap<String, Label> labels = new HashMap<String, Label>();
-	private Transaction transaction = null;
 	private Component parent;
-	private boolean FILTER_MODE;
-	private boolean UPDATE_TRANSACTION;
 
+	private Transaction transaction = null;
+	private boolean isFilteringModeOn;
 	private boolean removedEnabled = true;
-
+	
+	public LabelsList() {
+		initEmbeded();
+	}
+	
+	public LabelsList(Transaction transaction, Component parent) {
+		initPopup(transaction, parent);
+	}
+	
 	public boolean isRemovedEnabled() {
 		return removedEnabled;
 	}
@@ -82,69 +91,44 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 		this.removedEnabled = removedEnabled;
 	}
 
-	public LabelsList() {
+	private void initEmbeded() {
+	    newLabelField.addFocusListener(this);
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		IS_LINKED_TO_TRANSACTION = true;
-		NEW_TRANSACTION = true;
-		setList();
-		addnew.addKeyListener(this);
-		addnew.setInputVerifier(new DateVerifier());
-		add(addnew, BorderLayout.NORTH);
+		initList();
+		newLabelField.addKeyListener(this);
+		newLabelField.setInputVerifier(new DateVerifier());
+		add(newLabelField, BorderLayout.NORTH);
 		list.setVisibleRowCount(6);
 		setSize(10, 15);
 		setVisible(true);
-	}
+    }
 
-	public LabelsList(Transaction transaction, boolean popup, boolean linkedToTransaction, Component parent, boolean filtering) {
-		this((JComponent) null, popup, linkedToTransaction, parent, filtering);
-		// FILTER_MODE = true;
-		UPDATE_TRANSACTION = true;
+
+	private void initPopup(Transaction transaction, Component parent) {
 		this.transaction = transaction;
-		IS_POPUP = true;
-		IS_LINKED_TO_TRANSACTION = true;
-		setSize(10, 15);
-		setSelectedItems(transaction);
-		// setVisible(true);
-	}
-
-	public LabelsList(JComponent startExternal, boolean popup, boolean linkedToTransaction, Component parent, boolean filtering) {
-		if (filtering)
-			FILTER_MODE = true;
+	    newLabelField.addFocusListener(this);
 		this.parent = parent;
-		this.filtering = filtering;
-		IS_POPUP = popup;
-		IS_LINKED_TO_TRANSACTION = linkedToTransaction;
-
-		startExternalComp = startExternal;
 
 		transactionController.addLabelsObserver(this);
-		if (!IS_POPUP) {
-			setHorizontal();
-		}
-		setList();
+		initList();
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-		// if (IS_POPUP && !filtering) {
-		if (IS_LINKED_TO_TRANSACTION) {
-
-			addnew.addKeyListener(this);
-			addnew.setInputVerifier(new DateVerifier());
-			add(addnew, BorderLayout.NORTH);
-		}
+			newLabelField.addKeyListener(this);
+			newLabelField.setInputVerifier(new DateVerifier());
+			add(newLabelField, BorderLayout.NORTH);
 		list.setVisibleRowCount(6);
-		// }
 
-		if (IS_POPUP && IS_LINKED_TO_TRANSACTION) {
-			setVisible(true);
-		}
-	}
+		setVisible(true);
+		setSize(10, 15);
+		setSelectedItems(transaction);
+    }
 
 	public void setAddEnabled(boolean flag) {
-		addnew.setVisible(flag);
+		newLabelField.setVisible(flag);
 	}
 
 	public void setModeFilter(boolean flag) {
-		FILTER_MODE = flag;
+		isFilteringModeOn = flag;
 	}
 
 	public void setListColor(Color bg) {
@@ -163,33 +147,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 
 	}
 
-	public void addLetter(char car) {
-		if (car == KeyEvent.VK_ENTER) {
-			labels = getSelectedValues();
-			Label newLabel = new Label();
-			newLabel.setName(addnew.getText());
-			newLabel = transactionController.addLabel(newLabel);
-			labels.put(newLabel.getName(), newLabel);
-			transactionController.addLabel(newLabel);
-			addnew.setText(EMPTY_STR);
-			updateTransaction();
-			setVisible(false);
-
-		} else {
-			if ((EMPTY_STR + car).matches(TICKER_PATTERN)) {
-				addnew.setText(addnew.getText() + car);
-			}
-		}
-	}
-
-	private void setHorizontal() {
-		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		list.setVisibleRowCount(-1);
-		list.setFixedCellHeight(25);
-		setSize(1000, 20);
-	}
-
-	private void setList() {
+	private void initList() {
 		js = new JScrollPane(list);
 
 		list.addMouseMotionListener(new MouseAdapter() {
@@ -203,28 +161,22 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 
 		setLayout(new BorderLayout());
 		add(js, BorderLayout.CENTER);
-		list.setCellRenderer(new CheckListRenderer(filtering));
+		list.setCellRenderer(new CheckListRenderer(isFilteringModeOn));
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.addMouseListener(this);
 		list.addKeyListener(this);
-		// list.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		// js.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 	}
 
-	private void setClosedOnClick() {
+	private void setupClosedOnClick() {
 		Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
 			@Override
 			public void eventDispatched(AWTEvent awe) {
 				MouseEvent me = (MouseEvent) awe;
 
-				if (isVisible() && me.getClickCount() >= 1 && me.getSource() != startExternalComp && me.getSource() != addnew
+				if (isVisible() && me.getClickCount() >= 1 && me.getSource() != newLabelField
 				        && !(me.getSource() instanceof javax.swing.JDialog && ((javax.swing.JDialog) me.getSource()).getTitle().contains("tag"))) {
 
 					if (explore((Component) me.getSource(), js)) {
-						if (IS_LINKED_TO_TRANSACTION && SET_CHANGED) {
-							// updateTransaction();
-							SET_CHANGED = false;
-						}
 						setVisible(false);
 					}
 				}
@@ -274,28 +226,6 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 		}
 	}
 
-	public void setSelectedItems(HashMap<String, String> items) {
-		for (int i = 0; i < list.getModel().getSize(); i++) {
-			CheckListItem check = (CheckListItem) list.getModel().getElementAt(i);
-			check.setSelected(items.containsKey(check.toString()));
-		}
-	}
-
-	public void updateTransaction() {
-		try {
-			Collection<Label> colLabel = new ArrayList<Label>();
-			for (int i = 0; i < list.getModel().getSize(); i++) {
-				CheckListItem check = (CheckListItem) list.getModel().getElementAt(i);
-				if (check.isSelected()) {
-					colLabel.add(check.get());
-				}
-			}
-			transaction.setLabels(colLabel);
-			transactionController.updateTransaction(transaction);
-		} catch (NullPointerException e) {
-		}
-	}
-
 	public void setSelectedItems(Transaction transaction) {
 		for (Label label : transaction.getLabelsValues()) {
 			labels.put(label.getName(), label);
@@ -312,35 +242,64 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		if (arg0.getSource().equals(addnew) && arg0.getKeyCode() == KeyEvent.VK_ENTER && addnew.getInputVerifier().verify(addnew)
-		        && addnew.getText().compareTo(EMPTY_STR) != 0) {
-			labels = getSelectedValues();
-
-			Label l = new Label();
-			l.setName(addnew.getText());
-			labels.put(l.toString(), l);
-			l = transactionController.addLabel(l);
-
-			if (UPDATE_TRANSACTION) {
-				transaction.addLabel(l);
-				transactionController.updateTransaction(transaction);
-			}
-			addnew.setText(EMPTY_STR);
+		if (arg0.getSource().equals(newLabelField) && arg0.getKeyCode() == KeyEvent.VK_ENTER && newLabelField.getInputVerifier().verify(newLabelField)
+		        && newLabelField.getText().compareTo(EMPTY_STR) != 0) {
+			addNewLabel();
+		} else if (arg0.getSource().equals(list) && (arg0.getKeyChar()==KeyEvent.VK_SPACE || arg0.getKeyChar() == KeyEvent.VK_ENTER)) {
+			updateLabelSelection();
+			updateFilter(((CheckListItem)list.getSelectedValue()));
+		} else if (arg0.getSource().equals(list) && (arg0.getKeyChar()==KeyEvent.VK_DELETE)) {
+			deleteLabel(((CheckListItem)list.getSelectedValue()));
 		}
 	}
+
+	private void deleteLabel(CheckListItem item) {
+	    int n = JOptionPane.showConfirmDialog(this, DO_YOU_WANT_TO_REMOVE_THE_TAG + item.toString() + " ?", REMOVING_TAG,
+	            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+	    if (n == JOptionPane.YES_OPTION) {
+	    	transactionController.remove(item.get());
+	    }
+    }
+
+	private void updateLabelSelection() {
+		CheckListItem item = ((CheckListItem)list.getSelectedValue());
+		item.setSelected(!item.isSelected());
+	    list.repaint(list.getCellBounds(list.getSelectedIndex(), list.getSelectedIndex()));
+	    if(item.isSelected()){
+	    	labels.put(item.get().getName(), item.get());
+	    }else{
+	    	labels.remove(item.get().getName());
+	    }
+//	    transaction.setLabels(labels.values());
+//	    transactionController.updateTransaction(transaction);
+    }
+
+	private void addNewLabel() {
+	    labels = getSelectedValues();
+	    Label l = new Label();
+	    l.setName(newLabelField.getText());
+	    labels.put(l.toString(), l);
+	    l = transactionController.addLabel(l);
+
+	    if (transaction != null) {
+	    	transaction.addLabel(l);
+	    	transactionController.updateTransaction(transaction);
+	    }
+	    newLabelField.setText(EMPTY_STR);
+    }
 
 	@Override
 	public void setVisible(boolean flag) {
 		super.setVisible(flag);
-		if (!NEW_TRANSACTION) {
+		if (transaction != null) {
 			AWTEventListener[] listeners = Toolkit.getDefaultToolkit().getAWTEventListeners();
 			for (AWTEventListener listener : listeners) {
 				Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
 			}
 
-			setClosedOnClick();
+			setupClosedOnClick();
 			if (flag) {
-				addnew.requestFocus();
+				newLabelField.requestFocus();
 
 			}
 			if (parent != null) {
@@ -352,14 +311,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
-		if (arg0.getSource().equals(list) && addnew != null) {
-			addnew.requestFocus();
-			String str = Character.toString(arg0.getKeyChar());
-
-			if (str.matches(TICKER_PATTERN)) {
-				addnew.setText(addnew.getText() + arg0.getKeyChar());
-			}
-		}
+		
 	}
 
 	@Override
@@ -371,7 +323,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 
 			for (Label label : col) {
 				item[i] = new CheckListItem(label);
-				if (!FILTER_MODE) {
+				if (!isFilteringModeOn) {
 					if (labels.containsKey(label.getName())) {
 						item[i].setSelected(true);
 					}
@@ -410,22 +362,10 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 			return;
 		}
 		if ((item.getIcon().getLocation().getX() != 0) && item.getIcon().getLocation().getX() < event.getPoint().getX()) {
-
-			// FIXME set the position where the cursor is currently.
-			int n = JOptionPane.showConfirmDialog(this, DO_YOU_WANT_TO_REMOVE_THE_TAG + item.toString() + " ?", REMOVING_TAG,
-			        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-			if (n == JOptionPane.YES_OPTION) {
-				/*
-				 * if (summaryController.getFilterLabels().getLabels().contains(item.toString())) {
-				 * summaryController.setFilterLabels(item.toString()); }
-				 */
-				transactionController.remove(item.get());
-			}
+			deleteLabel(item);
 		} else {
 
 			item.setSelected(!item.isSelected());
-
-			SET_CHANGED = true;
 
 			/*
 			 * if (filtering) { summaryController.setFilterLabels(item.toString()); }
@@ -434,37 +374,52 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 				list.repaint(list.getCellBounds(index, index));
 			}
 		}
-		Label label = item.get();
+		updateFilter(item);
+
+		if (transaction != null) {
+			transaction.setLabels(labels.values());
+			transactionController.updateTransaction(transaction);
+		}
+	}
+
+	private void updateFilter(CheckListItem item) {
+	    Label label = item.get();
 		FilterBp filter = ViewControllers.getSharedFilter();
 		if (item.isSelected()) {
 			labels.put(item.get().toString(), label);
-			if (FILTER_MODE) {
+			if (isFilteringModeOn) {
 				filter.addLabel(label);
 			}
 		} else {
 			labels.remove(label.getName());
-			if (FILTER_MODE) {
+			if (isFilteringModeOn) {
 				filter.removeLabel(label);
 			}
 		}
-
-		if (UPDATE_TRANSACTION) {
-			transaction.setLabels(labels.values());
-			transactionController.updateTransaction(transaction);
-		}
-		// if(index!=0)
-		//
-	}
+    }
 
 	@Override
 	public void mouseReleased(MouseEvent event) {
 
 	}
+
+	@Override
+    public void focusGained(FocusEvent arg0) {
+	    // TODO Auto-generated method stub
+	    
+    }
+
+	@Override
+    public void focusLost(FocusEvent arg0) {
+		if(arg0.equals(CausedFocusEvent.Cause.TRAVERSAL_FORWARD)){
+			list.requestFocus();
+			list.setSelectedIndex(0);
+			list.repaint(list.getCellBounds(0, 0));
+		}
+    }
 }
 
-// Represents items in the list that can be selected
-
-class CheckListItem implements Comparable {
+class CheckListItem implements Comparable<CheckListItem> {
 	private Label label = null;
 	private boolean isSelected = false;
 	private ImageBackgroundPanel icon;
@@ -501,19 +456,24 @@ class CheckListItem implements Comparable {
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
-		return toString().toLowerCase().compareTo(arg0.toString().toLowerCase());
+	public int compareTo(CheckListItem item) {
+		return toString().toLowerCase().compareTo(item.toString().toLowerCase());
 	}
 }
 
 // Handles rendering cells in the list using a check box
 
 class CheckListRenderer extends JCheckBox implements ListCellRenderer {
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 201108112020L;
+    
 	private static final String IMAGES_CANCEL_GIF = "images/RemoveSmall.png";
-	private boolean IS_POPUP;
+	private boolean isFilteringModeOn;
 
-	public CheckListRenderer(boolean IS_POPUP) {
-		this.IS_POPUP = IS_POPUP;
+	public CheckListRenderer(boolean isFilteringModeOn) {
+		this.isFilteringModeOn = isFilteringModeOn;
 	}
 
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
@@ -530,21 +490,21 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 				img = ImageIO.read(getClass().getClassLoader().getResource(IMAGES_CANCEL_GIF));
 			} catch (IOException e) {
 			}
-			ImageBackgroundPanel dd = new ImageBackgroundPanel(img);
-			dd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			dd.setPreferredSize(new Dimension(20, 20));
-			if (IS_POPUP) {
+			ImageBackgroundPanel imagePanel = new ImageBackgroundPanel(img);
+			imagePanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			imagePanel.setPreferredSize(new Dimension(20, 20));
+			if (isFilteringModeOn) {
 				setBackground(ColorSettingsDialog.getColor(true));
-				dd.setBackground(ColorSettingsDialog.getColor(true));
+				imagePanel.setBackground(ColorSettingsDialog.getColor(true));
 			} else {
 				setBackground(ColorSettingsDialog.getSelectionColor());
-				dd.setBackground(ColorSettingsDialog.getSelectionColor());
+				imagePanel.setBackground(ColorSettingsDialog.getSelectionColor());
 			}
 
-			((CheckListItem) value).setIcon(dd);
+			((CheckListItem) value).setIcon(imagePanel);
 
 			if (list.getLayoutOrientation() != JList.HORIZONTAL_WRAP) {
-				panel.add(dd, BorderLayout.EAST);
+				panel.add(imagePanel, BorderLayout.EAST);
 			}
 		} else {
 			setBackground(list.getBackground());
@@ -559,7 +519,12 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 }
 
 class ImageBackgroundPanel extends JPanel {
-	BufferedImage image;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 201108112020L;
+    
+	private BufferedImage image;
 
 	ImageBackgroundPanel(BufferedImage image) {
 		this.image = image;

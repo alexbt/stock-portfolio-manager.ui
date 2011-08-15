@@ -12,7 +12,7 @@ public class OverviewSymbolModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 20080113L;
 
-	public static final String[] COLUMN_NAMES = { "Symbol", "Currency", "Quantity", "Average Price", "Total Cost" };
+	public static final String[] COLUMN_NAMES = { "Symbol", "Currency", "Quantity", "Average Price", "Total Cost Basis" };
 
 	// Arrays of Contractors (kept as Object)
 	private Object[] data = null;
@@ -104,7 +104,7 @@ public class OverviewSymbolModel extends AbstractTableModel {
 		} else if (column == i++) {
 			return analysis.getAveragePrice();
 		} else if (column == i++) {
-			return analysis.getCurrentCost().add(analysis.getCommission());
+			return analysis.getCostBasis();
 		}
 		throw new AssertionError();
 	}

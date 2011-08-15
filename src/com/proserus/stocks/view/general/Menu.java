@@ -123,7 +123,7 @@ public class Menu extends JMenuBar {
 		menuItem.setAction(new AddTransactionAction());
 		menuItem.setText("Add Transaction");
 		menuItem.setMnemonic(KeyEvent.VK_T);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.CTRL_MASK));
 		menuItem.getAccessibleContext().setAccessibleDescription("Adds a Transaction");
 		menuItem.setName("addTransaction");
 		menu.add(menuItem);
@@ -131,7 +131,7 @@ public class Menu extends JMenuBar {
 		menuItem = new JMenuItem("Add Symbol", KeyEvent.VK_S);
 		menuItem.setAction(new AddSymbolAction());
 		menuItem.setText("Add Symbol");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		menuItem.getAccessibleContext().setAccessibleDescription("Adds a Symbol");
 		menuItem.setName("addSymbol");
 		menu.add(menuItem);
@@ -141,7 +141,7 @@ public class Menu extends JMenuBar {
 		menuItem = new JMenuItem("Get Current Prices", KeyEvent.VK_P);
 		menuItem.setAction(new UpdatePriceAction());
 		menuItem.setText("Get Current Prices");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
 		menuItem.getAccessibleContext().setAccessibleDescription("Get Current Prices");
 		menuItem.setName("updatePrices");
 		menu.add(menuItem);
@@ -149,7 +149,7 @@ public class Menu extends JMenuBar {
 		menuItem = new JMenuItem("Get Old Prices", KeyEvent.VK_O);
 		menuItem.setAction(new UpdateOldPricesAction());
 		menuItem.setText("Get Old Prices");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		menuItem.getAccessibleContext().setAccessibleDescription("Get Old Prices");
 		menuItem.setName("updateOldPrices");
 		menu.add(menuItem);
@@ -165,7 +165,7 @@ public class Menu extends JMenuBar {
 		menuItem = new JMenuItem(GUI_SETTINGS, KeyEvent.VK_C);
 		menuItem.setAction(new ShowSettingsAction());
 		menuItem.setText(GUI_SETTINGS);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
 		menuItem.getAccessibleContext().setAccessibleDescription(BASIC_GRAPHICAL_USER_INTERFACE_SETTINGS);
 		menuItem.setName(SETTINGS);
 		menu.add(menuItem);
@@ -174,7 +174,7 @@ public class Menu extends JMenuBar {
 		menuItem = new JMenuItem(ABOUT, KeyEvent.VK_B);
 		menuItem.setAction(new ShowAboutAction());
 		menuItem.setText(ABOUT);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
 		menuItem.getAccessibleContext().setAccessibleDescription(CLOSES_THE_APPLICATION);
 		menuItem.setName(ABOUT);
 		menu.add(menuItem);
@@ -201,7 +201,7 @@ public class Menu extends JMenuBar {
 		JMenuItem menuItem = new JMenuItem("Show/Hide Filters", KeyEvent.VK_F);
 		menuItem.setAction(new ShowHideFiltersAction());
 		menuItem.setText("Show/Hide Filters");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
 		menuItem.getAccessibleContext().setAccessibleDescription("Show/Hide Filters");
 		menuItem.setName("showHideFilters");
 		menu.add(menuItem);

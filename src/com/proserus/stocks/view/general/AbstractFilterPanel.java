@@ -10,6 +10,9 @@ public class AbstractFilterPanel extends JPanel{
 	private LabelsList labelList;
 	private JComboBox yearField;
 	private JComboBox symbolField;
+	private JLabel transactionTypeLabel;
+
+	private JComboBox transactionTypeField;
 	
 	public AbstractFilterPanel() {
 		
@@ -19,13 +22,17 @@ public class AbstractFilterPanel extends JPanel{
 		JLabel symbolLabel = new JLabel("Symbol:");
 		
 		symbolField = new JComboBox();
+		
+		transactionTypeLabel = new JLabel("Transaction type:");
+		
+		transactionTypeField = new JComboBox();
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(labelList, GroupLayout.DEFAULT_SIZE, 587, Short.MAX_VALUE)
+						.addComponent(labelList, GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(yearLabel)
 							.addGap(18)
@@ -33,7 +40,11 @@ public class AbstractFilterPanel extends JPanel{
 							.addGap(42)
 							.addComponent(symbolLabel)
 							.addGap(18)
-							.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
+							.addGap(45)
+							.addComponent(transactionTypeLabel)
+							.addGap(18)
+							.addComponent(transactionTypeField, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -46,8 +57,10 @@ public class AbstractFilterPanel extends JPanel{
 						.addComponent(symbolLabel)
 						.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(yearField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(yearLabel))
-					.addContainerGap(46, Short.MAX_VALUE))
+						.addComponent(yearLabel)
+						.addComponent(transactionTypeLabel)
+						.addComponent(transactionTypeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(185, Short.MAX_VALUE))
 		);
 		setLayout(groupLayout);
 	}
@@ -62,5 +75,9 @@ public class AbstractFilterPanel extends JPanel{
 
 	public JComboBox getSymbolField() {
     	return symbolField;
+    }
+	
+	public JComboBox getTransactionTypeField() {
+    	return transactionTypeField;
     }
 }

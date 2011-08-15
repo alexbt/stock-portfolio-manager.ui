@@ -5,6 +5,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 
 import com.proserus.stocks.controllers.iface.PortfolioController;
 import com.proserus.stocks.model.ItemSelection;
@@ -20,8 +21,14 @@ public class RemoveTransactionAction extends AbstractAction implements Observer 
 	}
 	@Override
     public void actionPerformed(ActionEvent arg0) {
-		controller.remove(controller.getSelection().getSelectedTransaction());
-		controller.setSelection((Transaction)null);
+		int n = JOptionPane.showConfirmDialog(null, "Do you want to remove the selected transaction ?", "Removing transaction",
+	            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+	    if (n == JOptionPane.YES_OPTION) {
+	    	controller.remove(controller.getSelection().getSelectedTransaction());
+			controller.setSelection((Transaction)null);
+	    }
+	    
+		
     }
 	@Override
     public void update(Observable arg0, Object arg1) {

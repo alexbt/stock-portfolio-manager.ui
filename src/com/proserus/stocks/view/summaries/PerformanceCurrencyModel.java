@@ -96,7 +96,7 @@ public class PerformanceCurrencyModel extends AbstractTableModel {
 		if (column == i++) {
 			return summary.getCurrency();
 		} else if (column == i++) {
-			return summary.getCurrentCost();
+			return summary.getCostBasis();
 		} else if (column == i++) {
 			return summary.getMarketValue();
 		} else if (column == i++) {

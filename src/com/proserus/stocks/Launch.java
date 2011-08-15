@@ -30,6 +30,7 @@ public class Launch {
 			controllers.getController().refresh();
 		} catch (RuntimeException e) {
 			LOGGER.fatal(e);
+			LOGGER.fatal(e.getMessage());
 			LOGGER.fatal(e.getCause());
 			throw e;
 		} catch (Error e) {

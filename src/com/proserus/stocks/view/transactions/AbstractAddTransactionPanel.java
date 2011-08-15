@@ -1,4 +1,7 @@
 package com.proserus.stocks.view.transactions;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -8,17 +11,19 @@ import javax.swing.JTextField;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import com.michaelbaranov.microba.calendar.DatePicker;
 import com.proserus.stocks.view.general.LabelsList;
 
 
 public abstract class AbstractAddTransactionPanel extends JPanel{
-	private JTextField dateField;
+	private DatePicker dateField;
 	private JTextField priceField;
 	private JLabel companyNameLabel;
 	private JLabel priceLabel;
 	private JLabel quantityLabel;
 	private JTextField nameField;
 	private JTextField commissionField;
+	private JLabel reinvestLabel;
 	private JLabel currencyLabel;
 	private JLabel commisionLabel;
 	private JComboBox typeField;
@@ -29,19 +34,56 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 	JButton closeButton;
 	private JPanel labelsList;
 	private JComboBox symbolField;
-	private JLabel totalField;
-	public JLabel getTotalField() {
-    	return totalField;
+	private JTextField totalField;
+	private JTextField quantityField;
+	private JTextField reinvestPriceField;
+	private JLabel reinvestPriceLabel;
+	private JTextField reinvestQuantityField;
+	private JLabel reinvestQuantityLabel;
+	private JTextField reinvestTotalField;
+	/**
+	 * 
+	 */
+	private JLabel reinvestTotalLabel;
+
+	public JTextField getReinvestPriceField() {
+    	return reinvestPriceField;
     }
 
-	private JTextField quantityField;
+	public JLabel getReinvestPriceLabel() {
+    	return reinvestPriceLabel;
+    }
+	
+	public JLabel getReinvestLabel() {
+    	return reinvestLabel;
+    }
+
+	public JTextField getReinvestQuantityField() {
+    	return reinvestQuantityField;
+    }
+
+	public JLabel getReinvestQuantityLabel() {
+    	return reinvestQuantityLabel;
+    }
+
+	public JTextField getReinvestTotalField() {
+    	return reinvestTotalField;
+    }
+
+	public JLabel getReinvestTotalLabel() {
+    	return reinvestTotalLabel;
+    }
+
+	public JTextField getTotalField() {
+		return totalField;
+	}
 	
 	public AbstractAddTransactionPanel() {
 		
-		JLabel dateLabel = new JLabel("Date (yyyyMMdd):");
+		JLabel dateLabel = new JLabel("Date (yyyy-MM-dd):");
 		
-		dateField = new JTextField();
-		dateField.setColumns(10);
+		dateField = new DatePicker(new Date(),new SimpleDateFormat("yyyy-MM-dd"));
+		//dateField.setcColumns(10);
 		
 		JLabel symbolLabel = new JLabel("Symbol:");
 		
@@ -70,7 +112,7 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 		
 		 closeButton = new JButton("Close");
 		
-		totalField = new JLabel("0.00");
+		totalField = new JTextField();
 		
 		JLabel totalLabel = new JLabel("Total:");
 		
@@ -88,6 +130,23 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 		labelsList = new LabelsList();
 		
 		JLabel tagsLabel = new JLabel("Tags:");
+		
+		reinvestLabel = new JLabel("Reinvest (optional):");
+		
+		reinvestPriceField = new JTextField();
+		reinvestPriceField.setColumns(10);
+		
+		reinvestPriceLabel = new JLabel("Price:");
+		
+		reinvestQuantityField = new JTextField();
+		reinvestQuantityField.setColumns(10);
+		
+		reinvestQuantityLabel = new JLabel("Quantity:");
+		
+		reinvestTotalField = new JTextField();
+		reinvestTotalField.setColumns(10);
+		
+		reinvestTotalLabel = new JLabel("Total:");
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -100,63 +159,82 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 									.addComponent(typeField, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 									.addComponent(dateField, 139, 139, Short.MAX_VALUE))
 								.addComponent(typeLabel)
-								.addComponent(dateLabel))
-							.addGap(18)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(quantityLabel)
-										.addComponent(quantityField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(priceLabel)
-										.addComponent(priceField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(commissionField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addComponent(commisionLabel)))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
-										.addComponent(symbolLabel))
-									.addGap(18)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(nameField, GroupLayout.PREFERRED_SIZE, 274, GroupLayout.PREFERRED_SIZE)
-										.addComponent(companyNameLabel))))
+								.addComponent(dateLabel)
+								.addComponent(reinvestLabel, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE))
 							.addGap(18)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(currencyLabel)
-								.addComponent(totalLabel)
-								.addComponent(currencyField, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
 								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(10)
-									.addComponent(totalField))))
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(priceLabel)
+												.addComponent(priceField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(quantityLabel)
+												.addComponent(quantityField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(commissionField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(commisionLabel)))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+												.addComponent(symbolLabel))
+											.addGap(18)
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+												.addComponent(nameField, GroupLayout.PREFERRED_SIZE, 274, GroupLayout.PREFERRED_SIZE)
+												.addComponent(companyNameLabel))))
+									.addGap(18)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(currencyLabel)
+										.addComponent(totalLabel)
+										.addComponent(currencyField, 0, 91, Short.MAX_VALUE)
+										.addComponent(totalField, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(reinvestPriceLabel)
+											.addGap(88))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(reinvestPriceField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(ComponentPlacement.RELATED)))
+									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(reinvestQuantityLabel)
+											.addGap(71))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(reinvestQuantityField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+											.addPreferredGap(ComponentPlacement.RELATED)))
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(reinvestTotalField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addComponent(reinvestTotalLabel)))))
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(280)
+							.addGap(282)
 							.addComponent(addButton)
 							.addGap(18)
 							.addComponent(addCloseButton)
 							.addGap(18)
 							.addComponent(closeButton)))
-					.addGap(18)
+					.addGap(30)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(labelsList, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
 						.addComponent(tagsLabel))
-					.addContainerGap(16, Short.MAX_VALUE))
+					.addGap(42))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGap(15)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(currencyLabel)
-							.addComponent(companyNameLabel)
-							.addComponent(symbolLabel)
-							.addComponent(dateLabel))
-						.addComponent(tagsLabel))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+							.addComponent(tagsLabel))
+						.addComponent(companyNameLabel)
+						.addComponent(symbolLabel)
+						.addComponent(dateLabel))
+					.addGap(8)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(currencyField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -167,30 +245,50 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(totalLabel)
 								.addComponent(commisionLabel)
-								.addComponent(priceLabel)
 								.addComponent(quantityLabel)
+								.addComponent(priceLabel)
 								.addComponent(typeLabel))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 									.addComponent(commissionField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-									.addComponent(totalField))
+									.addComponent(totalField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
 								.addComponent(typeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(quantityField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-								.addComponent(priceField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-							.addGap(19)
-							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(closeButton)
-								.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-									.addComponent(addCloseButton)
-									.addComponent(addButton))))
-						.addComponent(labelsList, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+								.addComponent(priceField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+								.addComponent(quantityField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addPreferredGap(ComponentPlacement.UNRELATED)
+											.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+												.addComponent(reinvestPriceLabel)
+												.addComponent(reinvestQuantityLabel)))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(13)
+											.addComponent(reinvestTotalLabel)))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(reinvestTotalField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+										.addComponent(reinvestQuantityField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+										.addComponent(reinvestPriceField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+									.addGap(39)
+									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(addButton)
+										.addComponent(addCloseButton)
+										.addComponent(closeButton)))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(18)
+									.addComponent(reinvestLabel)))
+							.addGap(36))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(labelsList, 0, 0, Short.MAX_VALUE)
+							.addContainerGap())))
 		);
 		setLayout(groupLayout);
 	}
 	
-	public JTextField getDateField() {
+	public DatePicker getDateField() {
     	return dateField;
     }
 

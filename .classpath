@@ -35,5 +35,6 @@
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/javax.inject.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/microba-0.4.4.3.jar" sourcepath="/StockPortfolioLIBS/lib/microba-0.4.4.3-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

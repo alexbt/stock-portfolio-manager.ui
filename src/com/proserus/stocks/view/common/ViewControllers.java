@@ -40,6 +40,7 @@ public class ViewControllers {
 
 	private static SharedFilter sharedFilter;
 
+	//TODO THIS IS NASTY! THis should be data held by the controller..
 	public static SharedFilter getSharedFilter() {
 		return sharedFilter;
 	}

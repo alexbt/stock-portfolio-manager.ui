@@ -164,7 +164,7 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 		if (getSelectedColumn() == 7 && evt.getButton() == MouseEvent.BUTTON1) {
 			Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
 			JWindow window = new JWindow(ViewControllers.getWindow());
-			labl = new LabelsList(t, true, true, window, false);
+			labl = new LabelsList(t, window);
 			window.add(labl);
 
 			window.setSize(150, 117);
@@ -211,34 +211,17 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 
 	@Override
     public void mouseReleased(MouseEvent e) {
-	    int i=0;
     }
 
 }
 
-class DateCellRenderer extends DefaultTableCellRenderer implements TableCellRenderer {
-	@Override
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-		if (value instanceof Date) {
-			// Use SimpleDateFormat class to get a formatted String from Date
-			// object.
-			String strDate = new SimpleDateFormat("MM/dd/yyyy").format((Date) value);
-			// Sorting algorithm will work with model value. So you dont need to
-			// worry
-			// about the renderer's display value.
-			setText(strDate);
-		}
-
-		return this;
-	}
-
-	public DateCellRenderer() {
-		super();
-	}
-}
 
 class MyDateEditor extends DefaultCellEditor {
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 201108112016L;
+    
 	DateFormat parseFormat;
 	DateFormat editFormat;
 	Date data;

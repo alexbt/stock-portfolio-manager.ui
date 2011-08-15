@@ -11,6 +11,7 @@ public class ShowHideFiltersAction extends AbstractAction  {
 	@Override
     public void actionPerformed(ActionEvent arg0) {
 		FilterPanelImpl.getInstance().setVisible(!FilterPanelImpl.getInstance().isVisible());
+		FilterPanelImpl.getInstance().revalidate();
     }
 
 }
