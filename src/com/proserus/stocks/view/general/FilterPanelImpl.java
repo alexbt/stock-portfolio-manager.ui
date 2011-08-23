@@ -44,7 +44,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 	}
 
 	private FilterPanelImpl() {
-		setBorder(BorderFactory.createLineBorder(Color.red));
+		setBorder(BorderFactory.createLineBorder(Color.black));
 		getLabelList().setAddEnabled(false);
 		getLabelList().setListColor(getLabelList().getBackground());
 		getLabelList().setHorizontal(true);

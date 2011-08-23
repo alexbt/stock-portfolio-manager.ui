@@ -29,17 +29,13 @@ public class Launch {
 			controllers.getWindow().start();
 			controllers.getController().refresh();
 		} catch (RuntimeException e) {
-			LOGGER.fatal(e);
-			LOGGER.fatal(e.getMessage());
-			LOGGER.fatal(e.getCause());
+			LOGGER.fatal("Runtime exception", e);
 			throw e;
 		} catch (Error e) {
-			LOGGER.fatal(e);
-			LOGGER.fatal(e.getCause());
+			LOGGER.fatal("Error", e);
 			throw e;
 		} catch (Throwable e) {
-			LOGGER.fatal(e);
-			LOGGER.fatal(e.getCause());
+			LOGGER.fatal("Throwable", e);
 		}
 	}
 

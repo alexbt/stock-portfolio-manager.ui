@@ -1,6 +1,7 @@
 package com.proserus.stocks.view.transactions;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -306,9 +307,12 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		if ((arg0.getSource().equals(source1) || arg0.getSource().equals(source2) || arg0.getSource().equals(source3)) && source2.isEnabled()
 		        && source3.isEnabled()) {
 			try {
-				new BigDecimal(((JTextField) arg0.getSource()).getText());
+				if(!arg0.getSource().equals(source1)){
+					new BigDecimal(((JTextField) arg0.getSource()).getText());
+				}
 				if (!source2.getText().isEmpty() && !source3.getText().isEmpty()) {
 					dest.setEnabled(false);
+					dest.setFont(dest.getFont().deriveFont(Font.BOLD));
 					dest.setText(calculateTotal(source2.getText(), source3.getText(), source1.getText()).toString());
 					return;
 				}
@@ -318,6 +322,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 			if (!dest.isEnabled() && !arg0.getSource().equals(source1)) {
 				dest.setEnabled(true);
+				dest.setFont(dest.getFont().deriveFont(Font.PLAIN));
 				dest.setText("");
 			}
 		}
@@ -330,6 +335,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 				new BigDecimal(((JTextField) arg0.getSource()).getText());
 				if (!source2.getText().isEmpty() && !source3.getText().isEmpty()) {
 					dest.setEnabled(false);
+					dest.setFont(dest.getFont().deriveFont(Font.BOLD));
 					dest.setText(calculatePriceQuantity(source2.getText(), source1.getText(), source3.getText()).toString());
 					return;
 				}
@@ -338,6 +344,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			}
 			if (!dest.isEnabled() && !arg0.getSource().equals(source1)) {
 				dest.setEnabled(true);
+				dest.setFont(dest.getFont().deriveFont(Font.PLAIN));
 				dest.setText("");
 			}
 		}
