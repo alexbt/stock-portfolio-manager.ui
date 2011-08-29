@@ -23,7 +23,7 @@ import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.DefaultCurrency;
 import com.proserus.stocks.model.symbols.Symbol;
-import com.proserus.stocks.model.transactions.LabelImpl;
+import com.proserus.stocks.model.transactions.Label;
 import com.proserus.stocks.model.transactions.Transaction;
 import com.proserus.stocks.model.transactions.TransactionImpl;
 import com.proserus.stocks.model.transactions.TransactionType;
@@ -225,7 +225,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 	}
 
 	private Transaction createTransaction(Symbol s, Date date, TransactionType type, String price, String quantity, String commission,
-	        Collection<LabelImpl> lab) {
+	        Collection<Label> lab) {
 		Transaction t = new TransactionImpl();
 		t.setDateTime(new DateTime(date));
 		t.setType(type);
