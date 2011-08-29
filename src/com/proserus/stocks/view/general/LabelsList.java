@@ -43,7 +43,7 @@ import sun.awt.CausedFocusEvent;
 import com.proserus.stocks.bp.FilterBp;
 import com.proserus.stocks.bp.LabelsBp;
 import com.proserus.stocks.controllers.iface.PortfolioController;
-import com.proserus.stocks.model.transactions.Label;
+import com.proserus.stocks.model.transactions.LabelImpl;
 import com.proserus.stocks.model.transactions.Transaction;
 import com.proserus.stocks.view.common.ViewControllers;
 
@@ -68,7 +68,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 	private JScrollPane js;
 	private JList list = new JList();
 	private JTextField newLabelField = new JTextField();
-	private HashMap<String, Label> labels = new HashMap<String, Label>();
+	private HashMap<String, LabelImpl> labels = new HashMap<String, LabelImpl>();
 	private Component parent;
 
 	private Transaction transaction = null;
@@ -197,11 +197,11 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 		}, AWTEvent.MOUSE_EVENT_MASK);
 	}
 
-	public HashMap<String, Label> getSelectedValues() {
-		HashMap<String, Label> a = new HashMap<String, Label>();
+	public HashMap<String, LabelImpl> getSelectedValues() {
+		HashMap<String, LabelImpl> a = new HashMap<String, LabelImpl>();
 		for (int i = 0; i < list.getModel().getSize(); i++) {
 			if (((CheckListItem) list.getModel().getElementAt(i)).isSelected()) {
-				Label str = ((CheckListItem) list.getModel().getElementAt(i)).get();
+				LabelImpl str = ((CheckListItem) list.getModel().getElementAt(i)).get();
 				a.put(str.toString(), str);
 			}
 		}
@@ -227,7 +227,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 	}
 
 	public void setSelectedItems(Transaction transaction) {
-		for (Label label : transaction.getLabelsValues()) {
+		for (LabelImpl label : transaction.getLabelsValues()) {
 			labels.put(label.getName(), label);
 		}
 		for (int i = 0; i < list.getModel().getSize(); i++) {
@@ -276,7 +276,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 
 	private void addNewLabel() {
 	    labels = getSelectedValues();
-	    Label l = new Label();
+	    LabelImpl l = new LabelImpl();
 	    l.setName(newLabelField.getText());
 	    labels.put(l.toString(), l);
 	    l = transactionController.addLabel(l);
@@ -317,11 +317,11 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 	@Override
 	public void update(Observable arg0, Object UNUSED) {
 		if (arg0 instanceof LabelsBp) {
-			Collection<Label> col = transactionController.getLabels();
+			Collection<LabelImpl> col = transactionController.getLabels();
 			CheckListItem[] item = new CheckListItem[col.size()];
 			int i = 0;
 
-			for (Label label : col) {
+			for (LabelImpl label : col) {
 				item[i] = new CheckListItem(label);
 				if (!isFilteringModeOn) {
 					if (labels.containsKey(label.getName())) {
@@ -383,7 +383,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 	}
 
 	private void updateFilter(CheckListItem item) {
-	    Label label = item.get();
+	    LabelImpl label = item.get();
 		FilterBp filter = ViewControllers.getSharedFilter();
 		if (item.isSelected()) {
 			labels.put(item.get().toString(), label);
@@ -420,11 +420,11 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 }
 
 class CheckListItem implements Comparable<CheckListItem> {
-	private Label label = null;
+	private LabelImpl label = null;
 	private boolean isSelected = false;
 	private ImageBackgroundPanel icon;
 
-	public CheckListItem(Label label) {
+	public CheckListItem(LabelImpl label) {
 		this.label = label;
 	}
 
@@ -443,7 +443,7 @@ class CheckListItem implements Comparable<CheckListItem> {
 		return label.toString();
 	}
 
-	public Label get() {
+	public LabelImpl get() {
 		return label;
 	}
 
