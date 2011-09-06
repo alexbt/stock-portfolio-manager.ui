@@ -10,7 +10,7 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.PortfolioController;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.Window;
 

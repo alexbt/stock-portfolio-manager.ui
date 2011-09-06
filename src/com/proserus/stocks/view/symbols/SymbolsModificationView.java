@@ -9,8 +9,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,9 +19,12 @@ import javax.swing.JTextField;
 
 import org.jfree.data.time.Year;
 
-import com.proserus.stocks.bp.SymbolsBp;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
-import com.proserus.stocks.model.symbols.HistoricalPriceImpl;
+import com.proserus.stocks.model.symbols.HistoricalPrice;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.AbstractDialog;
 import com.proserus.stocks.view.common.ViewControllers;
@@ -31,7 +32,7 @@ import com.proserus.stocks.view.common.verifiers.NumberVerifier;
 import com.proserus.stocks.view.common.verifiers.SymbolVerifier;
 import com.proserus.stocks.view.common.verifiers.YearVerifier;
 
-public class SymbolsModificationView extends AbstractDialog implements ActionListener, FocusListener,Observer {
+public class SymbolsModificationView extends AbstractDialog implements ActionListener, FocusListener,EventListener {
 
 	private static final String REQUIRED_FIELD_MISSING = "Required field missing";
 	private static final String CANNOT_ADD_PRICE = "Cannot add price";
@@ -53,7 +54,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		setSize(595, 600);
 		setResizable(false);
 		init();
-		ViewControllers.getController().addSymbolsObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED);
 	}
 	
 	public void setSymbol(Symbol s){
@@ -135,7 +136,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 				        JOptionPane.WARNING_MESSAGE);
 				year.setText("");
 			}else{
-			HistoricalPriceImpl h = new HistoricalPriceImpl();
+			HistoricalPrice h = ViewControllers.getBoBuilder().getHistoricalPrice();
 			h.setCustomPrice(new BigDecimal(Double.parseDouble(customPrice.getText())));
 			h.setPrice(BigDecimal.ZERO);
 			h.setYear(new Year(Integer.parseInt(year.getText())));
@@ -184,9 +185,9 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 	}
 
 	@Override
-    public void update(Observable o, Object arg) {
-		if (o instanceof SymbolsBp) {
-			for(Symbol s: ((SymbolsBp)o).get()){
+    public void update(Event event, Object model) {
+		if (SwingEvents.SYMBOLS_UPDATED.equals(event)) {
+			for(Symbol s: SwingEvents.SYMBOLS_UPDATED.resolveModel(model)){
 				if(s.equals(symbol)){
 					symbol = s;
 					northPanel.getCompanyNameField().setText(s.getName());

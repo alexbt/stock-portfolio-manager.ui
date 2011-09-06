@@ -16,8 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 
-import com.proserus.stocks.dao.PersistenceManager;
 import com.proserus.stocks.model.common.ObservableModel;
+import com.proserus.stocks.view.actions.CloseApplicationAction;
 
 public class Window extends JFrame implements WindowListener, Observer,PropertyChangeListener {
 
@@ -88,8 +88,7 @@ public class Window extends JFrame implements WindowListener, Observer,PropertyC
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		PersistenceManager.close();
-		System.exit(0);
+		new CloseApplicationAction().actionPerformed(null);
 	}
 
 	@Override

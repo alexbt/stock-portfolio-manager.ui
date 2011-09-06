@@ -6,7 +6,7 @@ import java.util.Date;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.PortfolioController;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.model.transactions.Transaction;
 import com.proserus.stocks.model.transactions.TransactionType;

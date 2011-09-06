@@ -1,22 +1,25 @@
 package com.proserus.stocks.view.actions;
 
 import java.awt.event.ActionEvent;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import com.proserus.stocks.controllers.iface.PortfolioController;
-import com.proserus.stocks.model.ItemSelection;
+import com.proserus.stocks.PortfolioController;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.transactions.Transaction;
 import com.proserus.stocks.view.common.ViewControllers;
 
-public class RemoveTransactionAction extends AbstractAction implements Observer  {
+public class RemoveTransactionAction extends AbstractAction implements EventListener  {
 	private PortfolioController controller = ViewControllers.getController();
 	
+	private Transaction selectedTransaction;
+	
 	public RemoveTransactionAction(){
-		controller.addSelectionObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.TRANSACTION_SELECTION_CHANGED);
 		setEnabled(false);
 	}
 	@Override
@@ -24,15 +27,18 @@ public class RemoveTransactionAction extends AbstractAction implements Observer 
 		int n = JOptionPane.showConfirmDialog(null, "Do you want to remove the selected transaction ?", "Removing transaction",
 	            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 	    if (n == JOptionPane.YES_OPTION) {
-	    	controller.remove(controller.getSelection().getSelectedTransaction());
+	    	controller.remove(selectedTransaction);
 			controller.setSelection((Transaction)null);
 	    }
 	    
 		
     }
+	
 	@Override
-    public void update(Observable arg0, Object arg1) {
-		ItemSelection selection = (ItemSelection)arg0;
-		setEnabled(selection.getSelectedTransaction()!=null);
+    public void update(Event event, Object model) {
+	   if(SwingEvents.TRANSACTION_SELECTION_CHANGED.equals(event)){
+		   selectedTransaction = SwingEvents.TRANSACTION_SELECTION_CHANGED.resolveModel(model);
+		   setEnabled(selectedTransaction!=null);
+	   }
     }
 }

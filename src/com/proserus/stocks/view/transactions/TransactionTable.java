@@ -15,8 +15,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
@@ -30,10 +28,12 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
+import com.proserus.stocks.PortfolioController;
 import com.proserus.stocks.bp.FilterBp;
-import com.proserus.stocks.bp.SymbolsBp;
-import com.proserus.stocks.bp.TransactionsBp;
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.model.transactions.Transaction;
 import com.proserus.stocks.model.transactions.TransactionType;
@@ -44,7 +44,7 @@ import com.proserus.stocks.view.common.verifiers.DateVerifier;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 import com.proserus.stocks.view.general.LabelsList;
 
-public class TransactionTable extends AbstractTable implements Observer, ActionListener, MouseListener {
+public class TransactionTable extends AbstractTable implements EventListener, ActionListener, MouseListener {
 
 	private static final String ONE = "1";
 
@@ -67,6 +67,7 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 	}
 
 	private TransactionTable() {
+		EventBus.getInstance().add(this, SwingEvents.TRANSACTION_UPDATED,SwingEvents.SYMBOLS_UPDATED);
 		setModel(tableModel);
 		colors.put(ZERO + true, new Color(150, 190, 255));
 		colors.put(ZERO + false, new Color(255, 148, 0));
@@ -74,9 +75,6 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 		colors.put(ONE + false, new Color(245, 245, 245));
 		sorter = new TableRowSorter<TransactionTableModel>(tableModel);
 		setRowSorter(sorter);
-		controller.addTransactionObserver(this);
-		controller.addTransactionsObserver(this);
-		controller.addSymbolsObserver(this);
 		setRowHeight(getRowHeight() + 5);
 		setBorder(null);
 		TableColumn sportColumn = getColumnModel().getColumn(2);
@@ -100,16 +98,16 @@ public class TransactionTable extends AbstractTable implements Observer, ActionL
 	}
 
 	@Override
-	public void update(Observable arg0, Object UNUSED) {
-		if (arg0 instanceof TransactionsBp) {
-			tableModel.setData(controller.getTransactions(ViewControllers.getSharedFilter()).toArray());
+	public void update(Event event, Object model) {
+		if (SwingEvents.TRANSACTION_UPDATED.equals(event)){
+			tableModel.setData(SwingEvents.TRANSACTION_UPDATED.resolveModel(model).toArray());
 			getRootPane().validate();
 			// TODO Redesign Filter/SharedFilter
-		} else if (arg0 instanceof SymbolsBp) {
+		} else if (SwingEvents.SYMBOLS_UPDATED.equals(event)){
 			TableColumn sportColumn = getColumnModel().getColumn(1);
 			JComboBox comboBox = new JComboBox(comboTickers);
 			comboTickers.removeAllElements();
-			for (Symbol symbol : controller.getSymbols()) {
+			for (Symbol symbol : SwingEvents.SYMBOLS_UPDATED.resolveModel(model)) {
 				comboTickers.addElement(symbol);
 			}
 			sportColumn.setCellEditor(new DefaultCellEditor(comboBox));

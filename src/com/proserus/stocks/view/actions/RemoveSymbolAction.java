@@ -1,26 +1,29 @@
 package com.proserus.stocks.view.actions;
 
 import java.awt.event.ActionEvent;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
-import com.proserus.stocks.controllers.iface.PortfolioController;
-import com.proserus.stocks.model.ItemSelection;
+import com.proserus.stocks.PortfolioController;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.ViewControllers;
 
-public class RemoveSymbolAction extends AbstractAction implements Observer {
+public class RemoveSymbolAction extends AbstractAction implements EventListener {
 	private PortfolioController controller = ViewControllers.getController();
+	
+	private Symbol selectedSymbol = null;
 	
 	private static final String THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS = "The symbol is currently used in transactions";
 	
 	private static final String CANNOT_REMOVE_SYMBOL = "Cannot remove symbol";
 	
 	public RemoveSymbolAction(){
-		controller.addSelectionObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.SYMBOL_SELECTION_CHANGED);
 		setEnabled(false);
 	}
 	
@@ -29,7 +32,7 @@ public class RemoveSymbolAction extends AbstractAction implements Observer {
 		int n = JOptionPane.showConfirmDialog(null, "Do you want to remove the selected symbol ?", "Removing symbol",
 	            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 	    if (n == JOptionPane.YES_OPTION) {
-	    	if (controller.remove(controller.getSelection().getSelectedSymbol())) {
+	    	if (controller.remove(selectedSymbol)) {
 				controller.setSelection((Symbol)null);
 			} else {
 				JOptionPane.showConfirmDialog(null, THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS, CANNOT_REMOVE_SYMBOL,
@@ -39,8 +42,10 @@ public class RemoveSymbolAction extends AbstractAction implements Observer {
     }
 	
 	@Override
-    public void update(Observable arg0, Object arg1) {
-		ItemSelection selection = (ItemSelection)arg0;
-		setEnabled(selection.getSelectedSymbol()!=null);
+    public void update(Event event, Object model) {
+	   if(SwingEvents.SYMBOL_SELECTION_CHANGED.equals(event)){
+		   selectedSymbol = SwingEvents.SYMBOL_SELECTION_CHANGED.resolveModel(model);
+		   setEnabled(selectedSymbol!=null);
+	   }
     }
 }

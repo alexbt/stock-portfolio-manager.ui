@@ -82,7 +82,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getActionCommand().startsWith("add")) {
 			if(!getSymbolField().getText().isEmpty()){
-					Symbol s = new Symbol();
+					Symbol s = ViewControllers.getBoBuilder().getSymbol();
 					s.setTicker(getSymbolField().getText());
 					s.setCurrency((CurrencyEnum) getCurrencyField().getSelectedItem());
 					s.setName(getCompanyNameField().getText());

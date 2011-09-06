@@ -9,9 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Iterator;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
@@ -21,8 +18,10 @@ import org.jfree.data.time.Year;
 
 import com.proserus.stocks.bp.DateUtil;
 import com.proserus.stocks.bp.FilterBp;
-import com.proserus.stocks.bp.SymbolsBp;
-import com.proserus.stocks.bp.TransactionsBp;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.model.transactions.TransactionType;
 import com.proserus.stocks.view.common.EmptyYear;
@@ -34,7 +33,7 @@ import com.proserus.stocks.view.symbols.EmptySymbol;
  * @author Alex
  * 
  */
-public class FilterPanelImpl extends AbstractFilterPanel implements ActionListener, Observer, KeyListener {
+public class FilterPanelImpl extends AbstractFilterPanel implements ActionListener, EventListener, KeyListener {
 	private SortedComboBoxModel modelSymbols = new SortedComboBoxModel();
 	private SortedComboBoxModel modelYears = new SortedComboBoxModel(new FilterYearComparator());
 	static private FilterPanelImpl singleton = new FilterPanelImpl();
@@ -49,22 +48,19 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		getLabelList().setListColor(getLabelList().getBackground());
 		getLabelList().setHorizontal(true);
 		getLabelList().setModeFilter(true);
-		ViewControllers.getController().addLabelsObserver(getLabelList());
+		EventBus.getInstance().add(getLabelList(), SwingEvents.LABELS_UPDATED);
 
-		ViewControllers.getController().addTransactionsObserver(this);
-		ViewControllers.getController().addFilterObserver(this);
-		ViewControllers.getController().addTransactionObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.TRANSACTION_UPDATED);
 
 		getLabelList().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		getYearField().addActionListener(this);
-		getYearField().setActionCommand("changeYear");
 		getYearField().setModel(modelYears);
 
-		populateSymbols();
+//		populateSymbols();
 
 		getSymbolField().setModel(modelSymbols);
-		ViewControllers.getController().addSymbolsObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
 		getSymbolField().addActionListener(this);
 		
 		getTransactionTypeField().addItem("");
@@ -76,7 +72,8 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 
 	private void populateYears(Year min) {
 		if (!min.equals(modelYears.getElementAt(modelYears.getSize()-1))) {
-			getYearField().setActionCommand("tmpOff");
+			getYearField().removeActionListener(this);
+			
 			Object o = modelYears.getSelectedItem();
 			
 			modelYears.removeAllElements();
@@ -85,29 +82,30 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 			}
 			modelYears.addElement((new EmptyYear()));
 			modelYears.setSelectedItem(o);
-			getYearField().setActionCommand("changeYear");
+			getYearField().addActionListener(this);
 		}
 	}
 
-	private void populateSymbols() {
-		Iterator<Symbol> iter = ViewControllers.getController().getSymbols().iterator();
-		modelSymbols.removeAllElements();
-		while (iter.hasNext()) {
-			modelSymbols.addElement(iter.next());
-		}
-		Symbol s = new EmptySymbol();
-		modelSymbols.addElement(s);
-	}
+//	private void populateSymbols() {
+//		Iterator<Symbol> iter = ViewControllers.getController().getSymbols().iterator();
+//		modelSymbols.removeAllElements();
+//		while (iter.hasNext()) {
+//			modelSymbols.addElement(iter.next());
+//		}
+//		Symbol s = new EmptySymbol();
+//		modelSymbols.addElement(s);
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if (arg0.getSource().equals(getYearField()) && arg0.getActionCommand().compareTo("changeYear") == 0) {
+		if (arg0.getSource().equals(getYearField())) {
 			Year selectedYear = (Year) ((JComboBox) arg0.getSource()).getSelectedItem();
 			if (!selectedYear.toString().isEmpty()) {
 				ViewControllers.getSharedFilter().setYear(selectedYear);
 			} else {
 				ViewControllers.getSharedFilter().setYear(null);
 			}
+			ViewControllers.getController().refreshFilteredData(ViewControllers.getSharedFilter());
 		} else if (arg0.getSource().equals(getSymbolField())) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {
@@ -120,6 +118,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 					filter.setSymbol(null);
 				}
 			}
+			ViewControllers.getController().refreshFilteredData(ViewControllers.getSharedFilter());
 		}else if (arg0.getSource().equals(getTransactionTypeField())) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
 			FilterBp filter = ViewControllers.getSharedFilter();
@@ -129,25 +128,28 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 			}
 			
 			filter.setTransactionType(type);
-				
+			ViewControllers.getController().refreshFilteredData(ViewControllers.getSharedFilter());
 		}
 	}
 
 	@Override
-	public void update(Observable arg0, Object UNUSED) {
-		if (arg0 instanceof TransactionsBp) {
+	public void update(Event event, Object model) {
+		if (SwingEvents.TRANSACTION_UPDATED.equals(event)) {
 			populateYears(ViewControllers.getController().getFirstYear());
-		} else if (arg0 instanceof SymbolsBp) {
+		} else if (SwingEvents.SYMBOLS_UPDATED.equals(event)) {
 			Object o = modelSymbols.getSelectedItem();
+			getSymbolField().removeActionListener(this);
 			modelSymbols.removeAllElements();
-			for (Symbol symbol : ViewControllers.getController().getSymbols()) {
+			for (Symbol symbol : SwingEvents.SYMBOLS_UPDATED.resolveModel(model)) {
 				modelSymbols.addElement(symbol);
 			}
 			Symbol s = new EmptySymbol();
 			modelSymbols.addElement(s);
 			modelSymbols.setSelectedItem(o);
+			getSymbolField().addActionListener(this);
 		}
 	}
+	
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {

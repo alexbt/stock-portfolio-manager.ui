@@ -18,6 +18,7 @@ package com.proserus.stocks.view.general;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -26,14 +27,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import org.joda.time.DateTime;
-
-import com.proserus.stocks.bp.SymbolUpdateEnum;
-import com.proserus.stocks.bp.SymbolsBp;
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.PortfolioController;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.view.common.ViewControllers;
 
-public class SummaryStatusBar extends JPanel implements Observer {
+public class SummaryStatusBar extends JPanel implements EventListener {
 	private static final String ONE_SPACE = " ";
 
 	private static final long serialVersionUID = 20080113L;
@@ -57,7 +58,7 @@ public class SummaryStatusBar extends JPanel implements Observer {
 	public SummaryStatusBar() {
 		setLayout(new GridBagLayout());
 		init();
-		controller.addSymbolsObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED,SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED);
 	}
 
 	private void init() {
@@ -88,16 +89,11 @@ public class SummaryStatusBar extends JPanel implements Observer {
 	 * @see Observer
 	 * @see Observable
 	 */
-	public void update(final Observable model, final Object additionalModel) {
-		if(model instanceof SymbolsBp){
-			if(additionalModel instanceof SymbolUpdateEnum){
-				if(additionalModel.equals(SymbolUpdateEnum.CURRENT_PRICE)){
-					price.setText(TOTAL_PRICE + new DateTime());
-				}
-				else if(additionalModel.equals(SymbolUpdateEnum.HISTORICAL_PRICE)){
-					historicalPrice.setText(TOTAL_PROFIT + new DateTime());
-				}
-			}
+	public void update(final Event event, final Object model) {
+		if(SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED.equals(event)){
+			historicalPrice.setText(TOTAL_PROFIT + new Date().toString());
+		}else if(SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED.equals(event)){
+			price.setText(TOTAL_PRICE + new Date().toString());
 		}
 	}
 }

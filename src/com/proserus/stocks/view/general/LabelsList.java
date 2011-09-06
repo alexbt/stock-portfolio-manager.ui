@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.imageio.ImageIO;
 import javax.swing.InputVerifier;
@@ -40,15 +38,17 @@ import javax.swing.ListSelectionModel;
 
 import sun.awt.CausedFocusEvent;
 
+import com.proserus.stocks.PortfolioController;
 import com.proserus.stocks.bp.FilterBp;
-import com.proserus.stocks.bp.LabelsBp;
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.transactions.Label;
-import com.proserus.stocks.model.transactions.LabelImpl;
 import com.proserus.stocks.model.transactions.Transaction;
 import com.proserus.stocks.view.common.ViewControllers;
 
-public class LabelsList extends JPanel implements KeyListener, Observer, MouseListener, FocusListener {
+public class LabelsList extends JPanel implements KeyListener, EventListener, MouseListener, FocusListener {
 	/**
      * 
      */
@@ -110,7 +110,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 	    newLabelField.addFocusListener(this);
 		this.parent = parent;
 
-		transactionController.addLabelsObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.LABELS_UPDATED);
 		initList();
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -246,7 +246,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 		if (arg0.getSource().equals(newLabelField) && arg0.getKeyCode() == KeyEvent.VK_ENTER && newLabelField.getInputVerifier().verify(newLabelField)
 		        && newLabelField.getText().compareTo(EMPTY_STR) != 0) {
 			addNewLabel();
-		} else if (arg0.getSource().equals(list) && (arg0.getKeyChar()==KeyEvent.VK_SPACE || arg0.getKeyChar() == KeyEvent.VK_ENTER)) {
+		} else if (arg0.getSource().equals(list) && list.getVisibleRowCount()>0 && (arg0.getKeyChar()==KeyEvent.VK_SPACE || arg0.getKeyChar() == KeyEvent.VK_ENTER)) {
 			updateLabelSelection();
 			updateFilter(((CheckListItem)list.getSelectedValue()));
 		} else if (arg0.getSource().equals(list) && (arg0.getKeyChar()==KeyEvent.VK_DELETE)) {
@@ -277,7 +277,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 
 	private void addNewLabel() {
 	    labels = getSelectedValues();
-	    Label l = new LabelImpl();
+	    Label l = ViewControllers.getBoBuilder().getLabel();
 	    l.setName(newLabelField.getText());
 	    labels.put(l.toString(), l);
 	    l = transactionController.addLabel(l);
@@ -316,9 +316,9 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 	}
 
 	@Override
-	public void update(Observable arg0, Object UNUSED) {
-		if (arg0 instanceof LabelsBp) {
-			Collection<Label> col = transactionController.getLabels();
+	public void update(Event event, Object model) {
+		if (SwingEvents.LABELS_UPDATED.equals(event)){
+			Collection<Label> col = SwingEvents.LABELS_UPDATED.resolveModel(model);
 			CheckListItem[] item = new CheckListItem[col.size()];
 			int i = 0;
 
@@ -397,6 +397,7 @@ public class LabelsList extends JPanel implements KeyListener, Observer, MouseLi
 				filter.removeLabel(label);
 			}
 		}
+		ViewControllers.getController().refreshFilteredData(filter);
     }
 
 	@Override

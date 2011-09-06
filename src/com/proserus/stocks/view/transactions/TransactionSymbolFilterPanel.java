@@ -18,21 +18,22 @@ package com.proserus.stocks.view.transactions;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.proserus.stocks.bp.SymbolsBp;
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.PortfolioController;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.SortedComboBoxModel;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.symbols.EmptySymbol;
 
-public class TransactionSymbolFilterPanel extends JPanel implements Observer, ActionListener {
+public class TransactionSymbolFilterPanel extends JPanel implements EventListener, ActionListener {
 	private static final String SYMBOL = "Symbol:";
 
 	private static final String EMPTY_STR = "";
@@ -42,29 +43,29 @@ public class TransactionSymbolFilterPanel extends JPanel implements Observer, Ac
 	private PortfolioController controller = ViewControllers.getController();
 
 	public TransactionSymbolFilterPanel() {
+		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
 		FlowLayout ff = new FlowLayout();
 		ff.setAlignment(FlowLayout.LEFT);
 		setLayout(ff);
 		add(new JLabel(SYMBOL));
 		JComboBox dropDown = new JComboBox();
 		dropDown.setModel(model);
-		controller.addSymbolsObserver(this);
 		dropDown.addActionListener(this);
 		add(dropDown);
 	}
 
 	@Override
-	public void update(Observable arg0, Object UNUSED) {
-		if (arg0 instanceof SymbolsBp) {
+	public void update(Event event, Object mo) {
+		if(SwingEvents.SYMBOLS_UPDATED.equals(event)){
 			model.removeAllElements();
-			for (Symbol symbol : controller.getSymbols()) {
+			for (Symbol symbol : SwingEvents.SYMBOLS_UPDATED.resolveModel(mo)) {
 				model.addElement(symbol);
 			}
 			Symbol s = new EmptySymbol();
 			model.addElement(s);
 		}
-
 	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof JComboBox) {

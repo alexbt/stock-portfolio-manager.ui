@@ -10,8 +10,6 @@ import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -19,13 +17,15 @@ import javax.swing.JTextField;
 
 import org.joda.time.DateTime;
 
-import com.proserus.stocks.bp.SymbolsBp;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
 import com.proserus.stocks.model.symbols.DefaultCurrency;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.model.transactions.Label;
 import com.proserus.stocks.model.transactions.Transaction;
-import com.proserus.stocks.model.transactions.TransactionImpl;
 import com.proserus.stocks.model.transactions.TransactionType;
 import com.proserus.stocks.utils.BigDecimalUtils;
 import com.proserus.stocks.view.common.AbstractDialog;
@@ -34,7 +34,7 @@ import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.common.verifiers.NumberVerifier;
 import com.proserus.stocks.view.symbols.EmptySymbol;
 
-public class AddTransactionPanelImpl extends AbstractAddTransactionPanel implements ActionListener, Observer, KeyListener {
+public class AddTransactionPanelImpl extends AbstractAddTransactionPanel implements ActionListener, EventListener, KeyListener {
 	private static final String REQUIRED_FIELD_S_MISSING = "Required field(s) missing or invalid";
 	private static final String CANNOT_ADD_TRANSACTION = "Cannot add transaction";
 	private static final String EMPTY_STR = "";
@@ -48,7 +48,6 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			getCurrencyField().addItem(cur);
 		}
 		getCurrencyField().setSelectedItem(DefaultCurrency.DEFAULT_CURRENCY);
-		ViewControllers.getCurrencyController().addCurrenciesObserver(this);
 
 		getTotalField().addKeyListener(this);
 		getPriceField().addKeyListener(this);
@@ -74,13 +73,13 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 		getLabelsList().setAddEnabled(true);
 		getLabelsList().setHorizontal(false);
-		ViewControllers.getController().addLabelsObserver(getLabelsList());
+		
+		EventBus.getInstance().add(getLabelsList(), SwingEvents.LABELS_UPDATED);
+		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
 
 		for (TransactionType transactionType : TransactionType.values()) {
 			getTypeField().addItem(transactionType);
 		}
-
-		ViewControllers.getController().addSymbolsObserver(this);
 
 		getSymbolField().addKeyListener(this);
 		getAddButton().addKeyListener(this);
@@ -107,8 +106,6 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		getDateField().setToolTipText("Format is yyyy-MM-dd");
 
 		getCompanyNameField().setDisabledTextColor(Color.BLACK);
-
-		populateSymbolDropdown();
 
 		getDateField().requestFocus();
 	}
@@ -139,19 +136,21 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 		if (arg0.getActionCommand().startsWith("changeSymbol")) {
 			updateNameWithCurrentSymbol();
-		} else if (arg0.getActionCommand().startsWith("add")) {
+		} else if (arg0.getActionCommand().equals("add")) {
 			addTransaction();
 		} else if (arg0.getActionCommand().startsWith("changeType")) {
 			enableReinvestmentFields(((JComboBox) arg0.getSource()).getSelectedItem().equals(TransactionType.DIVIDEND));
 		}
 
-		if (arg0.getActionCommand().endsWith("lose")) {
-			emptySymbolSpecificFields();
-			((AbstractDialog) getParent().getParent().getParent().getParent()).dispose();
+		if (arg0.getActionCommand().equals("addClose")) {
+			if(addTransaction()){
+				emptySymbolSpecificFields();
+				((AbstractDialog) getParent().getParent().getParent().getParent()).dispose();
+			}
 		}
 	}
 
-	protected void addTransaction() {
+	protected boolean addTransaction() {
 		boolean success = false;
 
 		if (!getPriceField().getBackground().equals(Color.red) && getDateField().getDate() != null && !getPriceField().getText().isEmpty()
@@ -184,12 +183,14 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			JOptionPane.showConfirmDialog(this, REQUIRED_FIELD_S_MISSING, CANNOT_ADD_TRANSACTION, JOptionPane.DEFAULT_OPTION,
 			        JOptionPane.WARNING_MESSAGE);
 		}
+		
+		return success;
 	}
 
 	private Symbol createSymbol(Object o) {
 		Symbol s;
 		if (o instanceof String) {
-			s = new Symbol();
+			s = ViewControllers.getBoBuilder().getSymbol();
 			s.setTicker((String) o);
 		} else {
 			s = (Symbol) getSymbolField().getSelectedItem();
@@ -226,7 +227,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 	private Transaction createTransaction(Symbol s, Date date, TransactionType type, String price, String quantity, String commission,
 	        Collection<Label> lab) {
-		Transaction t = new TransactionImpl();
+		Transaction t = ViewControllers.getBoBuilder().getTransaction();
 		t.setDateTime(new DateTime(date));
 		t.setType(type);
 		t.setSymbol(s);
@@ -238,15 +239,15 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 	}
 
 	@Override
-	public void update(Observable transactions, Object UNUSED) {
-		if (transactions instanceof SymbolsBp) {
-			populateSymbolDropdown();
+	public void update(Event event, Object model) {
+		if (SwingEvents.SYMBOLS_UPDATED.equals(event)){
+			populateSymbolDropdown(SwingEvents.SYMBOLS_UPDATED.resolveModel(model));
 		}
 	}
 
-	private void populateSymbolDropdown() {
+	private void populateSymbolDropdown(Collection<Symbol> col) {
 		Object previous = getSymbolField().getEditor().getItem();
-		getSymbolField().setModel(new SortedComboBoxModel(ViewControllers.getController().getSymbols().toArray()));
+		getSymbolField().setModel(new SortedComboBoxModel(col.toArray()));
 		getSymbolField().addItem(new EmptySymbol());
 
 		if (previous instanceof String) {

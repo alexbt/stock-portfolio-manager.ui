@@ -7,22 +7,22 @@ import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
-import com.proserus.stocks.bp.SymbolsBp;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.AbstractDialog;
 import com.proserus.stocks.view.common.AbstractTable;
-import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
-public class SymbolsModifTable extends AbstractTable implements Observer, KeyListener {
+public class SymbolsModifTable extends AbstractTable implements EventListener, KeyListener {
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
@@ -49,7 +49,7 @@ public class SymbolsModifTable extends AbstractTable implements Observer, KeyLis
 		setRowHeight(getRowHeight() + 5);
 		setVisible(true);
 		
-		ViewControllers.getController().addSymbolsObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
 
 		addKeyListener(this);
 
@@ -58,8 +58,8 @@ public class SymbolsModifTable extends AbstractTable implements Observer, KeyLis
 	}
 
 	@Override
-	public void update(Observable arg0, Object UNUSED) {
-		if(arg0 instanceof SymbolsBp){
+	public void update(Event event, Object model) {
+	    if (SwingEvents.SYMBOLS_UPDATED.equals(event)) {
 			tableModel.setData(symbol.getHistoricalPricesValues().toArray());
 		}
 	}

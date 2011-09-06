@@ -7,19 +7,21 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.PortfolioController;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.view.common.AbstractTable;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
-public class OverviewCurrencyTable extends AbstractTable implements Observer {
+public class OverviewCurrencyTable extends AbstractTable implements EventListener {
 	private static final int ROW_SIZE = 21;
 
 	private static final String ONE = "1";
@@ -39,12 +41,14 @@ public class OverviewCurrencyTable extends AbstractTable implements Observer {
 	}
 
 	private OverviewCurrencyTable() {
+		
+		EventBus.getInstance().add(this, SwingEvents.CURRENCY_ANALYSIS_UPDATED);
+		
 		colors.put(ZERO + true, new Color(150, 190, 255));
 		colors.put(ZERO + false, new Color(255, 148, 0));
 		colors.put(ONE + true, new Color(245, 245, 245));
 		colors.put(ONE + false, new Color(245, 245, 245));
 		setModel(tableModel);
-		sumController.addAnalysisObserver(this);
 		// setSize(400, 30);
 		setPreferredScrollableViewportSize(new Dimension(200, ROW_SIZE * tableModel.getRowCount()));
 		setRowHeight(getRowHeight() + 5);
@@ -58,13 +62,15 @@ public class OverviewCurrencyTable extends AbstractTable implements Observer {
 	}
 
 	@Override
-	public void update(Observable arg0, Object UNUSED) {
-		Collection col = sumController.getCurrencyAnalysis(ViewControllers.getSharedFilter());
-		// TODO Redesign FIlter/SharedFilter
-		tableModel.setData(col);
-		setPreferredScrollableViewportSize(new Dimension(200, ROW_SIZE * col.size()));
-		setToolTipText(col.toString());
-		getRootPane().validate();
+	public void update(Event event, Object model) {
+		if(SwingEvents.CURRENCY_ANALYSIS_UPDATED.equals(event)){
+			Collection col = SwingEvents.CURRENCY_ANALYSIS_UPDATED.resolveModel(model);
+			// TODO Redesign FIlter/SharedFilter
+			tableModel.setData(col);
+			setPreferredScrollableViewportSize(new Dimension(200, ROW_SIZE * col.size()));
+			setToolTipText(col.toString());
+			getRootPane().validate();
+		}
 	}
 
 	@Override

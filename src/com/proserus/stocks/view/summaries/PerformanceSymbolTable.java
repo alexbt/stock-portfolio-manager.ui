@@ -7,20 +7,22 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.PortfolioController;
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.view.common.AbstractTable;
 import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
-public class PerformanceSymbolTable extends AbstractTable implements Observer {
+public class PerformanceSymbolTable extends AbstractTable implements EventListener {
 	/**
      * 
      */
@@ -49,7 +51,8 @@ public class PerformanceSymbolTable extends AbstractTable implements Observer {
 		colors.put(ONE + false, new Color(245, 245, 245));
 		setModel(tableModel);
 		// c.addSummaryObserver(this);
-		controller.addAnalysisObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.SYMBOL_ANALYSIS_UPDATED);
+		
 		setPreferredScrollableViewportSize(new Dimension(200, 275));
 		validate();
 		// setSize(400, 300);
@@ -61,12 +64,14 @@ public class PerformanceSymbolTable extends AbstractTable implements Observer {
 	}
 
 	@Override
-	public void update(Observable arg0, Object UNUSED) {
+	public void update(Event event, Object model) {
 		// TODO Redesign Filter/SharedFilter
-			Collection col = controller.getSymbolAnalysis(ViewControllers.getSharedFilter());
+		if(SwingEvents.SYMBOL_ANALYSIS_UPDATED.equals(event)){
+			Collection col = SwingEvents.SYMBOL_ANALYSIS_UPDATED.resolveModel(model);
 			tableModel.setData(col);
 			setToolTipText(col.toString());
 			getRootPane().validate();
+		}
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.PortfolioController;
 import com.proserus.stocks.view.actions.AddSymbolAction;
 import com.proserus.stocks.view.actions.AddTransactionAction;
 import com.proserus.stocks.view.actions.CloseApplicationAction;

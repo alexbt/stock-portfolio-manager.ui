@@ -1,13 +1,23 @@
 package com.proserus.stocks.view.common;
 
 import com.google.inject.Inject;
+import com.proserus.stocks.PortfolioController;
 import com.proserus.stocks.bp.SharedFilter;
 import com.proserus.stocks.controllers.iface.CurrencyController;
-import com.proserus.stocks.controllers.iface.PortfolioController;
+import com.proserus.stocks.model.common.BoBuilder;
 import com.proserus.stocks.view.general.Window;
 
 public class ViewControllers {
+	private static BoBuilder boBuilder;
 	
+	@Inject
+	public void setBoBuilder(BoBuilder boBuilder) {
+		ViewControllers.boBuilder = boBuilder;
+    }
+	static public BoBuilder getBoBuilder() {
+    	return boBuilder;
+    }
+
 	private static CurrencyController currencyController;
 	@Inject
 	public void setCurrencyController(CurrencyController currencyController) {
