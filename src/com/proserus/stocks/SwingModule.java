@@ -3,7 +3,6 @@ package com.proserus.stocks;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.proserus.stocks.bp.AnalysisBp;
-import com.proserus.stocks.bp.BoBuilder;
 import com.proserus.stocks.bp.FilterBp;
 import com.proserus.stocks.bp.LabelsBp;
 import com.proserus.stocks.bp.OnlineUpdateBp;
@@ -12,6 +11,7 @@ import com.proserus.stocks.bp.TransactionsBp;
 import com.proserus.stocks.bp.YahooUpdateBp;
 import com.proserus.stocks.controllers.CurrencyControllerImpl;
 import com.proserus.stocks.controllers.iface.CurrencyController;
+import com.proserus.stocks.model.common.BoBuilder;
 import com.proserus.stocks.view.general.Window;
 
 public class SwingModule extends AbstractModule {
