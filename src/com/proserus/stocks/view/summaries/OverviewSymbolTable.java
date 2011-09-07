@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.events.Event;
 import com.proserus.stocks.events.EventBus;
 import com.proserus.stocks.events.EventListener;
@@ -22,6 +23,8 @@ import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.general.ColorSettingsDialog;
 
 public class OverviewSymbolTable extends AbstractTable implements EventListener {
+	private Filter filter = ViewControllers.getFilter();
+	
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
@@ -76,7 +79,7 @@ public class OverviewSymbolTable extends AbstractTable implements EventListener 
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
 		} else if (rowIndex % 2 == 0) {
-			c.setBackground(ColorSettingsDialog.getColor(ViewControllers.getSharedFilter().isFiltered()));
+			c.setBackground(ColorSettingsDialog.getColor(filter.isFiltered()));
 		} else {
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
 		}

@@ -10,10 +10,9 @@ import org.jfree.data.time.Year;
 
 import com.google.inject.Inject;
 import com.proserus.stocks.bp.AnalysisBp;
-import com.proserus.stocks.bp.FilterBp;
+import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.bp.ImportExportBp;
 import com.proserus.stocks.bp.LabelsBp;
-import com.proserus.stocks.bp.SharedFilter;
 import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.bp.TransactionsBp;
 import com.proserus.stocks.controllers.CurrencyControllerImpl;
@@ -24,17 +23,16 @@ import com.proserus.stocks.model.symbols.HistoricalPrice;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.model.transactions.Label;
 import com.proserus.stocks.model.transactions.Transaction;
-import com.proserus.stocks.view.common.ViewControllers;
 
 public class PortfolioController{
 	@Inject private SymbolsBp symbolsBp;
 	@Inject private LabelsBp labelsBp;
 	@Inject private TransactionsBp transactionsBp;
 	@Inject private AnalysisBp analysisBp;
-	@Inject private SharedFilter sharedFilter;//TODO Merge sharedFilter and/or filterBp..
-	@Inject private FilterBp filterBp;
 	@Inject private ImportExportBp importExportBp;
 	@Inject private CurrencyControllerImpl currencyController;
+	
+	@Inject Filter filter;
 	
 	@Inject
 	private PersistenceManager persistenceManager;
@@ -44,9 +42,9 @@ public class PortfolioController{
 
 	public boolean updateSymbol(Symbol symbol) {
 		boolean val = symbolsBp.updateSymbol(symbol);
-		analysisBp.recalculate(filterBp);
+		analysisBp.recalculate(filter);
 		
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
@@ -80,15 +78,13 @@ public class PortfolioController{
 	public Symbol getSymbol(String ticker) {
 		return symbolsBp.getSymbol(ticker);
 	}
-
-	
 	public void setCustomFilter(String custom) {
 		throw new AssertionError();
 	}
 	
 	public void refresh(){
 		//analysisBp.recalculate(new FilterBp());
-		refreshFilteredData(ViewControllers.getSharedFilter());
+		refreshFilteredData();
 		refreshOther();
 	}
 	
@@ -97,11 +93,11 @@ public class PortfolioController{
 		SwingEvents.LABELS_UPDATED.fire(labelsBp.get());
 	}
 	
-	public void refreshFilteredData(FilterBp filterBp){
-		analysisBp.recalculate(filterBp);
+	public void refreshFilteredData(){
+		analysisBp.recalculate(filter);
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filterBp,true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 	}
 	
 	public Transaction addTransaction(Transaction t) {
@@ -109,9 +105,9 @@ public class PortfolioController{
 		Symbol s = addSymbol(t.getSymbol());
 		t.setSymbol(s);
 		t = transactionsBp.add(t);
-		analysisBp.recalculate(sharedFilter);
+		analysisBp.recalculate(filter);
 		
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 		return t;
@@ -123,9 +119,9 @@ public class PortfolioController{
 			t.removeLabel((Label) o);
 		}
 		transactionsBp.remove(t);
-		analysisBp.recalculate(sharedFilter);
+		analysisBp.recalculate(filter);
 		
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 	}
@@ -137,9 +133,9 @@ public class PortfolioController{
 			t.removeLabel(label);
 		}
 		labelsBp.remove(label);
-		analysisBp.recalculate(sharedFilter);
+		analysisBp.recalculate(filter);
 		
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 	}
@@ -147,9 +143,9 @@ public class PortfolioController{
 	
 	public void updateTransaction(Transaction t){
 		transactionsBp.updateTransaction(t);
-		analysisBp.recalculate(sharedFilter);
+		analysisBp.recalculate(filter);
 		
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 	}
@@ -157,9 +153,9 @@ public class PortfolioController{
 	
 	public Label addLabel(Label label) {
 		Label l = labelsBp.add(label);
-		analysisBp.recalculate(sharedFilter);
+		analysisBp.recalculate(filter);
 		
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 		SwingEvents.LABELS_UPDATED.fire(labelsBp.get());
@@ -174,10 +170,10 @@ public class PortfolioController{
 	
 	public void updatePrices() {
 		symbolsBp.updatePrices();
-		analysisBp.recalculate(sharedFilter);
+		analysisBp.recalculate(filter);
 		
 		SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED.fire();
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 	}
@@ -185,9 +181,9 @@ public class PortfolioController{
 	
 	public void updateHistoricalPrices() {
 		symbolsBp.updateHistoricalPrices();
-		analysisBp.recalculate(sharedFilter);
+		analysisBp.recalculate(filter);
 		
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 		SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED.fire();
@@ -196,17 +192,21 @@ public class PortfolioController{
 	
 	public void update(HistoricalPrice hPrice) {
 		symbolsBp.update(hPrice);
-		analysisBp.recalculate(sharedFilter);
+		analysisBp.recalculate(filter);
 		
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 	}
 
 	
-    public ByteArrayOutputStream exportTransactions(FilterBp filter) {
+    public ByteArrayOutputStream exportTransactions(boolean isFiltered) {
 	    try {
+	    	if(isFiltered){
 	        return importExportBp.exportTransactions(transactionsBp.getTransactions(filter, true));
+	    	}else{
+	    		return importExportBp.exportTransactions(transactionsBp.getTransactions());
+	    	}
         } catch (IOException e) {
         }
         return null;
@@ -214,12 +214,7 @@ public class PortfolioController{
 
 	
     public ByteArrayOutputStream exportTransactions() {
-		try {
-	        return importExportBp.exportTransactions(transactionsBp.getTransactions());
-        } catch (IOException e) {
-        	int i=0;
-        }
-        return null;
+		return exportTransactions(false);
     }
 
 	

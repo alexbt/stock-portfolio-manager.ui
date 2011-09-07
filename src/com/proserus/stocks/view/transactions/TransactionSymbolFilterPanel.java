@@ -23,7 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.proserus.stocks.PortfolioController;
+import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.events.Event;
 import com.proserus.stocks.events.EventBus;
 import com.proserus.stocks.events.EventListener;
@@ -34,13 +34,11 @@ import com.proserus.stocks.view.common.ViewControllers;
 import com.proserus.stocks.view.symbols.EmptySymbol;
 
 public class TransactionSymbolFilterPanel extends JPanel implements EventListener, ActionListener {
+	private Filter filter = ViewControllers.getFilter();
+	
 	private static final String SYMBOL = "Symbol:";
 
-	private static final String EMPTY_STR = "";
-
 	private SortedComboBoxModel model = new SortedComboBoxModel();
-
-	private PortfolioController controller = ViewControllers.getController();
 
 	public TransactionSymbolFilterPanel() {
 		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
@@ -72,11 +70,12 @@ public class TransactionSymbolFilterPanel extends JPanel implements EventListene
 			Object o = ((JComboBox) e.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {
 				if (((Symbol) o).getId() != null) {
-					ViewControllers.getSharedFilter().setSymbol((Symbol) o);
+					filter.setSymbol((Symbol) o);
 				}
 				else {
-					ViewControllers.getSharedFilter().setSymbol(null);
+					filter.setSymbol(null);
 				}
+				ViewControllers.getController().refreshFilteredData();
 			}
 		}
 	}

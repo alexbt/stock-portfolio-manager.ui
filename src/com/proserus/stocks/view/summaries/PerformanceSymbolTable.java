@@ -14,6 +14,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import com.proserus.stocks.PortfolioController;
+import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.events.Event;
 import com.proserus.stocks.events.EventBus;
 import com.proserus.stocks.events.EventListener;
@@ -27,6 +28,8 @@ public class PerformanceSymbolTable extends AbstractTable implements EventListen
      * 
      */
     private static final long serialVersionUID = 201106191114L;
+    
+    private Filter filter = ViewControllers.getFilter();
 
 	private static final String ONE = "1";
 
@@ -85,7 +88,7 @@ public class PerformanceSymbolTable extends AbstractTable implements EventListen
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
 		} else if (rowIndex % 2 == 0) {
-			c.setBackground(ColorSettingsDialog.getColor(ViewControllers.getSharedFilter().isFiltered()));
+			c.setBackground(ColorSettingsDialog.getColor(filter.isFiltered()));
 		} else {
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
 		}

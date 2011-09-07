@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import org.jfree.data.time.Year;
 
 import com.proserus.stocks.bp.DateUtil;
-import com.proserus.stocks.bp.FilterBp;
+import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.events.Event;
 import com.proserus.stocks.events.EventBus;
 import com.proserus.stocks.events.EventListener;
@@ -37,6 +37,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 	private SortedComboBoxModel modelSymbols = new SortedComboBoxModel();
 	private SortedComboBoxModel modelYears = new SortedComboBoxModel(new FilterYearComparator());
 	static private FilterPanelImpl singleton = new FilterPanelImpl();
+	private Filter filter = ViewControllers.getFilter();
 
 	static public FilterPanelImpl getInstance() {
 		return singleton;
@@ -101,15 +102,14 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		if (arg0.getSource().equals(getYearField())) {
 			Year selectedYear = (Year) ((JComboBox) arg0.getSource()).getSelectedItem();
 			if (!selectedYear.toString().isEmpty()) {
-				ViewControllers.getSharedFilter().setYear(selectedYear);
+				filter.setYear(selectedYear);
 			} else {
-				ViewControllers.getSharedFilter().setYear(null);
+				filter.setYear(null);
 			}
-			ViewControllers.getController().refreshFilteredData(ViewControllers.getSharedFilter());
+			ViewControllers.getController().refreshFilteredData();
 		} else if (arg0.getSource().equals(getSymbolField())) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {
-				FilterBp filter = ViewControllers.getSharedFilter();
 				if (((Symbol) o).getId() != null) {
 					filter.setSymbol((Symbol) o);
 				}
@@ -118,17 +118,16 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 					filter.setSymbol(null);
 				}
 			}
-			ViewControllers.getController().refreshFilteredData(ViewControllers.getSharedFilter());
+			ViewControllers.getController().refreshFilteredData();
 		}else if (arg0.getSource().equals(getTransactionTypeField())) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
-			FilterBp filter = ViewControllers.getSharedFilter();
 			TransactionType type=null;
 			if(o instanceof TransactionType){
 				type = (TransactionType)o;
 			}
 			
 			filter.setTransactionType(type);
-			ViewControllers.getController().refreshFilteredData(ViewControllers.getSharedFilter());
+			ViewControllers.getController().refreshFilteredData();
 		}
 	}
 

@@ -3,7 +3,7 @@ package com.proserus.stocks;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.proserus.stocks.bp.AnalysisBp;
-import com.proserus.stocks.bp.FilterBp;
+import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.bp.LabelsBp;
 import com.proserus.stocks.bp.OnlineUpdateBp;
 import com.proserus.stocks.bp.SymbolsBp;
@@ -19,9 +19,9 @@ public class SwingModule extends AbstractModule {
 	    bind( BoBuilder.class ).to(BoBuilderImpl.class).in( Scopes.SINGLETON );
 	    bind(OnlineUpdateBp.class).to(YahooUpdateBp.class);
 	    bind( AnalysisBp.class ).in( Scopes.SINGLETON );
-	    bind( FilterBp.class ).in( Scopes.SINGLETON );
 	    bind( LabelsBp.class ).in( Scopes.SINGLETON );
 	    bind( SymbolsBp.class ).in( Scopes.SINGLETON );
 	    bind( TransactionsBp.class ).in( Scopes.SINGLETON );
+	    bind( Filter.class ).in( Scopes.SINGLETON );
 	  }
 	}

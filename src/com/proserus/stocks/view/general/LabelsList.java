@@ -39,7 +39,7 @@ import javax.swing.ListSelectionModel;
 import sun.awt.CausedFocusEvent;
 
 import com.proserus.stocks.PortfolioController;
-import com.proserus.stocks.bp.FilterBp;
+import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.events.Event;
 import com.proserus.stocks.events.EventBus;
 import com.proserus.stocks.events.EventListener;
@@ -53,6 +53,8 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Mo
      * 
      */
     private static final long serialVersionUID = 201108112014L;
+    
+    private Filter filter = ViewControllers.getFilter();
 
 	private static final String DO_YOU_WANT_TO_REMOVE_THE_TAG = "Do you want to remove the tag ";
 
@@ -385,7 +387,6 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Mo
 
 	private void updateFilter(CheckListItem item) {
 		Label label = item.get();
-		FilterBp filter = ViewControllers.getSharedFilter();
 		if (item.isSelected()) {
 			labels.put(item.get().toString(), label);
 			if (isFilteringModeOn) {
@@ -397,7 +398,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Mo
 				filter.removeLabel(label);
 			}
 		}
-		ViewControllers.getController().refreshFilteredData(filter);
+		ViewControllers.getController().refreshFilteredData();
     }
 
 	@Override

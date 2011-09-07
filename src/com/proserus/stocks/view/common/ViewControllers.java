@@ -2,7 +2,7 @@ package com.proserus.stocks.view.common;
 
 import com.google.inject.Inject;
 import com.proserus.stocks.PortfolioController;
-import com.proserus.stocks.bp.SharedFilter;
+import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.controllers.CurrencyControllerImpl;
 import com.proserus.stocks.model.common.BoBuilder;
 import com.proserus.stocks.view.general.Window;
@@ -24,8 +24,8 @@ public class ViewControllers {
     	ViewControllers.currencyController = currencyController;
     }
 	@Inject
-	public void setSharedFilter(SharedFilter sharedFilter) {
-    	ViewControllers.sharedFilter = sharedFilter;
+	public void setFilter(Filter filter) {
+    	ViewControllers.filter = filter;
     }
 
 	public static CurrencyControllerImpl getCurrencyController() {
@@ -48,11 +48,11 @@ public class ViewControllers {
     	ViewControllers.window = window;
     }
 
-	private static SharedFilter sharedFilter;
+	private static Filter filter;
 
 	//TODO THIS IS NASTY! THis should be data held by the controller..
-	public static SharedFilter getSharedFilter() {
-		return sharedFilter;
+	public static Filter getFilter() {
+		return filter;
 	}
 
 	private static Window window;

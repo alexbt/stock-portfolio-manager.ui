@@ -29,7 +29,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import com.proserus.stocks.PortfolioController;
-import com.proserus.stocks.bp.FilterBp;
+import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.events.Event;
 import com.proserus.stocks.events.EventBus;
 import com.proserus.stocks.events.EventListener;
@@ -45,7 +45,8 @@ import com.proserus.stocks.view.general.ColorSettingsDialog;
 import com.proserus.stocks.view.general.LabelsList;
 
 public class TransactionTable extends AbstractTable implements EventListener, ActionListener, MouseListener {
-
+	private Filter filter = ViewControllers.getFilter();
+	
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
@@ -148,7 +149,7 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
 		} else if (rowIndex % 2 == 0) {
-			c.setBackground(ColorSettingsDialog.getColor(ViewControllers.getSharedFilter().isFiltered()));
+			c.setBackground(ColorSettingsDialog.getColor(filter.isFiltered()));
 		} else {
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
 		}
@@ -179,12 +180,12 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 		if (e.getSource() instanceof JComboBox) {
 			Object o = ((JComboBox) e.getSource()).getSelectedItem();
 			if (o instanceof Symbol) {
-				FilterBp filter = ViewControllers.getSharedFilter();
 				if (((Symbol) o).getId() != null) {
 					filter.setSymbol((Symbol) o);
 				} else {
 					filter.setSymbol(null);
 				}
+				ViewControllers.getController().refreshFilteredData();
 			}
 		}
 	}
