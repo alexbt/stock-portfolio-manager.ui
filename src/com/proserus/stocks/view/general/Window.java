@@ -5,7 +5,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -14,7 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import com.proserus.stocks.model.common.ObservableModel;
 import com.proserus.stocks.view.actions.CloseApplicationAction;
 
 public class Window extends JFrame implements WindowListener, Observer,PropertyChangeListener {
@@ -32,7 +30,6 @@ public class Window extends JFrame implements WindowListener, Observer,PropertyC
 //TODO Add icons
 	//http://www.iconki.com/pack.asp?ico=136&Customicondesign-office-iconset
 	public void start() {
-		new File(ObservableModel.config).mkdir();
 		ColorSettingsDialog.updateUI();
 //		UIManager.put(CONTROL_HIGHLIGHT, new Color(255, 148, 0));
 //		UIManager.put(COMBO_BOX_SELECTION_BACKGROUND, new Color(255, 148, 0));

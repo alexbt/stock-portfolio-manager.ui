@@ -24,7 +24,7 @@ import javax.persistence.Transient;
 
 import org.jfree.data.time.Year;
 
-@Entity
+@Entity(name="Symbol")
 @NamedQueries( { @NamedQuery(name = "symbol.findAll", query = "SELECT s FROM Symbol s"),
         @NamedQuery(name = "symbol.findAllByCurrency", query = "SELECT s FROM Symbol s WHERE currency = :currency"),
         @NamedQuery(name = "symbol.findByTicker", query = "SELECT s FROM Symbol s WHERE ticker = :ticker") })

@@ -5,18 +5,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JOptionPane;
 
+import com.proserus.stocks.events.Event;
+import com.proserus.stocks.events.EventBus;
+import com.proserus.stocks.events.EventListener;
+import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
-import com.proserus.stocks.model.symbols.DefaultCurrency;
 import com.proserus.stocks.model.symbols.Symbol;
 import com.proserus.stocks.view.common.AbstractDialog;
 import com.proserus.stocks.view.common.ViewControllers;
 
-public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implements ActionListener, Observer, KeyListener{
+public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implements ActionListener, EventListener, KeyListener{
 
 	private static final String REQUIRED_FIELD_S_MISSING = "Required field(s) missing";
 
@@ -30,7 +31,8 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 			getCurrencyField().addItem(cur);
 		}
 		
-		ViewControllers.getCurrencyController().addCurrenciesObserver(this);
+		EventBus.getInstance().add(this, SwingEvents.CURRENCY_DEFAULT_CHANGED);
+		
 		if (buttonVisible) {
 			getAddButton().addActionListener(this);
 			getAddButton().setActionCommand("add");
@@ -128,9 +130,9 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 
 
 	@Override
-	public void update(Observable arg0, Object UNUSED) {
-		if (arg0 instanceof DefaultCurrency) {
-			getCurrencyField().setSelectedItem(ViewControllers.getCurrencyController().getDefaultCurrency());
+	public void update(Event event, Object model) {
+		if(SwingEvents.CURRENCY_DEFAULT_CHANGED.equals(event)){
+			getCurrencyField().setSelectedItem(SwingEvents.CURRENCY_DEFAULT_CHANGED.resolveModel(model));
 		}
 	}
 

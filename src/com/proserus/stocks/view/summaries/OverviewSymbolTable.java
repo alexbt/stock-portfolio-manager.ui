@@ -13,7 +13,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
-import com.proserus.stocks.PortfolioController;
 import com.proserus.stocks.events.Event;
 import com.proserus.stocks.events.EventBus;
 import com.proserus.stocks.events.EventListener;
@@ -27,8 +26,6 @@ public class OverviewSymbolTable extends AbstractTable implements EventListener 
 
 	private static final String ZERO = "0";
 
-	private PortfolioController controller = ViewControllers.getController();
-	
 	private OverviewSymbolModel tableModel = new OverviewSymbolModel();
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
 	HashMap<String, Color> colors = new HashMap<String, Color>();

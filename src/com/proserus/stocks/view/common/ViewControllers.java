@@ -3,7 +3,7 @@ package com.proserus.stocks.view.common;
 import com.google.inject.Inject;
 import com.proserus.stocks.PortfolioController;
 import com.proserus.stocks.bp.SharedFilter;
-import com.proserus.stocks.controllers.iface.CurrencyController;
+import com.proserus.stocks.controllers.CurrencyControllerImpl;
 import com.proserus.stocks.model.common.BoBuilder;
 import com.proserus.stocks.view.general.Window;
 
@@ -18,9 +18,9 @@ public class ViewControllers {
     	return boBuilder;
     }
 
-	private static CurrencyController currencyController;
+	private static CurrencyControllerImpl currencyController;
 	@Inject
-	public void setCurrencyController(CurrencyController currencyController) {
+	public void setCurrencyController(CurrencyControllerImpl currencyController) {
     	ViewControllers.currencyController = currencyController;
     }
 	@Inject
@@ -28,7 +28,7 @@ public class ViewControllers {
     	ViewControllers.sharedFilter = sharedFilter;
     }
 
-	public static CurrencyController getCurrencyController() {
+	public static CurrencyControllerImpl getCurrencyController() {
 		return currencyController;
 	}
 

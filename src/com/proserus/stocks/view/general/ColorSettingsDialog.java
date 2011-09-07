@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import com.proserus.stocks.model.common.ObservableModel;
 import com.proserus.stocks.view.common.AbstractDialog;
 import com.proserus.stocks.view.common.ViewControllers;
 
@@ -40,7 +39,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 
 	private static final String COMMA_STR = ",";
 
-	private static final String UI_PROPERTIES = "ui.properties";
+	private static final String UI_PROPERTIES = "./ui.properties";
 
 	private static final String GUI_SETTINGS = "Color Settings";
 
@@ -135,7 +134,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 
 	public void initProperties() {
 		try {
-			ptrans.load(new FileInputStream(ObservableModel.config + UI_PROPERTIES));
+			ptrans.load(new FileInputStream(UI_PROPERTIES));
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		}
@@ -241,7 +240,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 			ptrans.setProperty(button.getName(), newColor.getRed() + COMMA_STR + newColor.getGreen() + COMMA_STR
 			        + newColor.getBlue());
 			try {
-				ptrans.store(new FileOutputStream(ObservableModel.config + UI_PROPERTIES), EMPTY_STR);
+				ptrans.store(new FileOutputStream(UI_PROPERTIES), EMPTY_STR);
 			} catch (FileNotFoundException e) {
 			} catch (IOException e) {
 			}

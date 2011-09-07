@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Observer;
 
 import org.jfree.data.time.Year;
 
@@ -17,7 +16,7 @@ import com.proserus.stocks.bp.LabelsBp;
 import com.proserus.stocks.bp.SharedFilter;
 import com.proserus.stocks.bp.SymbolsBp;
 import com.proserus.stocks.bp.TransactionsBp;
-import com.proserus.stocks.controllers.iface.CurrencyController;
+import com.proserus.stocks.controllers.CurrencyControllerImpl;
 import com.proserus.stocks.dao.PersistenceManager;
 import com.proserus.stocks.events.SwingEvents;
 import com.proserus.stocks.model.symbols.CurrencyEnum;
@@ -35,7 +34,7 @@ public class PortfolioController{
 	@Inject private SharedFilter sharedFilter;//TODO Merge sharedFilter and/or filterBp..
 	@Inject private FilterBp filterBp;
 	@Inject private ImportExportBp importExportBp;
-	@Inject private CurrencyController currencyController;
+	@Inject private CurrencyControllerImpl currencyController;
 	
 	@Inject
 	private PersistenceManager persistenceManager;
@@ -80,11 +79,6 @@ public class PortfolioController{
 
 	public Symbol getSymbol(String ticker) {
 		return symbolsBp.getSymbol(ticker);
-	}
-
-	
-	public void addFilterObserver(Observer o) {
-		filterBp.addObserver(o);
 	}
 
 	
