@@ -1,8 +1,8 @@
 package com.proserus.stocks.view.symbols;
 
-import com.proserus.stocks.model.symbols.Symbol;
+import com.proserus.stocks.model.symbols.SymbolImpl;
 
-public class EmptySymbol extends Symbol{
+public class EmptySymbol extends SymbolImpl{
 
 	public EmptySymbol(){
 		super();

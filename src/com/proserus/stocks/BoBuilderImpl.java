@@ -4,6 +4,7 @@ import com.proserus.stocks.model.common.BoBuilder;
 import com.proserus.stocks.model.symbols.HistoricalPrice;
 import com.proserus.stocks.model.symbols.HistoricalPriceImpl;
 import com.proserus.stocks.model.symbols.Symbol;
+import com.proserus.stocks.model.symbols.SymbolImpl;
 import com.proserus.stocks.model.transactions.Label;
 import com.proserus.stocks.model.transactions.LabelImpl;
 import com.proserus.stocks.model.transactions.Transaction;
@@ -16,7 +17,7 @@ public class BoBuilderImpl implements BoBuilder{
 	}
 	
 	public Symbol getSymbol(){
-		return new Symbol();
+		return new SymbolImpl();
 	}
 	
 	public Label getLabel(){

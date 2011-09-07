@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
@@ -18,8 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout.ParallelGroup;
 
 import com.proserus.stocks.model.common.ObservableModel;
 import com.proserus.stocks.view.common.AbstractDialog;
@@ -54,7 +54,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 
 	private static final String DEFAULT = "default";
 
-	private static final String TEXT_SELECTION_BACKGROUND_COLOR = "Selected Text: ";
+	private static final String TEXT_SELECTION_BACKGROUND_COLOR = "Highlighted Text: ";
 
 	private static final String TABLE_SELECTION_BACKGROUND_COLOR = "Selected Rows: ";
 
@@ -62,18 +62,16 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 
 	private static final String FILTERED_TABLE_COLOR = "Filtered Rows: ";
 
-	private Window window = ViewControllers.getWindow();
-
 	private static Color defaultColor = new Color(204, 204, 204);
 	private static Color filteredColor = new Color(150, 190, 255);
-	private static Color selectionColor = new Color(255, 148, 0);
+	private static Color selectionColor = new Color(204, 255, 204);
 	private static Color tableSelectionColor = new Color(176, 196, 222);
 	private static Color textSelectionColor = new Color(176, 196, 222);
 	private static AbstractDialog dialog = new ColorSettingsDialog();
 	private Properties ptrans = new Properties();
-	private JLabel[] labels = new JLabel[] { new JLabel("Unselected Rows:      "), new JLabel(FILTERED_TABLE_COLOR),
-	        new JLabel(SELECTION_BACKGROUND_COLOR), new JLabel(TABLE_SELECTION_BACKGROUND_COLOR),
-	        new JLabel(TEXT_SELECTION_BACKGROUND_COLOR) };
+	private JLabel[] labels = new JLabel[] { new JLabel("Unfiltered Rows:      "), new JLabel(FILTERED_TABLE_COLOR),
+	        new JLabel(TABLE_SELECTION_BACKGROUND_COLOR),
+	        new JLabel(TEXT_SELECTION_BACKGROUND_COLOR),new JLabel(SELECTION_BACKGROUND_COLOR) };
 
 	private JButton[] buttons = new JButton[] { new JButton(EMPTY_STR), new JButton(EMPTY_STR), new JButton(EMPTY_STR),
 	        new JButton(EMPTY_STR), new JButton(EMPTY_STR) };
@@ -85,12 +83,12 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 		buttons[0].setBackground(defaultColor);
 		buttons[1].setName(FILTERED);
 		buttons[1].setBackground(filteredColor);
-		buttons[2].setName(SELECTION);
-		buttons[2].setBackground(selectionColor);
-		buttons[3].setName(TABLESELECTION);
-		buttons[3].setBackground(tableSelectionColor);
-		buttons[4].setName(TEXTSELECTION);
-		buttons[4].setBackground(textSelectionColor);
+		buttons[2].setName(TABLESELECTION);
+		buttons[2].setBackground(tableSelectionColor);
+		buttons[3].setName(TEXTSELECTION);
+		buttons[3].setBackground(textSelectionColor);
+		buttons[4].setName(SELECTION);
+		buttons[4].setBackground(selectionColor);
 		GroupLayout group = new GroupLayout(panel);
 		group.setAutoCreateGaps(true);
 		group.setAutoCreateContainerGaps(true);
@@ -248,12 +246,16 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 			} catch (IOException e) {
 			}
 
-			UIManager.put(TEXT_FIELD_SELECTION_BACKGROUND, textSelectionColor);
-			UIManager.put(CONTROL_HIGHLIGHT, selectionColor);
-			UIManager.put(COMBO_BOX_SELECTION_BACKGROUND, selectionColor);
-			UIManager.put(TABBED_PANE_SELECTED, selectionColor);
-			SwingUtilities.updateComponentTreeUI(window);
+			updateUI();
 		}
 
 	}
+
+	static public void updateUI() {
+	    UIManager.put(TEXT_FIELD_SELECTION_BACKGROUND, textSelectionColor);
+	    UIManager.put(CONTROL_HIGHLIGHT, selectionColor);
+	    UIManager.put(COMBO_BOX_SELECTION_BACKGROUND, selectionColor);
+	    UIManager.put(TABBED_PANE_SELECTED, selectionColor);
+	    SwingUtilities.updateComponentTreeUI(ViewControllers.getWindow());
+    }
 }

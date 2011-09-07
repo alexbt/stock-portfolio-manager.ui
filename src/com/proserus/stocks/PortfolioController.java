@@ -182,6 +182,7 @@ public class PortfolioController{
 		symbolsBp.updatePrices();
 		analysisBp.recalculate(sharedFilter);
 		
+		SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED.fire();
 		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
@@ -195,6 +196,7 @@ public class PortfolioController{
 		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(ViewControllers.getSharedFilter(),true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED.fire();
 	}
 
 	

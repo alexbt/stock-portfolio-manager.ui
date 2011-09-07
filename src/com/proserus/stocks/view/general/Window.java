@@ -1,7 +1,6 @@
 package com.proserus.stocks.view.general;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
@@ -14,7 +13,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.UIManager;
 
 import com.proserus.stocks.model.common.ObservableModel;
 import com.proserus.stocks.view.actions.CloseApplicationAction;
@@ -35,8 +33,9 @@ public class Window extends JFrame implements WindowListener, Observer,PropertyC
 	//http://www.iconki.com/pack.asp?ico=136&Customicondesign-office-iconset
 	public void start() {
 		new File(ObservableModel.config).mkdir();
-		UIManager.put(CONTROL_HIGHLIGHT, new Color(255, 148, 0));
-		UIManager.put(COMBO_BOX_SELECTION_BACKGROUND, new Color(255, 148, 0));
+		ColorSettingsDialog.updateUI();
+//		UIManager.put(CONTROL_HIGHLIGHT, new Color(255, 148, 0));
+//		UIManager.put(COMBO_BOX_SELECTION_BACKGROUND, new Color(255, 148, 0));
 		setLayout(new BorderLayout());
 		setJMenuBar(Menu.getInstance());
 
