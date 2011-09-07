@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.0
+Description: SCJD Executable
+Class-Path: jfreechart-1.0.13.jar joda-time-1.6.jar jcommon-1.0.16.jar
+Created-By: 1.6.0_02-b06 (Proserus Inc.)
+Main-Class: com.proserus.stocks.Launch
