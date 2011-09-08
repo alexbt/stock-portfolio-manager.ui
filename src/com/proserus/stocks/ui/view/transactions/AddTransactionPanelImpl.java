@@ -28,9 +28,9 @@ import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
-import com.proserus.stocks.ui.view.common.ViewControllers;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
 

@@ -32,7 +32,7 @@ import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.controller.PortfolioController;
-import com.proserus.stocks.ui.view.common.ViewControllers;
+import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class SummaryStatusBar extends JPanel implements EventListener {
 	private static final String ONE_SPACE = " ";

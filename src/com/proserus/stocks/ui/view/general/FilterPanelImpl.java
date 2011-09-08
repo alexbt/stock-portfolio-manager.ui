@@ -24,9 +24,9 @@ import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.bp.utils.DateUtil;
+import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.EmptyYear;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
-import com.proserus.stocks.ui.view.common.ViewControllers;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
 
 /**

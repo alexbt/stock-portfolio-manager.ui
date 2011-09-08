@@ -11,7 +11,7 @@ import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.controller.PortfolioController;
-import com.proserus.stocks.ui.view.common.ViewControllers;
+import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class RemoveSymbolAction extends AbstractAction implements EventListener {
 	private PortfolioController controller = ViewControllers.getController();

@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 
 import javax.swing.JDialog;
 
+import com.proserus.stocks.ui.controller.ViewControllers;
+
 abstract public class AbstractDialog extends JDialog implements KeyListener {
 	private static Logger LOGGER = Logger.getLogger(AbstractDialog.class.toString());
 

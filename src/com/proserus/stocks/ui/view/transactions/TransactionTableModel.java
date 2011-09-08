@@ -10,7 +10,7 @@ import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Transaction;
 import com.proserus.stocks.bo.transactions.TransactionType;
 import com.proserus.stocks.ui.controller.PortfolioController;
-import com.proserus.stocks.ui.view.common.ViewControllers;
+import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class TransactionTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 20080113L;

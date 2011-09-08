@@ -11,6 +11,7 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
 import com.proserus.stocks.ui.controller.PortfolioController;
+import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.actions.AddSymbolAction;
 import com.proserus.stocks.ui.view.actions.AddTransactionAction;
 import com.proserus.stocks.ui.view.actions.CloseApplicationAction;
@@ -22,7 +23,6 @@ import com.proserus.stocks.ui.view.actions.ShowHideTableColumnsAction;
 import com.proserus.stocks.ui.view.actions.ShowSettingsAction;
 import com.proserus.stocks.ui.view.actions.UpdateOldPricesAction;
 import com.proserus.stocks.ui.view.actions.UpdatePriceAction;
-import com.proserus.stocks.ui.view.common.ViewControllers;
 import com.proserus.stocks.ui.view.summaries.OverviewCurrencyModel;
 import com.proserus.stocks.ui.view.summaries.OverviewCurrencyTable;
 import com.proserus.stocks.ui.view.summaries.OverviewSymbolModel;

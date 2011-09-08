@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import com.proserus.stocks.ui.controller.PortfolioController;
-import com.proserus.stocks.ui.view.common.ViewControllers;
+import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Window;
 
 public class ImportFromCsvAction extends AbstractAction {

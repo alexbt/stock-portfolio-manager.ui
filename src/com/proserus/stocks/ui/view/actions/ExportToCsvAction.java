@@ -11,7 +11,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 
 import com.proserus.stocks.ui.controller.PortfolioController;
-import com.proserus.stocks.ui.view.common.ViewControllers;
+import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Window;
 
 public class ExportToCsvAction extends AbstractAction  {

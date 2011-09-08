@@ -8,7 +8,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.proserus.stocks.ui.view.common.ViewControllers;
+import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class CenterPanel extends JPanel implements ActionListener{
 	

@@ -28,9 +28,9 @@ import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.controller.PortfolioController;
+import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.actions.ShowEditSymbolAction;
 import com.proserus.stocks.ui.view.common.AbstractTable;
-import com.proserus.stocks.ui.view.common.ViewControllers;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 
 public class SymbolsTable extends AbstractTable implements EventListener, KeyListener,MouseListener {

@@ -21,8 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
-import com.proserus.stocks.ui.view.common.ViewControllers;
 
 public class ColorSettingsDialog extends AbstractDialog implements ActionListener {
 	private static final String TABBED_PANE_SELECTED = "TabbedPane.selected";

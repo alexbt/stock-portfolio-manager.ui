@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
 import com.proserus.stocks.bp.utils.DateUtil;
-import com.proserus.stocks.ui.view.common.ViewControllers;
+import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class SymbolsModifModel extends AbstractTableModel {
 	private static final long serialVersionUID = 20080113L;

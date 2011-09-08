@@ -9,7 +9,7 @@ import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.utils.DateUtil;
-import com.proserus.stocks.ui.view.common.ViewControllers;
+import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class SymbolsTableModel extends AbstractTableModel {
 	

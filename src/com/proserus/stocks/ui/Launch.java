@@ -3,7 +3,7 @@ package com.proserus.stocks.ui;
 import org.apache.log4j.Logger;
 
 import com.google.inject.Guice;
-import com.proserus.stocks.ui.view.common.ViewControllers;
+import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class Launch {
 	private static Logger LOGGER = Logger.getLogger("stacktrace." + Launch.class.getName());

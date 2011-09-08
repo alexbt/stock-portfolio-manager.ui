@@ -1,9 +1,8 @@
-package com.proserus.stocks.ui.view.common;
+package com.proserus.stocks.ui.controller;
 
 import com.google.inject.Inject;
 import com.proserus.stocks.bo.common.BoBuilder;
 import com.proserus.stocks.bp.model.Filter;
-import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.view.general.Window;
 
 public class ViewControllers {
