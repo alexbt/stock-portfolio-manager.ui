@@ -18,11 +18,11 @@ import org.jfree.data.time.Year;
 
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.TransactionType;
-import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.bp.utils.DateUtil;
 import com.proserus.stocks.ui.view.common.EmptyYear;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;

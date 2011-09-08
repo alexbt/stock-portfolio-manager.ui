@@ -75,7 +75,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 	public void setVisible(boolean flag) {
 		super.setVisible(flag);
 		if (flag) {
-			getCurrencyField().setSelectedItem(ViewControllers.getCurrencyController().getDefaultCurrency());
+			getCurrencyField().setSelectedItem(ViewControllers.getController().getDefaultCurrency());
 			getSymbolField().requestFocus();
 		}
 	}

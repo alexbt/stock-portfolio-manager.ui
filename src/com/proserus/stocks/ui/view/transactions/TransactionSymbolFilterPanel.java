@@ -24,15 +24,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.proserus.stocks.bo.symbols.Symbol;
-import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
 import com.proserus.stocks.ui.view.common.ViewControllers;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
-
 public class TransactionSymbolFilterPanel extends JPanel implements EventListener, ActionListener {
 	private Filter filter = ViewControllers.getFilter();
 	

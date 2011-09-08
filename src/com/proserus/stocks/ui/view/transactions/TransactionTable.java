@@ -31,11 +31,11 @@ import javax.swing.table.TableRowSorter;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Transaction;
 import com.proserus.stocks.bo.transactions.TransactionType;
-import com.proserus.stocks.bp.Filter;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
@@ -43,7 +43,6 @@ import com.proserus.stocks.ui.view.common.ViewControllers;
 import com.proserus.stocks.ui.view.common.verifiers.DateVerifier;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 import com.proserus.stocks.ui.view.general.LabelsList;
-
 public class TransactionTable extends AbstractTable implements EventListener, ActionListener, MouseListener {
 	private Filter filter = ViewControllers.getFilter();
 	

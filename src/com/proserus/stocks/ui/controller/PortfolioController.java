@@ -10,19 +10,19 @@ import org.jfree.data.time.Year;
 
 import com.google.inject.Inject;
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
+import com.proserus.stocks.bo.symbols.DefaultCurrency;
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
-import com.proserus.stocks.bp.Filter;
-import com.proserus.stocks.bp.businesslogic.AnalysisBp;
-import com.proserus.stocks.bp.businesslogic.ImportExportBp;
-import com.proserus.stocks.bp.businesslogic.LabelsBp;
-import com.proserus.stocks.bp.businesslogic.SymbolsBp;
-import com.proserus.stocks.bp.businesslogic.TransactionsBp;
-import com.proserus.stocks.bp.controllers.CurrencyControllerImpl;
 import com.proserus.stocks.bp.dao.PersistenceManager;
 import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.model.Filter;
+import com.proserus.stocks.bp.services.AnalysisBp;
+import com.proserus.stocks.bp.services.ImportExportBp;
+import com.proserus.stocks.bp.services.LabelsBp;
+import com.proserus.stocks.bp.services.SymbolsBp;
+import com.proserus.stocks.bp.services.TransactionsBp;
 
 public class PortfolioController{
 	@Inject private SymbolsBp symbolsBp;
@@ -30,7 +30,7 @@ public class PortfolioController{
 	@Inject private TransactionsBp transactionsBp;
 	@Inject private AnalysisBp analysisBp;
 	@Inject private ImportExportBp importExportBp;
-	@Inject private CurrencyControllerImpl currencyController;
+	private DefaultCurrency currencies = new DefaultCurrency();
 	
 	@Inject Filter filter;
 	
@@ -69,7 +69,7 @@ public class PortfolioController{
 
 	
 	public Symbol addSymbol(Symbol symbol) {
-		currencyController.setDefaultCurrency(((CurrencyEnum) symbol.getCurrency()));
+		setDefaultCurrency(((CurrencyEnum) symbol.getCurrency()));
 		symbol =  symbolsBp.add(symbol);
 		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get());
 		return symbol;
@@ -101,7 +101,7 @@ public class PortfolioController{
 	}
 	
 	public Transaction addTransaction(Transaction t) {
-		currencyController.setDefaultCurrency(((CurrencyEnum) t.getSymbol().getCurrency()));
+		setDefaultCurrency(((CurrencyEnum) t.getSymbol().getCurrency()));
 		Symbol s = addSymbol(t.getSymbol());
 		t.setSymbol(s);
 		t = transactionsBp.add(t);
@@ -243,4 +243,14 @@ public void cleanup(){
     public void setSelection(Symbol s) {
     	SwingEvents.SYMBOL_SELECTION_CHANGED.fire(s);
     }
+    
+    public CurrencyEnum getDefaultCurrency() {
+		return currencies.getDefault();
+	}
+    
+    public void setDefaultCurrency(CurrencyEnum currency) {
+		currencies.setDefault(currency);
+		SwingEvents.CURRENCY_DEFAULT_CHANGED.fire(currencies.getDefault());
+		currencies.save();
+	}
 }

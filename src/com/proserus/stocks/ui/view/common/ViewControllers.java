@@ -2,8 +2,7 @@ package com.proserus.stocks.ui.view.common;
 
 import com.google.inject.Inject;
 import com.proserus.stocks.bo.common.BoBuilder;
-import com.proserus.stocks.bp.Filter;
-import com.proserus.stocks.bp.controllers.CurrencyControllerImpl;
+import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.view.general.Window;
 
@@ -18,19 +17,10 @@ public class ViewControllers {
     	return boBuilder;
     }
 
-	private static CurrencyControllerImpl currencyController;
-	@Inject
-	public void setCurrencyController(CurrencyControllerImpl currencyController) {
-    	ViewControllers.currencyController = currencyController;
-    }
 	@Inject
 	public void setFilter(Filter filter) {
     	ViewControllers.filter = filter;
     }
-
-	public static CurrencyControllerImpl getCurrencyController() {
-		return currencyController;
-	}
 
 	private static PortfolioController controller;
 
