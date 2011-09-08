@@ -69,7 +69,7 @@
 	<target name="updateversion" depends="">
 		<mkdir dir="${bin.dir}" />
 
-	<echo file="${src.dir}/com/proserus/stocks/view/general/Version.java" append="false">
+	<echo file="${src.dir}/com/proserus/stocks/ui/view/general/Version.java" append="false">
      	 /** 
      	    The content of this file is replaced every time the
      	    java source files are compiled by the ant script. 
@@ -77,7 +77,7 @@
      	    This is done in the build.xml ant script under the target "compile"
      	    By doing so, the version is part of the build.
      	 **/
-     	 package com.proserus.stocks.view.general;
+     	 package com.proserus.stocks.ui.view.general;
 
 		public interface Version {
 			public static String TIMESTAMP = "${timestamp}";
@@ -109,6 +109,10 @@
 			<fileset dir="${bin.dir}/com" />
 		</copy>
 
+		<copy todir="${output.dir}/META-INF">
+			<fileset dir="${src.dir}/META-INF" />
+		</copy>
+
 		<copy todir="${output.dir}">
 			<fileset file="${src.dir}/log4j.xml" />
 		</copy>
@@ -126,8 +130,8 @@
       <attribute name="Implementation-Vendor" value="Proserus inc."/>
       <attribute name="Implementation-Title" value="Proserus Stocks Portfolio"/>
       <attribute name="Implementation-Version" value="${version} - ${timestamp}"/> 
-      <attribute name="Class-Path" value="StockPortfolioBO.jar StockPortfolioBP.jar lib/log4j.xml lib/guice-3.0.jar lib/aopalliance.jar lib/javax.inject.jar lib/joda-time-1.6_part1.jar lib/joda-time-1.6_part2.jar lib/jcommon-1.0.16.jar lib/antlr-runtime-3.0.jar lib/commons-collections-3.2.1.jar lib/commons-logging-1.0.4.jar lib/jfreechart-1.0.13.jar lib/antlr-2.7.6.jar lib/dom4j-1.6.1.jar lib/ejb3-persistence.jar lib/hibernate-annotations.jar lib/hibernate-commons-annotations.jar lib/hibernate-core.jar lib/hibernate-entitymanager.jar lib/hsqldb.jar lib/javassist-3.12.0.GA.jar lib/jta-1.1.jar lib/slf4j-api-1.6.1.jar lib/log4j-1.2.16.jar lib/microba-0.4.4.3.jar lib/slf4j-log4j12-1.6.1.jar"/>
-      <attribute name="Main-Class" value="com.proserus.stocks.Launch"/>
+      <attribute name="Class-Path" value="StockPortfolioBO.jar StockPortfolioBP.jar lib/log4j.xml lib/guice-3.0.jar lib/aopalliance.jar lib/javax.inject.jar lib/joda-time-1.6_part1.jar lib/joda-time-1.6_part2.jar lib/jcommon-1.0.16.jar lib/antlr-runtime-3.0.jar lib/commons-collections-3.2.1.jar lib/commons-logging-1.0.4.jar lib/jfreechart-1.0.13.jar lib/antlr-2.7.6.jar lib/dom4j-1.6.1.jar lib/ejb3-persistence.jar lib/hibernate-annotations.jar lib/hibernate-commons-annotations.jar lib/hibernate-core.jar lib/hibernate-entitymanager.jar lib/hsqldb.jar lib/javassist-3.12.0.GA.jar lib/jta-1.1.jar lib/slf4j-api-1.6.1.jar lib/log4j-1.2.16.jar lib/microba-0.4.4.3.jar lib/slf4j-log4j12-1.6.1.jar commons-lang3-3.0.1.jar"/>
+      <attribute name="Main-Class" value="com.proserus.stocks.ui.Launch"/>
 
     </manifest>
 
