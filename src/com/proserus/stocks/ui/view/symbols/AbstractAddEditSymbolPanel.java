@@ -1,4 +1,6 @@
 package com.proserus.stocks.ui.view.symbols;
+import java.awt.Component;
+
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -6,6 +8,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
@@ -13,13 +16,17 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 public abstract class AbstractAddEditSymbolPanel extends JPanel{
 	private JTextField symbolField;
 	private JLabel companyNameLabel;
-	private JTextField companyNameField;
+	private JComboBox currencyField;
 	private JLabel currencyLabel;
 	private JButton addButton;
-	private JComboBox currencyField;
 	private JCheckBox useCustomPriceField;
 	private JButton addCloseButton;
 	private JButton closeButton;
+	private JTextField companyNameField;
+	private JComboBox sectorField;
+
+
+	private JLabel sectorLabel;
 	
 	public AbstractAddEditSymbolPanel() {
 		
@@ -30,12 +37,7 @@ public abstract class AbstractAddEditSymbolPanel extends JPanel{
 		
 		companyNameLabel = new JLabel("Company Name:");
 		
-		companyNameField = new JTextField();
-		companyNameField.setColumns(10);
-		
 		currencyLabel = new JLabel("Currency:");
-		
-		currencyField = new JComboBox();
 		
 		useCustomPriceField = new JCheckBox("");
 		
@@ -46,6 +48,15 @@ public abstract class AbstractAddEditSymbolPanel extends JPanel{
 		
 		closeButton = new JButton("Close");
 		
+		companyNameField = new JTextField();
+		companyNameField.setColumns(10);
+		
+		sectorField = new JComboBox();
+		
+		sectorLabel = new JLabel("Sector:");
+		
+		currencyField = new JComboBox();
+		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -54,55 +65,78 @@ public abstract class AbstractAddEditSymbolPanel extends JPanel{
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(symbolLabel)
-								.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(18)
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addComponent(symbolLabel)
+									.addComponent(currencyField, 0, 97, Short.MAX_VALUE)
+									.addComponent(symbolField, 0, 0, Short.MAX_VALUE))
+								.addComponent(currencyLabel))
+							.addGap(22)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(companyNameLabel)
-								.addComponent(companyNameField, GroupLayout.PREFERRED_SIZE, 185, GroupLayout.PREFERRED_SIZE))
-							.addGap(18)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(currencyField, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
-								.addComponent(currencyLabel))
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(18)
-									.addComponent(useCustomPricesLabel))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(58)
-									.addComponent(useCustomPriceField))))
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(sectorField, GroupLayout.PREFERRED_SIZE, 210, GroupLayout.PREFERRED_SIZE)
+										.addComponent(sectorLabel))
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(45)
+											.addComponent(useCustomPriceField)
+											.addGap(53))
+										.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+											.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+											.addComponent(useCustomPricesLabel)
+											.addGap(8))))
+								.addComponent(companyNameField, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED, 53, Short.MAX_VALUE))
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(129)
+							.addGap(72)
 							.addComponent(addButton, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(addCloseButton)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(closeButton, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(14, Short.MAX_VALUE))
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(useCustomPricesLabel, Alignment.TRAILING)
-						.addComponent(currencyLabel, Alignment.TRAILING)
-						.addComponent(companyNameLabel, Alignment.TRAILING)
-						.addComponent(symbolLabel, Alignment.TRAILING))
-					.addGap(3)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(symbolLabel)
+								.addComponent(companyNameLabel)))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(32)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+								.addComponent(companyNameField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))))
+					.addGap(18)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-							.addComponent(companyNameField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-							.addComponent(currencyField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addComponent(useCustomPriceField))
-					.addPreferredGap(ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(currencyLabel)
+								.addComponent(sectorLabel))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(currencyField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(sectorField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(11))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(useCustomPricesLabel)
+							.addGap(9)
+							.addComponent(useCustomPriceField)))
+					.addPreferredGap(ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(addButton)
 						.addComponent(addCloseButton)
 						.addComponent(closeButton))
-					.addGap(10))
+					.addContainerGap())
 		);
+		groupLayout.linkSize(SwingConstants.VERTICAL, new Component[] {addButton, addCloseButton, closeButton});
+		groupLayout.linkSize(SwingConstants.VERTICAL, new Component[] {symbolField, companyNameField});
+		groupLayout.linkSize(SwingConstants.VERTICAL, new Component[] {symbolLabel, companyNameLabel, currencyLabel, useCustomPricesLabel, sectorLabel});
+		groupLayout.linkSize(SwingConstants.HORIZONTAL, new Component[] {addButton, addCloseButton, closeButton});
 		setLayout(groupLayout);
 	}
 	
@@ -135,6 +169,10 @@ public abstract class AbstractAddEditSymbolPanel extends JPanel{
 
 	public JComboBox getCurrencyField() {
     	return currencyField;
+    }
+	
+	public JComboBox getSectorField() {
+    	return sectorField;
     }
 
 

@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JOptionPane;
 
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
+import com.proserus.stocks.bo.symbols.SectorEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
@@ -30,6 +31,13 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
 			getCurrencyField().addItem(cur);
 		}
+		getCurrencyField().setMaximumRowCount(12);
+		
+		for (SectorEnum sector : SectorEnum.values()) {
+			getSectorField().addItem(sector);
+		}
+		getSectorField().setMaximumRowCount(12);
+		getSectorField().setSelectedItem(SectorEnum.UNKNOWN);
 		
 		EventBus.getInstance().add(this, SwingEvents.CURRENCY_DEFAULT_CHANGED);
 		
@@ -53,6 +61,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 		getAddCloseButton().addKeyListener(this);
 		getCloseButton().addKeyListener(this);
 		getCurrencyField().addKeyListener(this);
+		getSectorField().addKeyListener(this);
 		getCompanyNameField().addKeyListener(this);
 		getUseCustomPriceField().addKeyListener(this);
 		getCompanyNameField().setDisabledTextColor(Color.BLACK);
@@ -83,28 +92,35 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getActionCommand().startsWith("add")) {
-			if(!getSymbolField().getText().isEmpty()){
-					Symbol s = ViewControllers.getBoBuilder().getSymbol();
-					s.setTicker(getSymbolField().getText());
-					s.setCurrency((CurrencyEnum) getCurrencyField().getSelectedItem());
-					s.setName(getCompanyNameField().getText());
-					s.setCustomPriceFirst(getUseCustomPriceField().isSelected());
-
-					ViewControllers.getController().addSymbol(s);
-					
-					getSymbolField().setText("");
-					getCurrencyField().setSelectedItem("");
-					getCompanyNameField().setText("");
-					getUseCustomPriceField().setSelected(false);
-			}else{
-				JOptionPane.showConfirmDialog(this, REQUIRED_FIELD_S_MISSING, CANNOT_ADD_SYMBOL, JOptionPane.DEFAULT_OPTION,
-				        JOptionPane.WARNING_MESSAGE);
-			}
+			addSymbol();
 		}
 		if (arg0.getActionCommand().endsWith("lose")) {
 			((AbstractDialog) getParent().getParent().getParent().getParent()).dispose();
 		}
 	}
+
+	private void addSymbol() {
+	    if(!getSymbolField().getText().isEmpty()){
+	    		Symbol s = ViewControllers.getBoBuilder().getSymbol();
+	    		s.setTicker(getSymbolField().getText());
+	    		s.setCurrency((CurrencyEnum) getCurrencyField().getSelectedItem());
+	    		s.setSector((SectorEnum) getSectorField().getSelectedItem());
+	    		s.setName(getCompanyNameField().getText());
+	    		s.setCustomPriceFirst(getUseCustomPriceField().isSelected());
+	    		s.setSector(SectorEnum.UNKNOWN);
+
+	    		ViewControllers.getController().addSymbol(s);
+	    		
+	    		getSymbolField().setText("");
+	    		getCurrencyField().setSelectedItem("");
+	    		getSectorField().setSelectedItem(SectorEnum.UNKNOWN);
+	    		getCompanyNameField().setText("");
+	    		getUseCustomPriceField().setSelected(false);
+	    }else{
+	    	JOptionPane.showConfirmDialog(this, REQUIRED_FIELD_S_MISSING, CANNOT_ADD_SYMBOL, JOptionPane.DEFAULT_OPTION,
+	    	        JOptionPane.WARNING_MESSAGE);
+	    }
+    }
 	
 	
 	private void updateNameWithCurrentSymbol() {
@@ -123,6 +139,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 			getAddButton().setEnabled(isNew);
 			getUseCustomPriceField().setEnabled(isNew);
 			getCurrencyField().setEnabled(isNew);
+			getSectorField().setEnabled(isNew);
 			getAddCloseButton().setEnabled(isNew);
 			getCompanyNameField().setText(s.getName());
 		}
@@ -145,6 +162,10 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
     public void keyReleased(KeyEvent arg0) {
 		if (arg0.getSource().equals(getSymbolField()) && arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
 			updateNameWithCurrentSymbol();
+		}
+		
+		if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+			addSymbol();
 		}
     }
 	

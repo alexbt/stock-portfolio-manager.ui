@@ -9,6 +9,7 @@ import java.util.Collection;
 import org.jfree.data.time.Year;
 
 import com.google.inject.Inject;
+import com.proserus.stocks.bo.common.DBVersion;
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.DefaultCurrency;
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
@@ -19,10 +20,12 @@ import com.proserus.stocks.bp.dao.PersistenceManager;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.bp.services.AnalysisBp;
+import com.proserus.stocks.bp.services.DatabaseVersionningBp;
 import com.proserus.stocks.bp.services.ImportExportBp;
 import com.proserus.stocks.bp.services.LabelsBp;
 import com.proserus.stocks.bp.services.SymbolsBp;
 import com.proserus.stocks.bp.services.TransactionsBp;
+import com.proserus.stocks.ui.dbutils.DatabaseUpdagreEnum;
 
 public class PortfolioController{
 	@Inject private SymbolsBp symbolsBp;
@@ -30,6 +33,7 @@ public class PortfolioController{
 	@Inject private TransactionsBp transactionsBp;
 	@Inject private AnalysisBp analysisBp;
 	@Inject private ImportExportBp importExportBp;
+	@Inject private DatabaseVersionningBp databaseVersionningBp;
 	private DefaultCurrency currencies = new DefaultCurrency();
 	
 	@Inject Filter filter;
@@ -58,6 +62,7 @@ public class PortfolioController{
 			return false;
 		}
 		symbolsBp.remove(s);
+		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get());
 		return true;
 	}
 
@@ -133,6 +138,7 @@ public class PortfolioController{
 			t.removeLabel(label);
 		}
 		labelsBp.remove(label);
+		SwingEvents.LABELS_UPDATED.fire(labelsBp.get());
 		analysisBp.recalculate(filter);
 		
 		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter,true));
@@ -253,4 +259,11 @@ public void cleanup(){
 		SwingEvents.CURRENCY_DEFAULT_CHANGED.fire(currencies.getDefault());
 		currencies.save();
 	}
+    
+    public void checkDatabaseVersion(){
+    	DBVersion v = databaseVersionningBp.check();
+    	if (v.getDatabaseVersion() < DatabaseUpdagreEnum.getLatestVersion()) {
+    		databaseVersionningBp.upgrade(v);
+    	}
+    }
 }

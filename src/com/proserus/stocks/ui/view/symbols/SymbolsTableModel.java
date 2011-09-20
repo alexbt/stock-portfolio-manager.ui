@@ -7,6 +7,7 @@ import javax.swing.table.AbstractTableModel;
 
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
+import com.proserus.stocks.bo.symbols.SectorEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.utils.DateUtil;
 import com.proserus.stocks.ui.controller.ViewControllers;
@@ -20,7 +21,7 @@ public class SymbolsTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 20080113L;
 
-	public static final String[] COLUMN_NAMES = { "Symbol", "Name", "Price", "Currency", "Use Custom Prices" };
+	public static final String[] COLUMN_NAMES = { "Symbol", "Name", "Price", "Currency", "Sector", "Use Custom Prices" };
 
 	private Object[] data = null;
 
@@ -146,6 +147,8 @@ public class SymbolsTableModel extends AbstractTableModel {
 		} else if (column == i++) {
 			return symbol.getCurrency();
 		} else if (column == i++) {
+			return symbol.getSector();
+		} else if (column == i++) {
 			return new Boolean(symbol.isCustomPriceFirst());
 		}
 		throw new AssertionError();
@@ -171,6 +174,8 @@ public class SymbolsTableModel extends AbstractTableModel {
 				throw new AssertionError();
 			} else if (column == i++) {
 				s.setCurrency((CurrencyEnum) value);
+			}else if (column == i++) {
+				s.setSector((SectorEnum) value);
 			} else if (column == i++) {
 				s.setCustomPriceFirst((Boolean) value);
 			}

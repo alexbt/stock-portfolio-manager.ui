@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.DefaultCurrency;
+import com.proserus.stocks.bo.symbols.SectorEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
@@ -48,7 +49,15 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			getCurrencyField().addItem(cur);
 		}
 		getCurrencyField().setSelectedItem(DefaultCurrency.DEFAULT_CURRENCY);
+		
+		for (SectorEnum sector : SectorEnum.values()) {
+			getSectorField().addItem(sector);
+		}
+		getSectorField().setSelectedItem(SectorEnum.UNKNOWN);
 
+		getCurrencyField().setMaximumRowCount(12);
+		getSectorField().setMaximumRowCount(12);
+		
 		getTotalField().addKeyListener(this);
 		getPriceField().addKeyListener(this);
 		getQuantityField().addKeyListener(this);
@@ -88,11 +97,13 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		getCommissionField().addKeyListener(this);
 		getDateField().addKeyListener(this);
 		getCurrencyField().addKeyListener(this);
+		getSectorField().addKeyListener(this);
 		getCompanyNameField().addKeyListener(this);
 		getTypeField().addKeyListener(this);
 
 		getSymbolField().setEditable(true);
 		getSymbolField().getEditor().getEditorComponent().addKeyListener(this);
+		getSymbolField().setMaximumRowCount(12);
 		// ((JTextField) (getSymbolField().getEditor().getEditorComponent())).setInputVerifier(new SymbolVerifier());
 
 		NumberVerifier verif = new NumberVerifier();
@@ -147,6 +158,9 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 				emptySymbolSpecificFields();
 				((AbstractDialog) getParent().getParent().getParent().getParent()).dispose();
 			}
+		}else if(arg0.getActionCommand().equals("close")){
+			emptySymbolSpecificFields();
+			((AbstractDialog) getParent().getParent().getParent().getParent()).dispose();
 		}
 	}
 
@@ -196,6 +210,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			s = (Symbol) getSymbolField().getSelectedItem();
 		}
 		s.setCurrency((CurrencyEnum) getCurrencyField().getSelectedItem());
+		s.setSector((SectorEnum) getSectorField().getSelectedItem());
 		s.setName(getCompanyNameField().getText());
 		s.setCustomPriceFirst(false);
 		return s;
@@ -284,6 +299,9 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		getCompanyNameField().setEditable(isNew);
 		getCompanyNameField().setEnabled(isNew);
 		getCurrencyField().setEnabled(isNew);
+		getSectorField().setEnabled(isNew);
+		getSectorField().setSelectedItem(s.getSector());
+		getCurrencyField().setSelectedItem(s.getCurrency());
 		getCompanyNameField().setText(s.getName());
 	}
 
@@ -293,7 +311,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			if (!getQuantityField().getText().isEmpty() && !getPriceField().getText().isEmpty()) {
 			}
 
-		if (arg0.getComponent().getParent() instanceof JComboBox && arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
+		if (arg0.getSource().equals(getSymbolField()) && arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
 			updateNameWithCurrentSymbol();
 		}
 
@@ -305,6 +323,11 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		autoCalculateTotal(arg0, comm, getReinvestPriceField(), getReinvestQuantityField(), getReinvestTotalField());
 		autoComputeFields(arg0, comm, getReinvestPriceField(), getReinvestTotalField(), getReinvestQuantityField());
 		autoComputeFields(arg0, comm, getReinvestQuantityField(), getReinvestTotalField(), getReinvestPriceField());
+		
+		
+		if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
+			addTransaction();
+		}
 	}
 
 	private void autoCalculateTotal(KeyEvent arg0, JTextField source1, JTextField source2, JTextField source3, JTextField dest) {

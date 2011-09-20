@@ -26,6 +26,8 @@ public class Launch {
 		// Window s;
 		try {
 			ViewControllers controllers = Guice.createInjector(new SwingModule()).getInstance(ViewControllers.class);
+			
+			controllers.getController().checkDatabaseVersion();
 			controllers.getWindow().start();
 			controllers.getController().refresh();
 		} catch (RuntimeException e) {

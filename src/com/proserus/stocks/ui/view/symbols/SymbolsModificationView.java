@@ -21,6 +21,7 @@ import org.jfree.data.time.Year;
 
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
+import com.proserus.stocks.bo.symbols.SectorEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
@@ -51,7 +52,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		setModal(true);
 		setTitle("Symbol modification");
 		setLayout(new BorderLayout());
-		setSize(595, 600);
+		setSize(595, 625);
 		setResizable(false);
 		init();
 		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED);
@@ -79,7 +80,8 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		}
 		northPanel.getCurrencyField().setMaximumRowCount(11);
 		northPanel.getCurrencyField().setSelectedItem(symbol.getCurrency());
-
+		northPanel.getSectorField().setSelectedItem(symbol.getSector());
+		
 		SymbolsModifTable table = new SymbolsModifTable(symbol);
 		year.addKeyListener(table);
 		add.addKeyListener(table);
@@ -121,6 +123,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		northPanel.getSymbolField().addFocusListener(this);
 		northPanel.getCompanyNameField().addFocusListener(this);
 		northPanel.getCurrencyField().addFocusListener(this);
+		northPanel.getSectorField().addFocusListener(this);
 		northPanel.getUseCustomPriceField().addFocusListener(this);
 	}
 
@@ -173,6 +176,9 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 				ViewControllers.getController().updateSymbol(symbol);
 			}else if (e.getSource().equals(northPanel.getCurrencyField()) && !northPanel.getCurrencyField().equals(symbol.getCurrency())){
 				symbol.setCurrency((CurrencyEnum)northPanel.getCurrencyField().getSelectedItem());
+				ViewControllers.getController().updateSymbol(symbol);
+			}else if (e.getSource().equals(northPanel.getSectorField()) && !northPanel.getSectorField().equals(symbol.getSector())){
+				symbol.setSector((SectorEnum)northPanel.getSectorField().getSelectedItem());
 				ViewControllers.getController().updateSymbol(symbol);
 			}
 		}

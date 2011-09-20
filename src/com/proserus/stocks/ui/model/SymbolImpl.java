@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,7 +33,6 @@ import com.proserus.stocks.bo.symbols.Symbol;
 
 @Entity(name="Symbol")
 @NamedQueries( { @NamedQuery(name = "symbol.findAll", query = "SELECT s FROM Symbol s"),
-        @NamedQuery(name = "symbol.findAllByCurrency", query = "SELECT s FROM Symbol s WHERE currency = :currency"),
         @NamedQuery(name = "symbol.findByTicker", query = "SELECT s FROM Symbol s WHERE ticker = :ticker") })
 public class SymbolImpl implements Comparable, Symbol {
 
@@ -113,8 +114,12 @@ public class SymbolImpl implements Comparable, Symbol {
 	//TODO add constraint to forbid empty string (or just blank space): LTRIM(LABEL) != ''
 	private String ticker;
 	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private CurrencyEnum currency = CurrencyEnum.valueOf(Currency.getInstance(Locale.getDefault()).toString());
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private SectorEnum sector;
 	
 	

@@ -1,18 +1,30 @@
 package com.proserus.stocks.ui.view.general;
 
 import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class AbstractFilterPanel extends JPanel{
 	private LabelsList labelList;
 	private JComboBox yearField;
-	private JComboBox symbolField;
 	private JLabel transactionTypeLabel;
 
 	private JComboBox transactionTypeField;
+	public JComboBox getSectorField() {
+    	return sectorField;
+    }
+
+	public JComboBox getCurrencyField() {
+    	return currencyField;
+    }
+
+	private JLabel currencyLabel;
+	private JComboBox symbolField;
+	private JComboBox currencyField;
+	private JComboBox sectorField;
 	
 	public AbstractFilterPanel() {
 		
@@ -21,31 +33,47 @@ public class AbstractFilterPanel extends JPanel{
 		yearField = new JComboBox();
 		JLabel symbolLabel = new JLabel("Symbol:");
 		
-		symbolField = new JComboBox();
-		
 		transactionTypeLabel = new JLabel("Transaction type:");
 		
 		transactionTypeField = new JComboBox();
+		
+		currencyLabel = new JLabel("Currency:");
+		
+		symbolField = new JComboBox();
+		
+		currencyField = new JComboBox();
+		
+		sectorField = new JComboBox();
+		
+		JLabel sectorLabel = new JLabel("Sector:");
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(labelList, GroupLayout.DEFAULT_SIZE, 10, Short.MAX_VALUE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(yearLabel)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(labelList, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(yearLabel)
+								.addComponent(yearField, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
 							.addGap(18)
-							.addComponent(yearField, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
-							.addGap(42)
-							.addComponent(symbolLabel)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(symbolLabel)
+								.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE))
 							.addGap(18)
-							.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE)
-							.addGap(45)
-							.addComponent(transactionTypeLabel)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(transactionTypeLabel)
+								.addComponent(transactionTypeField, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE))
 							.addGap(18)
-							.addComponent(transactionTypeField, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(currencyField, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+								.addComponent(currencyLabel, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE))
+							.addGap(18)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(sectorLabel, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+								.addComponent(sectorField, GroupLayout.PREFERRED_SIZE, 218, GroupLayout.PREFERRED_SIZE))))
+					.addGap(14))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -53,14 +81,26 @@ public class AbstractFilterPanel extends JPanel{
 					.addGap(5)
 					.addComponent(labelList, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(symbolLabel)
-						.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(yearField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(yearLabel)
-						.addComponent(transactionTypeLabel)
-						.addComponent(transactionTypeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(10, Short.MAX_VALUE))
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(yearLabel)
+								.addComponent(transactionTypeLabel)
+								.addComponent(symbolLabel))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(yearField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(symbolField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(transactionTypeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(currencyLabel)
+								.addComponent(sectorLabel))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(currencyField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(sectorField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+					.addContainerGap())
 		);
 		setLayout(groupLayout);
 	}

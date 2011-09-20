@@ -22,6 +22,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
+import com.proserus.stocks.bo.symbols.SectorEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
@@ -70,12 +71,27 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
 			comboBox.addItem(cur);
 		}
-		
-		comboBox.setMaximumRowCount(11);
+		comboBox.setMaximumRowCount(12);
 		sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
-		getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(new JCheckBox()));
+		
+		TableColumn sportColumnSector = getColumnModel().getColumn(4);
+		JComboBox comboBoxSector = new JComboBox();
+		for (SectorEnum cur : SectorEnum.values()) {
+			comboBoxSector.addItem(cur);
+		}
+		comboBoxSector.setMaximumRowCount(12);
+		sportColumnSector.setCellEditor(new DefaultCellEditor(comboBoxSector));
+		
+		int i=0;
+		for(String val: SymbolsTableModel.COLUMN_NAMES){
+			if(val.contains("Custom")){
+				getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JCheckBox()));
+				break;
+			}
+			i++;
+		}
+		
 		addKeyListener(this);
-
 		setFirstRowSorted();
 		addMouseListener(this);
 		validate();

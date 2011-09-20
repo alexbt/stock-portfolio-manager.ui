@@ -16,6 +16,8 @@ import javax.swing.JTextField;
 
 import org.jfree.data.time.Year;
 
+import com.proserus.stocks.bo.symbols.CurrencyEnum;
+import com.proserus.stocks.bo.symbols.SectorEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.TransactionType;
 import com.proserus.stocks.bp.events.Event;
@@ -63,12 +65,27 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		getSymbolField().setModel(modelSymbols);
 		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
 		getSymbolField().addActionListener(this);
+		getSymbolField().setMaximumRowCount(12);
 		
 		getTransactionTypeField().addItem("");
 		for (TransactionType transactionType : TransactionType.values()) {
 			getTransactionTypeField().addItem(transactionType);
 		}
 		getTransactionTypeField().addActionListener(this);
+		
+		getCurrencyField().addItem("");
+		for (CurrencyEnum currency : CurrencyEnum.values()) {
+			getCurrencyField().addItem(currency);
+		}
+		getCurrencyField().setMaximumRowCount(12);
+		getCurrencyField().addActionListener(this);
+		
+		getSectorField().addItem("");
+		for (SectorEnum sector : SectorEnum.values()) {
+			getSectorField().addItem(sector);
+		}
+		getSectorField().setMaximumRowCount(12);
+		getSectorField().addActionListener(this);
 	}
 
 	private void populateYears(Year min) {
@@ -127,6 +144,25 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 			}
 			
 			filter.setTransactionType(type);
+			ViewControllers.getController().refreshFilteredData();
+		}
+		else if (arg0.getSource().equals(getCurrencyField())) {
+			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
+			CurrencyEnum type=null;
+			if(o instanceof CurrencyEnum){
+				type = (CurrencyEnum)o;
+			}
+			
+			filter.setCurrency(type);
+			ViewControllers.getController().refreshFilteredData();
+		}else if (arg0.getSource().equals(getSectorField())) {
+			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
+			SectorEnum type=null;
+			if(o instanceof SectorEnum){
+				type = (SectorEnum)o;
+			}
+			
+			filter.setSector(type);
 			ViewControllers.getController().refreshFilteredData();
 		}
 	}

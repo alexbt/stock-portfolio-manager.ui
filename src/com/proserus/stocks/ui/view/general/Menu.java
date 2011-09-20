@@ -63,7 +63,7 @@ public class Menu extends JMenuBar {
 
 	private static Menu menu = new Menu();
 	private static String MESSAGE = "Stock Portfolio Manager was created by:\n" + "Alex Bélisle-Turcot\n" + "alex.belisleturcot@proserus.com\n\n"
-	        + "Version: " + Version.VERSION + "\n" + "Build: " + Version.TIMESTAMP + "\n\n" + "This product includes/uses:\n"
+	        + "DBVersion: " + Version.VERSION + "\n" + "Build: " + Version.TIMESTAMP + "\n\n" + "This product includes/uses:\n"
 	        + "   - Joda-Time: joda-time.sourceforge.net\n" + "   - Hibernate: hibernate.org\n" + "   - HSQLDB: hsqldb.org\n"
 	        + "   - log4j: logging.apache.org\n" + "   - ant: ant.apache.org"
 	        + "   - JFreeChart: jfree.org/jfreechart (included in the build but not used for now)\n"
