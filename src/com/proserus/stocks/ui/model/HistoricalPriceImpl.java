@@ -23,7 +23,7 @@ public class HistoricalPriceImpl implements HistoricalPrice {
 	@Column(nullable = false)
 	//@Check(constraints = "YEAR <= YEAR(ADD_YEARS(SYSDATE,1))")
 	//TODO add constraint to forbid years later this current year
-	private Year year;
+	private Year year;//FIXME Year JFree
 
 	public Year getYear() {
 		return year;

@@ -286,8 +286,10 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Mo
 	    l = transactionController.addLabel(l);
 
 	    if (transaction != null) {
-	    	transaction.addLabel(l);
-	    	transactionController.updateTransaction(transaction);
+	    	if(!transaction.getLabelsValues().contains(l)){
+	    		transaction.addLabel(l);
+	    		transactionController.updateTransaction(transaction);
+	    	}
 	    }
 	    newLabelField.setText(EMPTY_STR);
     }

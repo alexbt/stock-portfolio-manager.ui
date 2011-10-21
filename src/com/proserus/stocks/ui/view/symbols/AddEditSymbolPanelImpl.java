@@ -17,6 +17,7 @@ import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
+import com.proserus.stocks.ui.view.common.CurrencyComboRenderer;
 
 public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implements ActionListener, EventListener, KeyListener{
 
@@ -31,6 +32,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
 			getCurrencyField().addItem(cur);
 		}
+		getCurrencyField().setRenderer(new CurrencyComboRenderer()); 
 		getCurrencyField().setMaximumRowCount(12);
 		
 		for (SectorEnum sector : SectorEnum.values()) {

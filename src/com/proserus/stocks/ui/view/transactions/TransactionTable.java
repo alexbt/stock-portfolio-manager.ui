@@ -106,7 +106,9 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 		} else if (SwingEvents.SYMBOLS_UPDATED.equals(event)){
 			TableColumn sportColumn = getColumnModel().getColumn(1);
 			JComboBox comboBox = new JComboBox(comboTickers);
+
 			if(comboTickers.getSize()>0){
+				getSelectionModel().clearSelection();
 				comboTickers.removeAllElements();
 			}
 			for (Symbol symbol : SwingEvents.SYMBOLS_UPDATED.resolveModel(model)) {

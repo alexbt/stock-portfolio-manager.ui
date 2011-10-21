@@ -3,10 +3,13 @@ package com.proserus.stocks.ui.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import com.proserus.stocks.bo.common.DBVersion;
 
 @Entity(name = "Version")
+@NamedQueries( { @NamedQuery(name = "version.find", query = "SELECT v FROM Version v where Id='1'")})
 public class DBVersionImpl implements DBVersion {
 
 	@Id

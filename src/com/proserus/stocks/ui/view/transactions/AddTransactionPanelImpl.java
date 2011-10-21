@@ -31,6 +31,7 @@ import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
+import com.proserus.stocks.ui.view.common.CurrencyComboRenderer;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
@@ -49,6 +50,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			getCurrencyField().addItem(cur);
 		}
 		getCurrencyField().setSelectedItem(DefaultCurrency.DEFAULT_CURRENCY);
+		getCurrencyField().setRenderer(new CurrencyComboRenderer());
 		
 		for (SectorEnum sector : SectorEnum.values()) {
 			getSectorField().addItem(sector);
@@ -225,6 +227,9 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		getQuantityField().setText(EMPTY_STR);
 		getCommissionField().setText(EMPTY_STR);
 		getTotalField().setText(EMPTY_STR);
+		getTotalField().setEnabled(true);
+		getPriceField().setEnabled(true);
+		getQuantityField().setEnabled(true);
 		emptyReinvestmentFields();
 	}
 
@@ -232,6 +237,9 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		getReinvestTotalField().setText(EMPTY_STR);
 		getReinvestPriceField().setText(EMPTY_STR);
 		getReinvestQuantityField().setText(EMPTY_STR);
+		getReinvestTotalField().setEnabled(true);
+		getReinvestPriceField().setEnabled(true);
+		getReinvestQuantityField().setEnabled(true);
 	}
 
 	private void emptySymbolSpecificFields() {
@@ -311,7 +319,8 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			if (!getQuantityField().getText().isEmpty() && !getPriceField().getText().isEmpty()) {
 			}
 
-		if (arg0.getSource().equals(getSymbolField()) && arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
+		//TODO remove arg0.getComponent().getParent()!=null after testing
+		if (arg0.getComponent().getParent()!=null && arg0.getComponent().getParent().equals(getSymbolField()) && arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
 			updateNameWithCurrentSymbol();
 		}
 

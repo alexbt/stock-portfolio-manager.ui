@@ -10,8 +10,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
-import com.proserus.stocks.ui.controller.PortfolioController;
-import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.actions.AddSymbolAction;
 import com.proserus.stocks.ui.view.actions.AddTransactionAction;
 import com.proserus.stocks.ui.view.actions.CloseApplicationAction;
@@ -57,20 +55,7 @@ public class Menu extends JMenuBar {
 
 	private static final String FILE = "File";
 
-	private Window window = ViewControllers.getWindow();
-
-	private PortfolioController controller = ViewControllers.getController();
-
 	private static Menu menu = new Menu();
-	private static String MESSAGE = "Stock Portfolio Manager was created by:\n" + "Alex Bélisle-Turcot\n" + "alex.belisleturcot@proserus.com\n\n"
-	        + "DBVersion: " + Version.VERSION + "\n" + "Build: " + Version.TIMESTAMP + "\n\n" + "This product includes/uses:\n"
-	        + "   - Joda-Time: joda-time.sourceforge.net\n" + "   - Hibernate: hibernate.org\n" + "   - HSQLDB: hsqldb.org\n"
-	        + "   - log4j: logging.apache.org\n" + "   - ant: ant.apache.org"
-	        + "   - JFreeChart: jfree.org/jfreechart (included in the build but not used for now)\n"
-	        + "   - JFree: jfree.org/jcommon (included in the build but not used for now)\n" + "   - dom4j: dom4j.org\n"
-	        + "   - Apachage common logging: commons.apache.org/logging\n" + "   - Yahoo Finance API: finance.yahoo.com/d/quotes.csv\n"
-	        + "   - Yahoo iChart API: ichart.finance.yahoo.com/table.csv"
-	        + "\n\n(c) Copyright Groupe Proserus Inc. 2009 - 2011. All rights reserved.";
 
 	static public Menu getInstance() {
 		return menu;

@@ -27,6 +27,7 @@ import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.bp.utils.DateUtil;
 import com.proserus.stocks.ui.controller.ViewControllers;
+import com.proserus.stocks.ui.view.common.CurrencyComboRenderer;
 import com.proserus.stocks.ui.view.common.EmptyYear;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
@@ -60,26 +61,27 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		getYearField().addActionListener(this);
 		getYearField().setModel(modelYears);
 
-//		populateSymbols();
+		// populateSymbols();
 
 		getSymbolField().setModel(modelSymbols);
 		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
 		getSymbolField().addActionListener(this);
 		getSymbolField().setMaximumRowCount(12);
-		
+
 		getTransactionTypeField().addItem("");
 		for (TransactionType transactionType : TransactionType.values()) {
 			getTransactionTypeField().addItem(transactionType);
 		}
 		getTransactionTypeField().addActionListener(this);
-		
+
 		getCurrencyField().addItem("");
 		for (CurrencyEnum currency : CurrencyEnum.values()) {
 			getCurrencyField().addItem(currency);
 		}
+		getCurrencyField().setRenderer(new CurrencyComboRenderer());
 		getCurrencyField().setMaximumRowCount(12);
 		getCurrencyField().addActionListener(this);
-		
+
 		getSectorField().addItem("");
 		for (SectorEnum sector : SectorEnum.values()) {
 			getSectorField().addItem(sector);
@@ -89,11 +91,11 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 	}
 
 	private void populateYears(Year min) {
-		if (!min.equals(modelYears.getElementAt(modelYears.getSize()-1))) {
+		if (!min.equals(modelYears.getElementAt(modelYears.getSize() - 1))) {
 			getYearField().removeActionListener(this);
-			
+
 			Object o = modelYears.getSelectedItem();
-			
+
 			modelYears.removeAllElements();
 			for (Year i = DateUtil.getCurrentYear(); i.getYear() >= min.getYear(); i = (Year) i.previous()) {
 				modelYears.addElement(i);
@@ -104,15 +106,15 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		}
 	}
 
-//	private void populateSymbols() {
-//		Iterator<Symbol> iter = ViewControllers.getController().getSymbols().iterator();
-//		modelSymbols.removeAllElements();
-//		while (iter.hasNext()) {
-//			modelSymbols.addElement(iter.next());
-//		}
-//		Symbol s = new EmptySymbol();
-//		modelSymbols.addElement(s);
-//	}
+	// private void populateSymbols() {
+	// Iterator<Symbol> iter = ViewControllers.getController().getSymbols().iterator();
+	// modelSymbols.removeAllElements();
+	// while (iter.hasNext()) {
+	// modelSymbols.addElement(iter.next());
+	// }
+	// Symbol s = new EmptySymbol();
+	// modelSymbols.addElement(s);
+	// }
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -136,32 +138,31 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 				}
 			}
 			ViewControllers.getController().refreshFilteredData();
-		}else if (arg0.getSource().equals(getTransactionTypeField())) {
+		} else if (arg0.getSource().equals(getTransactionTypeField())) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
-			TransactionType type=null;
-			if(o instanceof TransactionType){
-				type = (TransactionType)o;
+			TransactionType type = null;
+			if (o instanceof TransactionType) {
+				type = (TransactionType) o;
 			}
-			
+
 			filter.setTransactionType(type);
 			ViewControllers.getController().refreshFilteredData();
-		}
-		else if (arg0.getSource().equals(getCurrencyField())) {
+		} else if (arg0.getSource().equals(getCurrencyField())) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
-			CurrencyEnum type=null;
-			if(o instanceof CurrencyEnum){
-				type = (CurrencyEnum)o;
+			CurrencyEnum type = null;
+			if (o instanceof CurrencyEnum) {
+				type = (CurrencyEnum) o;
 			}
 			
 			filter.setCurrency(type);
 			ViewControllers.getController().refreshFilteredData();
-		}else if (arg0.getSource().equals(getSectorField())) {
+		} else if (arg0.getSource().equals(getSectorField())) {
 			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
-			SectorEnum type=null;
-			if(o instanceof SectorEnum){
-				type = (SectorEnum)o;
+			SectorEnum type = null;
+			if (o instanceof SectorEnum) {
+				type = (SectorEnum) o;
 			}
-			
+
 			filter.setSector(type);
 			ViewControllers.getController().refreshFilteredData();
 		}
@@ -184,7 +185,6 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 			getSymbolField().addActionListener(this);
 		}
 	}
-	
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {

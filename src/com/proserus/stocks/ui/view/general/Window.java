@@ -19,11 +19,7 @@ public class Window extends JFrame implements WindowListener, Observer,PropertyC
 
 	private static final String IMAGES_BOOK_GIF = "images/Logo.gif";//TODO move
 
-	private static final String COMBO_BOX_SELECTION_BACKGROUND = "ComboBox.selectionBackground";
-
-	private static final String CONTROL_HIGHLIGHT = "controlHighlight";
-
-	private static final String PROSERUS_STOCKS_PORTFOLIO_0_1_BETA = "Stock Portfolio Manager " + Version.VERSION;
+	private static final String PROSERUS_STOCKS_PORTFOLIO_0_1_BETA = "Stock Portfolio Manager " + Version.VERSION + Version.VERSION_SUFFIX;
 
 	JSplitPane split;
 

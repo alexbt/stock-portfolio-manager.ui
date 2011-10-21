@@ -30,6 +30,8 @@ public class Launch {
 			controllers.getController().checkDatabaseVersion();
 			controllers.getWindow().start();
 			controllers.getController().refresh();
+			
+			controllers.getController().checkNewVersion();
 		} catch (RuntimeException e) {
 			LOGGER.fatal("Runtime exception", e);
 			throw e;

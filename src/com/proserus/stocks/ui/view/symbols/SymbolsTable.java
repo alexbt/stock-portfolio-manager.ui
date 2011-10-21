@@ -32,6 +32,7 @@ import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.actions.ShowEditSymbolAction;
 import com.proserus.stocks.ui.view.common.AbstractTable;
+import com.proserus.stocks.ui.view.common.CurrencyComboRenderer;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 
 public class SymbolsTable extends AbstractTable implements EventListener, KeyListener,MouseListener {
@@ -71,6 +72,7 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
 			comboBox.addItem(cur);
 		}
+		comboBox.setRenderer(new CurrencyComboRenderer());
 		comboBox.setMaximumRowCount(12);
 		sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
 		

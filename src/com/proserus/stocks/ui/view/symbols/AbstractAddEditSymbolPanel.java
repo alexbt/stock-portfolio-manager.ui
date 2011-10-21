@@ -2,15 +2,15 @@ package com.proserus.stocks.ui.view.symbols;
 import java.awt.Component;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 
 
 public abstract class AbstractAddEditSymbolPanel extends JPanel{
@@ -35,7 +35,7 @@ public abstract class AbstractAddEditSymbolPanel extends JPanel{
 		symbolField = new JTextField();
 		symbolField.setColumns(10);
 		
-		companyNameLabel = new JLabel("Company Name:");
+		companyNameLabel = new JLabel("Company Name (Optional):");
 		
 		currencyLabel = new JLabel("Currency:");
 		

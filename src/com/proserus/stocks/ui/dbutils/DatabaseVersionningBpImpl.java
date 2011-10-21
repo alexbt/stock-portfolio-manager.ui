@@ -1,5 +1,15 @@
 package com.proserus.stocks.ui.dbutils;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Properties;
+
 import javax.persistence.PersistenceException;
 import javax.swing.JOptionPane;
 
@@ -11,10 +21,14 @@ import com.proserus.stocks.bo.common.BoBuilder;
 import com.proserus.stocks.bo.common.DBVersion;
 import com.proserus.stocks.bp.dao.PersistenceManager;
 import com.proserus.stocks.bp.services.DatabaseVersionningBp;
-import com.proserus.stocks.ui.model.DBVersionImpl;
+import com.proserus.stocks.ui.view.general.Version;
 
 @Singleton
 public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
+	private static final String LATESTVERSION_PROPERTY = "latestversion";
+
+	public static final String LATEST_VERSION_URL = "http://stock-portfolio-manager.googlecode.com/hg/latestversion";
+
 	private static Logger log = Logger.getLogger(DatabaseVersionningBpImpl.class.getName());
 
 	@Inject
@@ -23,51 +37,68 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 	@Inject
 	private PersistenceManager persistenceManager;
 
+	public void setPersistenceManager(PersistenceManager persistenceManager) {
+		this.persistenceManager = persistenceManager;
+	}
+
 	@Override
-	public DBVersion check() {
+	public DBVersion retrieveCurrentVersion() {
 		log.debug("Verifying the current version");
 		DBVersion version = null;
 
 		try {
-			version = persistenceManager.getEntityManager().find(DBVersionImpl.class, 1);
+
+			try {
+				version = (DBVersion) persistenceManager.getEntityManager().createNamedQuery("version.find").getSingleResult();
+			} catch (PersistenceException e2) {
+
+			}
 
 			if (version == null) {
 				version = boBuilder.getVersion();
-				version.setDatabaseVersion(DatabaseUpdagreEnum.CREATE_TABLES_VERSION.getVersion());
-			}
 
-			else if (!DbUtils.tableExist("TRANSACTION", persistenceManager)) {
-				version.setDatabaseVersion(DatabaseUpdagreEnum.CREATE_TABLES_TRANSACTION.getVersion());
-			}
+				if (!DbUtils.tableExist("TRANSACTION", persistenceManager)) {
+					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_TRANSACTION.getVersion());
+				}
 
-			else if (!DbUtils.tableExist("SYMBOL", persistenceManager)) {
-				version.setDatabaseVersion(DatabaseUpdagreEnum.CREATE_TABLES_SYMBOL.getVersion());
-			}
+				else if (!DbUtils.tableExist("SYMBOL", persistenceManager)) {
+					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_SYMBOL.getVersion());
+				}
 
-			else if (!DbUtils.tableExist("LABEL", persistenceManager)) {
-				version.setDatabaseVersion(DatabaseUpdagreEnum.CREATE_TABLES_LABEL.getVersion());
-			}
+				else if (!DbUtils.tableExist("LABEL", persistenceManager)) {
+					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_LABEL.getVersion());
+				}
 
-			else if (!DbUtils.tableExist("HISTORICALPRICE", persistenceManager)) {
-				version.setDatabaseVersion(DatabaseUpdagreEnum.CREATE_TABLES_HISTORICALPRICE.getVersion());
-			}
+				else if (!DbUtils.tableExist("HISTORICALPRICE", persistenceManager)) {
+					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_HISTORICALPRICE.getVersion());
+				}
 
-			else if (!DbUtils.tableExist("TRANSACTION_LABEL", persistenceManager)) {
-				version.setDatabaseVersion(DatabaseUpdagreEnum.CREATE_TABLES_TRANSACTION_LABEL.getVersion());
-			}
+				else if (!DbUtils.tableExist("TRANSACTION_LABEL", persistenceManager)) {
+					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_TRANSACTION_LABEL.getVersion());
+				}
 
-			else if (!DbUtils.tableExist("SYMBOL_PRICES", persistenceManager)) {
-				version.setDatabaseVersion(DatabaseUpdagreEnum.CREATE_TABLES_SYMBOL_PRICES.getVersion());
-			}
+				else if (!DbUtils.tableExist("SYMBOL_PRICES", persistenceManager)) {
+					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_SYMBOL_PRICES.getVersion());
+				}
+				
+				else if (!DbUtils.tableExist("VERSION", persistenceManager)) {
+					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_VERSION.getVersion());
+				}
+				
+				else if (!DbUtils.sequenceExist("HIBERNATE_SEQUENCE", persistenceManager)) {
+					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_HIBERNATE_SEQUENCE.getVersion());
+				}
 
-			else if (!DbUtils.sequenceExist("HIBERNATE_SEQUENCE", persistenceManager)) {
-				version.setDatabaseVersion(DatabaseUpdagreEnum.CREATE_TABLES_HIBERNATE_SEQUENCE.getVersion());
+				else {
+					assert false : "Should not be here... but let's take no chances...";
+					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_TRANSACTION.getVersion());
+				}
 			}
 
 		} catch (PersistenceException e2) {
+			assert false : "Should not be here... but let's take no chances...";
 			log.debug("database does not exist");
-			version = boBuilder.getVersion();
-			version.setDatabaseVersion(DatabaseUpdagreEnum.CREATE_DATABASE.getVersion());
+			version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_TRANSACTION.getVersion());
 		}
 
 		assert version != null;
@@ -76,14 +107,15 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 	@Override
 	public void upgrade(DBVersion version) {
-		assert version.getDatabaseVersion() < DatabaseUpdagreEnum.getLatestVersion();
-		log.debug("Upgrading from Version " + version.getDatabaseVersion() + " to " + DatabaseUpdagreEnum.getLatestVersion());
+		assert version.getDatabaseVersion() < DatabaseUpgradeEnum.getLatestVersion();
+		log.debug("Upgrading from Version " + version.getDatabaseVersion() + " to " + DatabaseUpgradeEnum.getLatestVersion());
 
-		boolean firstTime = (version.getDatabaseVersion() == DatabaseUpdagreEnum.CREATE_DATABASE.getVersion());
+		boolean firstTime = (version.getDatabaseVersion() == DatabaseUpgradeEnum.getInitialVersion());
 		if (!firstTime) {
 			int n = JOptionPane.showConfirmDialog(null, "This new version will perform an update on the data format.\n "
-			        + "We strongly suggest you manually backup your the directory 'data' under the StockPortfolio folder before continuing.\n"
-			        + "Do you want to perform the upgrade now ?", "Upgrading data format", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			        + "If you wish to manually backup your data first, please click 'No'.\n" +
+			        		"The most reliable way to backup your data is to make a copy of the 'data' directory\n\n"
+			        + "Do you want to perform the upgrade now and launch the application ?", "Upgrading data format", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			if (n != JOptionPane.YES_OPTION) {
 				System.exit(0);
@@ -91,13 +123,13 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		}
 		persistenceManager.getEntityManager().getTransaction().begin();
 
-		while (version.getDatabaseVersion() < DatabaseUpdagreEnum.getLatestVersion()) {
-			for (DatabaseStrategy strategy : DatabaseUpdagreEnum.getVersionStrategies(version.getDatabaseVersion())) {
+		while (version.getDatabaseVersion() < DatabaseUpgradeEnum.getLatestVersion()) {
+			for (DatabaseStrategy strategy : DatabaseUpgradeEnum.getVersionStrategies(version.getDatabaseVersion())) {
 				strategy.applyUpgrade(persistenceManager, version);
 			}
 			version.incrementVersion();
 		}
-		DatabaseUpdagreEnum.PERSIST_LATEST_VERSION.getStrategy().applyUpgrade(persistenceManager, version);
+		DatabaseUpgradeEnum.PERSIST_LATEST_VERSION.getStrategy().applyUpgrade(persistenceManager, version);
 
 		if (persistenceManager.getEntityManager().getTransaction().getRollbackOnly()) {
 			log.debug("Version check and upgrade is rolledback from version " + version.getDatabaseVersion());
@@ -115,5 +147,86 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 				        JOptionPane.INFORMATION_MESSAGE, null);
 			}
 		}
+	}
+
+	@Override
+	public boolean isNewerVersion(double latestVersion) {
+		Properties pro = new Properties();
+
+		loadProperty(pro);
+
+		if (pro.getProperty(LATESTVERSION_PROPERTY) == null) {
+			writeVersion(pro, Version.VERSION);
+			loadProperty(pro);
+		}
+
+		if (pro.getProperty(LATESTVERSION_PROPERTY) != null) {
+			double currentVersion = Double.parseDouble(pro.getProperty(LATESTVERSION_PROPERTY));
+
+			if (currentVersion < latestVersion) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private void loadProperty(Properties pro) {
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream("version.properties");
+			pro.load(fis);
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+				}
+			}
+
+		}
+	}
+
+	public void writeVersion(Properties pro, String version) {
+		pro.setProperty(LATESTVERSION_PROPERTY, version);
+
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream("version.properties");
+			pro.store(fos, "");
+			fos.flush();
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		} finally {
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+	}
+
+	@Override
+	public Double retrieveLatestVersion(String url) {
+		Double value = null;
+
+		try {
+			URL oracle = new URL(url);
+			BufferedReader in = new BufferedReader(new InputStreamReader(oracle.openStream()));
+			String versionFromWeb;
+
+			versionFromWeb = in.readLine();
+			value = Double.parseDouble(versionFromWeb);
+
+		} catch (MalformedURLException e) {
+		} catch (IOException e) {
+		} catch (NumberFormatException e) {
+
+		}
+
+		return value;
 	}
 }

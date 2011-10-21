@@ -4,14 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 
 import com.michaelbaranov.microba.calendar.DatePicker;
 import com.proserus.stocks.ui.view.general.LabelsList;
@@ -98,7 +98,7 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 		priceField = new JTextField();
 		priceField.setColumns(10);
 		
-		companyNameLabel = new JLabel("Name:");
+		companyNameLabel = new JLabel("Name (Optional):");
 		
 		priceLabel = new JLabel("Price:");
 		
@@ -137,9 +137,9 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 		
 		labelsList = new LabelsList();
 		
-		JLabel tagsLabel = new JLabel("Tags / Portfolios:");
+		JLabel tagsLabel = new JLabel("Tags / Portfolios (Optional):");
 		
-		reinvestLabel = new JLabel("Reinvest (optional):");
+		reinvestLabel = new JLabel("Reinvest (Optional):");
 		
 		reinvestPriceField = new JTextField();
 		reinvestPriceField.setColumns(10);

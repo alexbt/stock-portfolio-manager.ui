@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/StockPortfolioBO"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/StockPortfolioBP"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
@@ -30,11 +31,11 @@
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/sqltool.jar"/>
-	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/uispec4j-2.4-jdk16.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/javax.inject.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/microba-0.4.4.3.jar" sourcepath="/StockPortfolioLIBS/lib/microba-0.4.4.3-sources.jar"/>
 	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/slf4j-log4j12-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/StockPortfolioLIBS/lib/junit-4.9b2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

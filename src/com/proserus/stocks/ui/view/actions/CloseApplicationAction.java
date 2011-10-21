@@ -10,7 +10,10 @@ public class CloseApplicationAction extends AbstractAction  {
 
 	@Override
     public void actionPerformed(ActionEvent arg0) {
+		try {
 		ViewControllers.getController().cleanup();
-		System.exit(0);
+		}finally{
+			System.exit(0);
+		}
     }
 }

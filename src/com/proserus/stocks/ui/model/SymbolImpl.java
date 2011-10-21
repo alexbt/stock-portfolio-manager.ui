@@ -232,7 +232,7 @@ public class SymbolImpl implements Comparable, Symbol {
      * @see com.proserus.stocks.bo.symbols.SymbolIF#getPrice(org.jfree.data.time.Year)
      */
 	@Override
-    public HistoricalPrice getPrice(Year year) {
+    public HistoricalPrice getPrice(Year year) {//FIXME Year JFree
 		if (year == null) {
 			throw new NullPointerException();
 		}
