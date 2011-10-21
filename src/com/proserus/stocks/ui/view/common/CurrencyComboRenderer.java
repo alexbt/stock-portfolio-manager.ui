@@ -10,6 +10,11 @@ import com.proserus.stocks.bo.symbols.CurrencyEnum;
 
 public class CurrencyComboRenderer extends JLabel implements ListCellRenderer {
 
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 201110210750L;
+
 	public CurrencyComboRenderer() {
 		setOpaque(true);
 		setHorizontalAlignment(CENTER);
