@@ -126,6 +126,9 @@ public class SymbolsTableModel extends AbstractTableModel {
 		if (getValueAt(0, col) != null)
 			return getValueAt(0, col).getClass();
 
+		if(col==3){
+			return CurrencyEnum.class;
+		}
 		return String.class;/*
 							 * switch (col) { case 0: case 1: return String.class; case 2: return Float.class; case 3: return String.class;
 							 * case 4: return Boolean.class; default: return Boolean.class; }

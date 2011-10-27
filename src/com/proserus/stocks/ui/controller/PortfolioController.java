@@ -61,17 +61,31 @@ public class PortfolioController {
 
 		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get());
+		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 		return val;
 	}
 
+	public void calculateSectorAnalysis(){
+			analysisBp.calculateBySector(filter);
+			SwingEvents.SECTOR_ANALYSIS_UPDATED.fire(analysisBp.getSectorAnalysis());
+	}
+	public void calculateLabelAnalysis(){
+		analysisBp.calculateByLabel(filter);
+		SwingEvents.LABEL_ANALYSIS_UPDATED.fire(analysisBp.getLabelAnalysis());
+}
+	
+	public void calculateYearAnalysis(){
+		analysisBp.calculateByYear(filter,getFirstYear());
+		SwingEvents.YEAR_ANALYSIS_UPDATED.fire(analysisBp.getYearAnalysis());
+}
+	
 	public boolean remove(Symbol s) {
 		if (transactionsBp.contains(s)) {
 			return false;
 		}
 		symbolsBp.remove(s);
-		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get());
+		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
 		return true;
 	}
 
@@ -82,7 +96,7 @@ public class PortfolioController {
 	public Symbol addSymbol(Symbol symbol) {
 		setDefaultCurrency(((CurrencyEnum) symbol.getCurrency()));
 		symbol = symbolsBp.add(symbol);
-		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get());
+		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
 		return symbol;
 	}
 
@@ -101,15 +115,16 @@ public class PortfolioController {
 	}
 
 	public void refreshOther() {
-		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get());
+		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
 		SwingEvents.LABELS_UPDATED.fire(labelsBp.get());
 	}
 
 	public void refreshFilteredData() {
-		analysisBp.recalculate(filter);
+		analysisBp.recalculate(filter); 
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
+		SwingEvents.FILTER_SYMBOLS.fire(symbolsBp.get(filter));
 	}
 
 	public Transaction addTransaction(Transaction t) {
@@ -176,18 +191,18 @@ public class PortfolioController {
 	}
 
 	public void updatePrices() {
-		symbolsBp.updatePrices();
+		symbolsBp.updatePrices(filter);
 		analysisBp.recalculate(filter);
 
 		SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED.fire();
-		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get());
+		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
 		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 	}
 
 	public void updateHistoricalPrices() {
-		symbolsBp.updateHistoricalPrices();
+		symbolsBp.updateHistoricalPrices(filter);
 		analysisBp.recalculate(filter);
 
 		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));

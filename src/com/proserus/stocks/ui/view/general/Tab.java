@@ -21,6 +21,7 @@ import com.proserus.stocks.ui.view.summaries.OverviewSymbolTable;
 import com.proserus.stocks.ui.view.summaries.PerformanceCurrencyTable;
 import com.proserus.stocks.ui.view.summaries.PerformanceSymbolTable;
 import com.proserus.stocks.ui.view.symbols.SymbolsTable;
+import com.proserus.stocks.ui.view.transactions.GraphsPanel;
 import com.proserus.stocks.ui.view.transactions.TransactionTable;
 
 public class Tab extends JTabbedPane {
@@ -30,51 +31,22 @@ public class Tab extends JTabbedPane {
 	private static final String OVERVIEW = "Overview";
 
 	public Tab() {
+        addOverviewTab();
+		addPerformanceTab();
+        addTransactionTab();
+		addSymbolTab();
+		addChartsTab();
 
-		JPanel panel = new JPanel(new BorderLayout());
-		JScrollPane js2 = new JScrollPane(OverviewCurrencyTable.getInstance());
-		js2.setBorder(BorderFactory.createLineBorder(Color.red));
-		panel.add(js2, BorderLayout.SOUTH);
-		panel.add(new JScrollPane(OverviewSymbolTable.getInstance()), BorderLayout.CENTER);
-		addTab(OVERVIEW, panel);
+		UIManager.put(TABBED_PANE_SELECTED, Color.black);
+		setVisible(true);
 
-		panel = new JPanel(new BorderLayout());
-		js2 = new JScrollPane(PerformanceCurrencyTable.getInstance());
-		js2.setBorder(BorderFactory.createLineBorder(Color.red));
-		panel.add(js2, BorderLayout.SOUTH);
-		panel.add(new JScrollPane(PerformanceSymbolTable.getInstance()), BorderLayout.CENTER);
-		addTab("Performance", panel);
+	}
 
-		panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		JScrollPane ff = new JScrollPane(TransactionTable.getInstance());
-//		ff.setBorder(new MatteBorder(null));
-		FlowLayout flow = new FlowLayout();
-		flow.setAlignment(FlowLayout.LEFT);
-		// TransactionSymbolFilterPanel symbolFilter = new TransactionSymbolFilterPanel(TransactionTable.getInstance());
-		// panel.add(symbolFilter, BorderLayout.NORTH);
-		JButton button;
-
-		//button.addActionListener(this);
-		JPanel pan = new JPanel();
-		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
-		
-		button = new JButton();
-		button.setActionCommand("removeTransaction");
-		button.setContentAreaFilled(false);
-		button.setAction(new RemoveTransactionAction());
-		button.setToolTipText("Remove Selected Transaction");
-		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
-		pan.add(button);
-		
-		
-		panel.add(pan, BorderLayout.NORTH);
-		panel.add(ff, BorderLayout.CENTER);
-		addTab(TRANSACTIONS, panel);
-
-		
-		
-		pan = new JPanel();
+	private void addSymbolTab() {
+	    JPanel panel;
+	    JButton button;
+	    JPanel pan;
+	    pan = new JPanel();
 		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
 		
 		button = new JButton();
@@ -100,15 +72,62 @@ public class Tab extends JTabbedPane {
 		panel.add(new JScrollPane(SymbolsTable.getInstance()), BorderLayout.CENTER);
 //		panel.add(new AddSymbolsPanel(true), BorderLayout.SOUTH);
 		addTab(SYMBOLS, panel);
+    }
 
-		UIManager.put(TABBED_PANE_SELECTED, Color.black);
-		setVisible(true);
+	private void addPerformanceTab() {
+	    JPanel panel;
+	    JScrollPane js2;
+	    panel = new JPanel(new BorderLayout());
+		js2 = new JScrollPane(PerformanceCurrencyTable.getInstance());
+		js2.setBorder(BorderFactory.createLineBorder(Color.black));
+		panel.add(js2, BorderLayout.SOUTH);
+		panel.add(new JScrollPane(PerformanceSymbolTable.getInstance()), BorderLayout.CENTER);
+		addTab("Performance", panel);
+    }
 
-		// GraphPanel demo = new GraphPanel("Graph");
-		// demo.setVisible(true);
-		// demo.setSize(800, 600);
-		// TODO chart
-		// addTab("Charts", demo);
+	private void addOverviewTab() {
+	    JPanel panel = new JPanel(new BorderLayout());
+		JScrollPane js2 = new JScrollPane(OverviewCurrencyTable.getInstance());
+		js2.setBorder(BorderFactory.createLineBorder(Color.black));
+		panel.add(js2, BorderLayout.SOUTH);
+		panel.add(new JScrollPane(OverviewSymbolTable.getInstance()), BorderLayout.CENTER);
+		addTab(OVERVIEW, panel);
+    }
+	
+	private void addChartsTab() {
+		GraphsPanel panel = new GraphsPanel();
+		addChangeListener(panel);
+		addTab("Graphs", panel);
+    }
 
-	}
+
+	private void addTransactionTab() {
+	    JPanel panel;
+	    panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		JScrollPane ff = new JScrollPane(TransactionTable.getInstance());
+//		ff.setBorder(new MatteBorder(null));
+		FlowLayout flow = new FlowLayout();
+		flow.setAlignment(FlowLayout.LEFT);
+		// TransactionSymbolFilterPanel symbolFilter = new TransactionSymbolFilterPanel(TransactionTable.getInstance());
+		// panel.add(symbolFilter, BorderLayout.NORTH);
+		JButton button;
+
+		//button.addActionListener(this);
+		JPanel pan = new JPanel();
+		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
+		
+		button = new JButton();
+		button.setActionCommand("removeTransaction");
+		button.setContentAreaFilled(false);
+		button.setAction(new RemoveTransactionAction());
+		button.setToolTipText("Remove Selected Transaction");
+		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
+		pan.add(button);
+		
+		
+		panel.add(pan, BorderLayout.NORTH);
+		panel.add(ff, BorderLayout.CENTER);
+		addTab(TRANSACTIONS, panel);
+    }
 }

@@ -28,6 +28,7 @@ import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.actions.ShowEditSymbolAction;
@@ -39,7 +40,7 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
-
+	private Filter filter = ViewControllers.getFilter();
 	private PortfolioController controller = ViewControllers.getController();
 
 	private SymbolsTableModel tableModel;;
@@ -62,7 +63,7 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 		setModel(tableModel);
 		sorter = new TableRowSorter<SymbolsTableModel>(tableModel);
 		setRowSorter(sorter);
-		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
+		EventBus.getInstance().add(this, SwingEvents.FILTER_SYMBOLS);
 		EventBus.getInstance().add(this, SwingEvents.TRANSACTION_UPDATED);
 		setRowHeight(getRowHeight() + 5);
 		setVisible(true);
@@ -101,7 +102,7 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 
 	@Override
 	public void update(Event event, Object model) {
-		if (SwingEvents.SYMBOLS_UPDATED.equals(event)) {
+		if (SwingEvents.FILTER_SYMBOLS.equals(event)) {
 			Collection<Symbol> col = SwingEvents.SYMBOLS_UPDATED.resolveModel(model);
 			Object[] array = col.toArray().length == 0 ? null : col.toArray();
 			tableModel.setData(array);
@@ -116,7 +117,7 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
 		} else if (rowIndex % 2 == 0) {
-			c.setBackground(ColorSettingsDialog.getColor(false));
+			c.setBackground(ColorSettingsDialog.getColor(filter.isFiltered()));
 		} else {
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
 		}

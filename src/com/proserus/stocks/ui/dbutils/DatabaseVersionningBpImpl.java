@@ -143,7 +143,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 			log.debug("Version check and upgrade is successful");
 			persistenceManager.getEntityManager().getTransaction().commit();
 			if (!firstTime) {
-				JOptionPane.showMessageDialog(null, "Upgrade completed successfully!", "Upgrade completed successfully!",
+				JOptionPane.showMessageDialog(null, "Upgrade completed successfully!", "Upgrade completed!",
 				        JOptionPane.INFORMATION_MESSAGE, null);
 			}
 		}

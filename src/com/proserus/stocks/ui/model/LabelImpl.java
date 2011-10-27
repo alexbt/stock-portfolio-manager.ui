@@ -17,7 +17,7 @@ import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
 
 @Entity(name="Label")
-@NamedQueries( { @NamedQuery(name = "label.findAll", query = "SELECT s FROM Label s"),
+@NamedQueries( { @NamedQuery(name = "label.findAll", query = "SELECT s FROM Label s ORDER BY name ASC"),
         @NamedQuery(name = "label.findByName", query = "SELECT s FROM Label s WHERE label = :label"),
         @NamedQuery(name = "label.findSubLabels", query = "SELECT s FROM Label s WHERE label in (:labels)") })
 public class LabelImpl implements Comparable, Label {
