@@ -9,7 +9,7 @@ import com.google.inject.Guice;
 import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class Launch {
-	private static Logger LOGGER = Logger.getLogger("stacktrace." + Launch.class.getName());
+	private static Logger LOGGER = Logger.getLogger(Launch.class);
 
 	// Get exchange rate from web
 	// Set default Currency
@@ -28,6 +28,9 @@ public class Launch {
 	public static void main(String[] args) {
 		// Window s;
 		try {
+			LOGGER.info("**********************************");
+			LOGGER.info("Starting...");
+			LOGGER.info("**********************************");
 			
 			EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
 			queue.push(new EventQueueProxy());

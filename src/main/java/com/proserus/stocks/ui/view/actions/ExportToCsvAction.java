@@ -10,11 +10,16 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
+
+import com.proserus.stocks.ui.Launch;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Window;
 
 public class ExportToCsvAction extends AbstractAction  {
+	private static Logger LOGGER = Logger.getLogger(ExportToCsvAction.class);
 	private static final long serialVersionUID = 201404031819L;
 	private PortfolioController controller = ViewControllers.getController();
 	private Window window = ViewControllers.getWindow();
@@ -42,11 +47,9 @@ public class ExportToCsvAction extends AbstractAction  {
 				fos.write(baos.toByteArray());
 				fos.close();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.log(Priority.FATAL, "Could not find file", e);
 			} catch (IOException e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
+				LOGGER.log(Priority.FATAL, "Unexpected error", e);
             }
 		}
     }

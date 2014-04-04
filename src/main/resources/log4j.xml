@@ -18,14 +18,6 @@
         </layout>
     </appender>
     
-    <appender name="stacktraceAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="./logs/errors.log"/>
-        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %C{1} - %m%n"/>
-        </layout>
-    </appender>
-
     <logger name="com.proserus">
         <level value="debug"/>
         <appender-ref ref="logAppender"/>
@@ -35,9 +27,9 @@
         <level value="debug"/>
         <appender-ref ref="calculsAppender"/>
     </logger>
-    
-    <logger name="stacktrace.com.proserus">
-        <level value="debug"/>
+   
+    <logger name="org.hibernate">
+        <level value="warn"/>
         <appender-ref ref="logAppender"/>
     </logger>
     

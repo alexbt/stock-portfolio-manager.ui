@@ -6,27 +6,26 @@
 		<groupId>com.proserus.stock</groupId>
 		<artifactId>stockportfolioparent</artifactId>
 		<version>${version}</version>
-		<relativePath>../StockPortfolioLIBS</relativePath>
+		<relativePath>../stockportfolio-parent</relativePath>
 	</parent>
 
 	<artifactId>stockportfolioswing</artifactId>
 	<name>Stock Portfolio Manager - SWING</name>
 	<description>Stock Portfolio Manager - SWING UI</description>
-
+	
 	<properties>
-		<jdk.version>1.6</jdk.version>
-		<version.suffix>Beta</version.suffix>
+		<folder.swing>${project.basedir}</folder.swing>
+		<archive.swing>StockPortfolioLauncher</archive.swing>
 	</properties>
 
 	<build>
-		<finalName>StockPortfolioLauncher</finalName>
+		<finalName>${archive.swing}</finalName>
 
 		<plugins>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
-					<outputDirectory>${buildDir}</outputDirectory>
 					<archive>
 						<manifest>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>

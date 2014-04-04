@@ -5,7 +5,7 @@ java source files are compiled by maven
 package com.proserus.stocks.ui.view.general;
 
 public interface Version {
-	public static String TIMESTAMP = "20140403-2309";
+	public static String TIMESTAMP = "20140404-1532";
 	public static String VERSION = "0.24";
 	public static String VERSION_SUFFIX = "Beta";
 }
