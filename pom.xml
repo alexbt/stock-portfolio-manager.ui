@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>com.proserus.stock</groupId>
 		<artifactId>stockportfolioparent</artifactId>
-		<version>${version}</version>
+		<version>0.24</version>
 		<relativePath>../stockportfolio-parent</relativePath>
 	</parent>
 
 	<artifactId>stockportfolioswing</artifactId>
-	<name>Stock Portfolio Manager - SWING</name>
-	<description>Stock Portfolio Manager - SWING UI</description>
+	<name>Stock Portfolio Manager - UI</name>
+	<description>Stock Portfolio Manager - UI</description>
 
 	<build>
 		<plugins>
@@ -73,7 +73,7 @@
 
 							public interface Version {
 							public static String TIMESTAMP = "${maven.build.timestamp}";
-							public static String VERSION = "${version}";
+							public static String VERSION = "${project.version}";
 							public static String VERSION_SUFFIX = "${version.suffix}";
 							}</echo>
 					</tasks>
@@ -99,13 +99,13 @@
 		<dependency>
 			<groupId>com.proserus.stock</groupId>
 			<artifactId>stockportfoliobo</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.proserus.stock</groupId>
 			<artifactId>stockportfoliobp</artifactId>
-			<version>${version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
