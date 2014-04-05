@@ -29,7 +29,7 @@ public class AnalysisTest {
 	public void test() {
 		AnalysisImpl ana = new AnalysisImpl();
 		Collection<Transaction> col = new ArrayList<Transaction>();
-		Symbol s = createSymbol("PRS","Groupe Proserus Inc.", SectorEnum.TECHNOLOGY,
+		Symbol s = createSymbol("PRS","Groupe Proserus Inc.", null,
 				CurrencyEnum.CAD, new BigDecimal(45));
 		Collection<Label> labels = createLabels(new String[] { "Label1, Label2" });
 
@@ -49,7 +49,7 @@ public class AnalysisTest {
 				new BigDecimal(0), new BigDecimal(.04), new BigDecimal(1000),
 				s, labels);
 		col.add(t);
-
+		
 		c.add(Calendar.MONTH, 3);
 		t = createTransaction(TransactionType.SELL, c.getTime(),
 				new BigDecimal(10), new BigDecimal(75), new BigDecimal(1000),
