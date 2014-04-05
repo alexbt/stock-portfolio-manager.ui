@@ -62,6 +62,7 @@ public class PortfolioController {
 		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
+		SwingEvents.SYMBOLS_LIST_UPDATED.fire(symbolsBp.get());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
 		return val;
 	}
@@ -86,6 +87,7 @@ public class PortfolioController {
 		}
 		symbolsBp.remove(s);
 		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
+		SwingEvents.SYMBOLS_LIST_UPDATED.fire(symbolsBp.get());
 		return true;
 	}
 
@@ -97,6 +99,7 @@ public class PortfolioController {
 		setDefaultCurrency(((CurrencyEnum) symbol.getCurrency()));
 		symbol = symbolsBp.add(symbol);
 		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
+		SwingEvents.SYMBOLS_LIST_UPDATED.fire(symbolsBp.get());
 		return symbol;
 	}
 
@@ -116,6 +119,7 @@ public class PortfolioController {
 
 	public void refreshOther() {
 		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
+		SwingEvents.SYMBOLS_LIST_UPDATED.fire(symbolsBp.get());
 		SwingEvents.LABELS_UPDATED.fire(labelsBp.get());
 	}
 
@@ -196,6 +200,7 @@ public class PortfolioController {
 
 		SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED.fire();
 		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
+		SwingEvents.SYMBOLS_LIST_UPDATED.fire(symbolsBp.get());
 		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
 		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());

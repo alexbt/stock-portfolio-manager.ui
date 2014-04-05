@@ -65,7 +65,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		// populateSymbols();
 
 		getSymbolField().setModel(modelSymbols);
-		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
+		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_LIST_UPDATED);
 		getSymbolField().addActionListener(this);
 		getSymbolField().setMaximumRowCount(12);
 
@@ -173,11 +173,11 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 	public void update(Event event, Object model) {
 		if (SwingEvents.TRANSACTION_UPDATED.equals(event)) {
 			populateYears(ViewControllers.getController().getFirstYear());
-		} else if (SwingEvents.SYMBOLS_UPDATED.equals(event)) {
+		} else if (SwingEvents.SYMBOLS_LIST_UPDATED.equals(event)) {
 			Object o = modelSymbols.getSelectedItem();
 			getSymbolField().removeActionListener(this);
 			modelSymbols.removeAllElements();
-			for (Symbol symbol : SwingEvents.SYMBOLS_UPDATED.resolveModel(model)) {
+			for (Symbol symbol : SwingEvents.SYMBOLS_LIST_UPDATED.resolveModel(model)) {
 				modelSymbols.addElement(symbol);
 			}
 			Symbol s = new EmptySymbol();
