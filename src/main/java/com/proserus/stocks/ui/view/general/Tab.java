@@ -25,6 +25,7 @@ import com.proserus.stocks.ui.view.transactions.GraphsPanel;
 import com.proserus.stocks.ui.view.transactions.TransactionTable;
 
 public class Tab extends JTabbedPane {
+	private static final long serialVersionUID = 201404042021L;
 	private static final String TABBED_PANE_SELECTED = "TabbedPane.selected";
 	private static final String SYMBOLS = "Symbols / Watch List";
 	private static final String TRANSACTIONS = "Transactions";

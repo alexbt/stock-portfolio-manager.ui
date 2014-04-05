@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import org.apache.log4j.Priority;
-
 import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class CloseApplicationAction extends AbstractAction {

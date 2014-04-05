@@ -28,8 +28,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
-import org.apache.log4j.Priority;
-
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Transaction;
 import com.proserus.stocks.bo.transactions.TransactionType;
@@ -48,6 +46,7 @@ import com.proserus.stocks.ui.view.general.LabelsList;
 
 public class TransactionTable extends AbstractTable implements EventListener,
 		ActionListener, MouseListener {
+	private static final long serialVersionUID = 201404042021L;
 	private Filter filter = ViewControllers.getFilter();
 
 	private static final String ONE = "1";
@@ -126,6 +125,7 @@ public class TransactionTable extends AbstractTable implements EventListener,
 	}
 
 	private static class PrecisionCellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 201404041920L;
 		private NumberFormat format;
 		private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 

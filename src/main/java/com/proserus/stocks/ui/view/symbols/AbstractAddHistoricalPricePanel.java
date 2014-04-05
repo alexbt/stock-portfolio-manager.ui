@@ -7,6 +7,7 @@ import javax.swing.GroupLayout.Alignment;
 
 
 public abstract  class AbstractAddHistoricalPricePanel extends JPanel{
+	private static final long serialVersionUID = 201404041920L;
 	private JTextField symbolField;
 	private JTextField textField;
 	public AbstractAddHistoricalPricePanel() {

@@ -8,6 +8,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class AbstractFilterPanel extends JPanel{
+	private static final long serialVersionUID = 201404041920L;
 	private LabelsList labelList;
 	private JComboBox yearField;
 	private JLabel transactionTypeLabel;

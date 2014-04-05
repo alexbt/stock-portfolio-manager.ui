@@ -14,6 +14,7 @@ import org.jfree.data.general.PieDataset;
 import com.proserus.stocks.bo.analysis.SectorAnalysis;
 
 public class SectorGraph extends ChartPanel  {
+	private static final long serialVersionUID = 201404041920L;
 
 	public SectorGraph() {
 	    super(null);

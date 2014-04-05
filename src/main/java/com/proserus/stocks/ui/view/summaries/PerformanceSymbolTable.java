@@ -13,19 +13,16 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import com.proserus.stocks.bo.analysis.SymbolAnalysis;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.bp.model.Filter;
-import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 public class PerformanceSymbolTable extends AbstractTable implements EventListener {
-	/**
-     * 
-     */
     private static final long serialVersionUID = 201106191114L;
     
     private Filter filter = ViewControllers.getFilter();
@@ -34,8 +31,6 @@ public class PerformanceSymbolTable extends AbstractTable implements EventListen
 
 	private static final String ZERO = "0";
 
-	private PortfolioController controller = ViewControllers.getController();
-	
 	private PerformanceSymbolModel tableModel = new PerformanceSymbolModel();
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
 	HashMap<String, Color> colors = new HashMap<String, Color>();
@@ -69,7 +64,7 @@ public class PerformanceSymbolTable extends AbstractTable implements EventListen
 	public void update(Event event, Object model) {
 		// TODO Redesign Filter/SharedFilter
 		if(SwingEvents.SYMBOL_ANALYSIS_UPDATED.equals(event)){
-			Collection col = SwingEvents.SYMBOL_ANALYSIS_UPDATED.resolveModel(model);
+			Collection<SymbolAnalysis> col = SwingEvents.SYMBOL_ANALYSIS_UPDATED.resolveModel(model);
 			tableModel.setData(col);
 			setToolTipText(col.toString());
 			getRootPane().validate();

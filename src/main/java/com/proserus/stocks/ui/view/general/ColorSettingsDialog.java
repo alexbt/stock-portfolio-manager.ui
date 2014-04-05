@@ -25,6 +25,8 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 
 public class ColorSettingsDialog extends AbstractDialog implements ActionListener {
+	private static final long serialVersionUID = 201404041920L;
+	
 	private static final String TABBED_PANE_SELECTED = "TabbedPane.selected";
 
 	private static final String COMBO_BOX_SELECTION_BACKGROUND = "ComboBox.selectionBackground";

@@ -35,6 +35,7 @@ import com.proserus.stocks.ui.view.transactions.TransactionTable;
 import com.proserus.stocks.ui.view.transactions.TransactionTableModel;
 
 public class Menu extends JMenuBar {
+	private static final long serialVersionUID = 201404041920L;
 	private static final String ABOUT = "About";
 
 	private static final String HELP = "Help";
@@ -142,13 +143,13 @@ public class Menu extends JMenuBar {
 		menuItem.setName("updatePrices");
 		menu.add(menuItem);
 
-		menuItem = new JMenuItem("Get Old Prices", KeyEvent.VK_O);
+		menuItem = new JMenuItem("Get Historical Prices", KeyEvent.VK_O);
 		menuItem.setAction(UpdateOldPricesAction.getInstance());
-		menuItem.setText("Get Old Prices");
+		menuItem.setText("Get Historical Prices");
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,
 				ActionEvent.CTRL_MASK));
 		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Get Old Prices");
+				"Get Historical Prices");
 		menuItem.setName("updateOldPrices");
 		menu.add(menuItem);
 

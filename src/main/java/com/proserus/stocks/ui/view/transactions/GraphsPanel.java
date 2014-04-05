@@ -15,6 +15,7 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Tab;
 
 public class GraphsPanel extends JPanel implements EventListener,ChangeListener{
+	private static final long serialVersionUID = 201404041920L;
 	private boolean needToRecalculate = false;
 	private boolean graphTabVisible = false;
 	

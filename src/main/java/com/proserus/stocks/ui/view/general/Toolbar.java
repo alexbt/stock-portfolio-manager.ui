@@ -16,6 +16,8 @@ import com.proserus.stocks.ui.view.actions.UpdatePriceAction;
 
 public class Toolbar extends JToolBar{
 	
+	private static final long serialVersionUID = 201404042021L;
+	
 	public Toolbar(){
         addTransaction();
 		addSymbol();
@@ -45,7 +47,7 @@ public class Toolbar extends JToolBar{
 		button.setAction(UpdatePriceAction.getInstance());
 		button.setToolTipText("Updates Current Price From Yahoo");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/RefreshPrice.png")));
-		button.setMnemonic(KeyEvent.VK_P);
+		button.setMnemonic(KeyEvent.VK_C);
 		add(button);
     }
 

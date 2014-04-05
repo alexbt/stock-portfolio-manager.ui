@@ -13,6 +13,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import com.proserus.stocks.bo.analysis.SymbolAnalysis;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
@@ -22,6 +23,7 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 public class OverviewSymbolTable extends AbstractTable implements EventListener {
+	private static final long serialVersionUID = 201404041920L;
 	private Filter filter = ViewControllers.getFilter();
 	
 	private static final String ONE = "1";
@@ -59,7 +61,7 @@ public class OverviewSymbolTable extends AbstractTable implements EventListener 
 	@Override
 	public void update(Event event, Object model) {
 		if(SwingEvents.SYMBOL_ANALYSIS_UPDATED.equals(event)){
-			Collection col = SwingEvents.SYMBOL_ANALYSIS_UPDATED.resolveModel(model);
+			Collection<SymbolAnalysis> col = SwingEvents.SYMBOL_ANALYSIS_UPDATED.resolveModel(model);
 			tableModel.setData(col);
 			// Redesign filters
 			setToolTipText(col.toString());
@@ -86,6 +88,7 @@ public class OverviewSymbolTable extends AbstractTable implements EventListener 
 	}
 
 	private static class PrecisionCellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 201404041920L;
 		private static final String PERCENT_WITH_PARENTHESIS = "(%)";
 		private static final String PERCENT = "%";
 		private static final String EMPTY_STR = "";

@@ -1,5 +1,6 @@
 package com.proserus.stocks.ui.view.symbols;
 
+import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.ui.model.SymbolImpl;
 
 public class EmptySymbol extends SymbolImpl{
@@ -14,7 +15,7 @@ public class EmptySymbol extends SymbolImpl{
 	}
 	
 	@Override
-	public int compareTo(Object arg0) {
+	public int compareTo(Symbol arg0) {
 	    return 1;
 	}
 }

@@ -35,6 +35,7 @@ import com.proserus.stocks.ui.view.common.verifiers.YearVerifier;
 
 public class SymbolsModificationView extends AbstractDialog implements ActionListener, FocusListener,EventListener {
 
+	private static final long serialVersionUID = 201404042021L;
 	private static final String REQUIRED_FIELD_MISSING = "Required field missing";
 	private static final String CANNOT_ADD_PRICE = "Cannot add price";
 	private JTextField customPrice = new JTextField();

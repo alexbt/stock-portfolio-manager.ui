@@ -34,7 +34,7 @@ import com.proserus.stocks.bo.symbols.Symbol;
 @Entity(name="Symbol")
 @NamedQueries( { @NamedQuery(name = "symbol.findAll", query = "SELECT s FROM Symbol s"),
         @NamedQuery(name = "symbol.findByTicker", query = "SELECT s FROM Symbol s WHERE ticker = :ticker") })
-public class SymbolImpl implements Comparable, Symbol {
+public class SymbolImpl implements Comparable<Symbol>, Symbol {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -316,10 +316,7 @@ public class SymbolImpl implements Comparable, Symbol {
 	}
 
 	@Override
-	public int compareTo(Object arg0) {
-		if (!(arg0 instanceof Symbol)) {
-			throw new ClassCastException();
-		}
+	public int compareTo(Symbol arg0) {
 		return getTicker().compareTo(((Symbol) arg0).getTicker());
 	}
 

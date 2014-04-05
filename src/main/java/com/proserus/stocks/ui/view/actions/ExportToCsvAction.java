@@ -10,10 +10,9 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
-import com.proserus.stocks.ui.Launch;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Window;
@@ -47,9 +46,9 @@ public class ExportToCsvAction extends AbstractAction  {
 				fos.write(baos.toByteArray());
 				fos.close();
 			} catch (FileNotFoundException e) {
-				LOGGER.log(Priority.FATAL, "Could not find file", e);
+				LOGGER.log(Level.FATAL, "Could not find file", e);
 			} catch (IOException e) {
-				LOGGER.log(Priority.FATAL, "Unexpected error", e);
+				LOGGER.log(Level.FATAL, "Unexpected error", e);
             }
 		}
     }

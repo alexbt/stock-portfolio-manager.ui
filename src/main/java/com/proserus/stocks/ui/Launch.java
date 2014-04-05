@@ -35,13 +35,13 @@ public class Launch {
 			EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
 			queue.push(new EventQueueProxy());
 			
-			ViewControllers controllers = Guice.createInjector(new SwingModule()).getInstance(ViewControllers.class);
+			Guice.createInjector(new SwingModule()).getInstance(ViewControllers.class);
 			
-			controllers.getController().checkDatabaseVersion();
-			controllers.getWindow().start();
-			controllers.getController().refresh();
+			ViewControllers.getController().checkDatabaseVersion();
+			ViewControllers.getWindow().start();
+			ViewControllers.getController().refresh();
 			
-			controllers.getController().checkNewVersion();
+			ViewControllers.getController().checkNewVersion();
 		} catch (RuntimeException e) {
 			LOGGER.fatal("Runtime exception", e);
 			throw e;

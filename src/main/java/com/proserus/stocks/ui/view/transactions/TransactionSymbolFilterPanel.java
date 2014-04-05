@@ -33,6 +33,7 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
 public class TransactionSymbolFilterPanel extends JPanel implements EventListener, ActionListener {
+	private static final long serialVersionUID = 201404042021L;
 	private Filter filter = ViewControllers.getFilter();
 	
 	private static final String SYMBOL = "Symbol:";

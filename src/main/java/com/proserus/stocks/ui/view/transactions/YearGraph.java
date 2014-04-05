@@ -19,6 +19,7 @@ import com.proserus.stocks.bo.analysis.YearAnalysis;
 import com.proserus.stocks.bo.utils.BigDecimalUtils;
 
 public class YearGraph extends ChartPanel  {
+	private static final long serialVersionUID = 201404042021L;
 
 	public YearGraph() {
 	    super(null);

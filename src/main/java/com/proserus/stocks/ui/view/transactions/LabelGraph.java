@@ -18,6 +18,7 @@ import org.jfree.ui.TextAnchor;
 import com.proserus.stocks.bo.analysis.LabelAnalysis;
 
 public class LabelGraph extends ChartPanel {
+	private static final long serialVersionUID = 201404041920L;
 
 	public LabelGraph() {
 		super(null);

@@ -6,6 +6,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class AddHistoricalPricePanelImpl extends AbstractAddHistoricalPricePanel implements ActionListener, Observer {
+	private static final long serialVersionUID = 201404041920L;
 	public AddHistoricalPricePanelImpl() {
 		super();
 	}

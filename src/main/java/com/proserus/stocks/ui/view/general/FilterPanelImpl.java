@@ -37,9 +37,10 @@ import com.proserus.stocks.ui.view.symbols.EmptySymbol;
  * 
  */
 public class FilterPanelImpl extends AbstractFilterPanel implements ActionListener, EventListener, KeyListener {
+	private static final long serialVersionUID = 201404041920L;
 	private SortedComboBoxModel modelSymbols = new SortedComboBoxModel();
 	private SortedComboBoxModel modelYears = new SortedComboBoxModel(new FilterYearComparator());
-	static private FilterPanelImpl singleton = new FilterPanelImpl();
+	private static FilterPanelImpl singleton = new FilterPanelImpl();
 	private Filter filter = ViewControllers.getFilter();
 	
 	static public FilterPanelImpl getInstance() {

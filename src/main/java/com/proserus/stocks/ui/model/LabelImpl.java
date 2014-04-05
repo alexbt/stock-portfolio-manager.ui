@@ -20,7 +20,7 @@ import com.proserus.stocks.bo.transactions.Transaction;
 @NamedQueries( { @NamedQuery(name = "label.findAll", query = "SELECT s FROM Label s ORDER BY name ASC"),
         @NamedQuery(name = "label.findByName", query = "SELECT s FROM Label s WHERE label = :label"),
         @NamedQuery(name = "label.findSubLabels", query = "SELECT s FROM Label s WHERE label in (:labels)") })
-public class LabelImpl implements Comparable, Label {
+public class LabelImpl implements Comparable<Label>, Label {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Integer id;
@@ -118,11 +118,8 @@ public class LabelImpl implements Comparable, Label {
      * @see com.proserus.stocks.bo.transactions.Label#compareTo(java.lang.Object)
      */
     @Override
-	public int compareTo(Object arg0) {
-		if (arg0 instanceof LabelImpl) {
-			return ((Label) arg0).toString().compareTo(toString());
-		}
-		return -1;
+	public int compareTo(Label label) {
+		return this.getName().compareToIgnoreCase(label.getName());
 	}
 
 	/* (non-Javadoc)

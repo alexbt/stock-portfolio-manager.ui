@@ -2,12 +2,12 @@ package com.proserus.stocks.ui.view.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import javax.swing.DefaultRowSorter;
 import javax.swing.JMenuItem;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 
@@ -19,8 +19,6 @@ abstract public class AbstractTable extends JTable {
 	private static final long serialVersionUID = 20101011L;
 
 	HashMap<String, TableColumn> removedColumns = new HashMap<String, TableColumn>();
-
-	private static Logger LOGGER = Logger.getLogger(AbstractTable.class.toString());
 
 	public AbstractTable() {
 	}
@@ -67,10 +65,10 @@ abstract public class AbstractTable extends JTable {
 		} else {
 			sortKey = new RowSorter.SortKey(0, SortOrder.DESCENDING);
 		}
-		ArrayList alist = new ArrayList(1);
+		ArrayList<SortKey> alist = new ArrayList<SortKey>(1);
 		alist.add(sortKey);
-		((DefaultRowSorter) getRowSorter()).setSortable(0, true);
-		((DefaultRowSorter) getRowSorter()).setSortKeys(alist);
-		((DefaultRowSorter) getRowSorter()).sort();
+		((DefaultRowSorter<?,?>) getRowSorter()).setSortable(0, true);
+		((DefaultRowSorter<?,?>) getRowSorter()).setSortKeys(alist);
+		((DefaultRowSorter<?,?>) getRowSorter()).sort();
 	}
 }

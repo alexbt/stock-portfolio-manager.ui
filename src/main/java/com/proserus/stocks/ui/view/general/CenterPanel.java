@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class CenterPanel extends JPanel implements ActionListener{
+	private static final long serialVersionUID = 201404041920L;
 	
 	private JButton updateInternet = new JButton("Get Current Prices");
 	private JButton updateHistorical = new JButton("Get Old Prices");

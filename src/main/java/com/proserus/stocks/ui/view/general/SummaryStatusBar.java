@@ -31,15 +31,10 @@ import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
-import com.proserus.stocks.ui.controller.PortfolioController;
-import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class SummaryStatusBar extends JPanel implements EventListener {
-	private static final String ONE_SPACE = " ";
 
 	private static final long serialVersionUID = 20080113L;
-
-	private PortfolioController controller = ViewControllers.getController();
 
 	private static final String TOTAL_PRICE = "Last price update: ";
 	private static final String TOTAL_PROFIT = "Last historical price update: ";

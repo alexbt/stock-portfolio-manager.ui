@@ -5,6 +5,7 @@ import org.jfree.data.time.Year;
 import com.proserus.stocks.bp.utils.DateUtil;
 
 public class EmptyYear extends Year{
+	private static final long serialVersionUID = 201404041920L;
 	public EmptyYear(){
 		super(0);
 	}

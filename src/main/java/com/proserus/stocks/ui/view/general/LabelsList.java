@@ -36,8 +36,6 @@ import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 
-import sun.awt.CausedFocusEvent;
-
 import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
 import com.proserus.stocks.bp.events.Event;
@@ -69,7 +67,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 			.getController();
 
 	private JScrollPane js;
-	private JList list = new JList();
+	private JList listOfLabels = new JList();
 	private JTextField newLabelField = new JTextField();
 	private HashMap<String, Label> labels = new HashMap<String, Label>();
 	private Component parent;
@@ -101,7 +99,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 		newLabelField.addKeyListener(this);
 		newLabelField.setInputVerifier(new DateVerifier());
 		add(newLabelField, BorderLayout.NORTH);
-		list.setVisibleRowCount(6);
+		listOfLabels.setVisibleRowCount(6);
 		setSize(40, 100);
 		setVisible(true);
 	}
@@ -119,7 +117,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 		newLabelField.addKeyListener(this);
 		newLabelField.setInputVerifier(new DateVerifier());
 		add(newLabelField, BorderLayout.NORTH);
-		list.setVisibleRowCount(10);
+		listOfLabels.setVisibleRowCount(10);
 
 		setVisible(true);
 		setSize(40, 100);
@@ -135,39 +133,40 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 	}
 
 	public void setListColor(Color bg) {
-		list.setBackground(bg);
+		listOfLabels.setBackground(bg);
 		setBackground(bg);
 	}
 
 	public void setHorizontal(boolean flag) {
 		if (flag) {
-			list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-			list.setVisibleRowCount(-1);
-			list.setFixedCellHeight(25);
+			listOfLabels.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+			listOfLabels.setVisibleRowCount(-1);
+			listOfLabels.setFixedCellHeight(25);
 		} else {
-			list.setLayoutOrientation(JList.VERTICAL);
+			listOfLabels.setLayoutOrientation(JList.VERTICAL);
 		}
 
 	}
 
 	private void initList() {
-		js = new JScrollPane(list);
+		js = new JScrollPane(listOfLabels);
 
-		list.addMouseMotionListener(new MouseAdapter() {
+		listOfLabels.addMouseMotionListener(new MouseAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent me) {
 				Point p = new Point(me.getX(), me.getY());
-				list.setSelectedIndex(list.locationToIndex(p));
-				list.requestFocus();
+				listOfLabels.setSelectedIndex(listOfLabels.locationToIndex(p));
+				listOfLabels.requestFocus();
 			}
 		});
 
 		setLayout(new BorderLayout());
 		add(js, BorderLayout.CENTER);
-		list.setCellRenderer(new CheckListRenderer(isFilteringModeOn));
-		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		list.addMouseListener(this);
-		list.addKeyListener(this);
+		listOfLabels.setCellRenderer(new CheckListRenderer(isFilteringModeOn));
+		listOfLabels
+				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		listOfLabels.addMouseListener(this);
+		listOfLabels.addKeyListener(this);
 	}
 
 	private void setupClosedOnClick() {
@@ -205,10 +204,11 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 
 	public HashMap<String, Label> getSelectedValues() {
 		HashMap<String, Label> a = new HashMap<String, Label>();
-		for (int i = 0; i < list.getModel().getSize(); i++) {
-			if (((CheckListItem) list.getModel().getElementAt(i)).isSelected()) {
-				Label str = ((CheckListItem) list.getModel().getElementAt(i))
-						.get();
+		for (int i = 0; i < listOfLabels.getModel().getSize(); i++) {
+			if (((CheckListItem) listOfLabels.getModel().getElementAt(i))
+					.isSelected()) {
+				Label str = ((CheckListItem) listOfLabels.getModel()
+						.getElementAt(i)).get();
 				a.put(str.toString(), str);
 			}
 		}
@@ -238,9 +238,9 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 		for (Label label : transaction.getLabelsValues()) {
 			labels.put(label.getName(), label);
 		}
-		for (int i = 0; i < list.getModel().getSize(); i++) {
-			CheckListItem check = (CheckListItem) list.getModel().getElementAt(
-					i);
+		for (int i = 0; i < listOfLabels.getModel().getSize(); i++) {
+			CheckListItem check = (CheckListItem) listOfLabels.getModel()
+					.getElementAt(i);
 			check.setSelected(labels.containsKey(check.toString()));
 		}
 	}
@@ -256,14 +256,14 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 				&& newLabelField.getInputVerifier().verify(newLabelField)
 				&& newLabelField.getText().compareTo(EMPTY_STR) != 0) {
 			addNewLabel();
-		} else if (arg0.getSource().equals(list)
-				&& list.getVisibleRowCount() > 0
+		} else if (arg0.getSource().equals(listOfLabels)
+				&& listOfLabels.getVisibleRowCount() > 0
 				&& (arg0.getKeyChar() == KeyEvent.VK_SPACE || arg0.getKeyChar() == KeyEvent.VK_ENTER)) {
 			updateLabelSelection();
-			updateFilter(((CheckListItem) list.getSelectedValue()));
-		} else if (arg0.getSource().equals(list)
+			updateFilter(((CheckListItem) listOfLabels.getSelectedValue()));
+		} else if (arg0.getSource().equals(listOfLabels)
 				&& (arg0.getKeyChar() == KeyEvent.VK_DELETE)) {
-			deleteLabel(((CheckListItem) list.getSelectedValue()));
+			deleteLabel(((CheckListItem) listOfLabels.getSelectedValue()));
 		}
 	}
 
@@ -274,15 +274,18 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 				JOptionPane.QUESTION_MESSAGE);
 		if (n == JOptionPane.YES_OPTION) {
 			transactionController.remove(item.get());
+			labels.remove(item.get().getName());
+			item.setSelected(false);
 		}
 	}
 
 	private void updateLabelSelection() {
-		CheckListItem item = ((CheckListItem) list.getSelectedValue());
+		CheckListItem item = ((CheckListItem) listOfLabels.getSelectedValue());
 		if (item != null) {
 			item.setSelected(!item.isSelected());
-			list.repaint(list.getCellBounds(list.getSelectedIndex(),
-					list.getSelectedIndex()));
+			listOfLabels.repaint(listOfLabels.getCellBounds(
+					listOfLabels.getSelectedIndex(),
+					listOfLabels.getSelectedIndex()));
 			if (item.isSelected()) {
 				labels.put(item.get().getName(), item.get());
 			} else {
@@ -344,15 +347,13 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 
 			for (Label label : col) {
 				item[i] = new CheckListItem(label);
-				if (!isFilteringModeOn) {
-					if (labels.containsKey(label.getName())) {
-						item[i].setSelected(true);
-					}
+				if (labels.containsKey(label.getName())) {
+					item[i].setSelected(true);
 				}
 				i++;
 			}
 			Arrays.sort(item);
-			list.setListData(item);
+			listOfLabels.setListData(item);
 		}
 	}
 
@@ -426,21 +427,19 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 
 	@Override
 	public void mouseReleased(MouseEvent event) {
-
 	}
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void focusLost(FocusEvent arg0) {
-		if (arg0.equals(CausedFocusEvent.Cause.TRAVERSAL_FORWARD)) {
-			list.requestFocus();
-			list.setSelectedIndex(0);
-			list.repaint(list.getCellBounds(0, 0));
+		//FIXME is this used?
+		if (arg0.paramString().startsWith("TRAVERSAL_FORWARD")) {
+			listOfLabels.requestFocus();
+			listOfLabels.setSelectedIndex(0);
+			listOfLabels.repaint(listOfLabels.getCellBounds(0, 0));
 		}
 	}
 }

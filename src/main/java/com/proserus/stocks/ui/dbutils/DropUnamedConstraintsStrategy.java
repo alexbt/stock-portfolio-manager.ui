@@ -21,6 +21,7 @@ public class DropUnamedConstraintsStrategy implements DatabaseStrategy {
 
 	@Override
 	public void applyUpgrade(PersistenceManager pm, DBVersion version) {
+		@SuppressWarnings("unchecked")
 		List<Object> list = pm.getEntityManager().createNativeQuery("select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS").getResultList();
 
 		for (CONSTRAINT_TYPES constraintType : CONSTRAINT_TYPES.values()) {

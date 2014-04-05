@@ -16,13 +16,13 @@ import javax.swing.DefaultComboBoxModel;
  *  to the model will cause the items to be inserted in sorted order.
  */
 public class SortedComboBoxModel extends DefaultComboBoxModel {
-	private Comparator comparator;
+	private static final long serialVersionUID = 201404041920L;
+	private Comparator<Object> comparator;
 	
 	/*
 	 * Static method is required to make sure the data is in sorted order before it is added to the model
 	 */
-	@SuppressWarnings("unchecked")
-	protected static Vector sortVector(Vector items, Comparator comparator) {
+	protected static Vector<Object> sortVector(Vector<Object> items, Comparator<Object> comparator) {
 		Collections.sort(items, comparator);
 		return items;
 	}
@@ -30,8 +30,7 @@ public class SortedComboBoxModel extends DefaultComboBoxModel {
 	/*
 	 * Static method is required to make sure the data is in sorted order before it is added to the model
 	 */
-	@SuppressWarnings("unchecked")
-	protected static Object[] sortArray(Object[] items, Comparator comparator) {
+	protected static Object[] sortArray(Object[] items, Comparator<Object> comparator) {
 		Arrays.sort(items, comparator);
 		return items;
 	}
@@ -46,7 +45,7 @@ public class SortedComboBoxModel extends DefaultComboBoxModel {
 	/*
 	 * Create an empty model that will use the specified Comparator
 	 */
-	public SortedComboBoxModel(Comparator comparator) {
+	public SortedComboBoxModel(Comparator<Object> comparator) {
 		super();
 		this.comparator = comparator;
 	}
@@ -61,7 +60,7 @@ public class SortedComboBoxModel extends DefaultComboBoxModel {
 	/*
 	 * Create a model with data and use the specified Comparator
 	 */
-	public SortedComboBoxModel(Object[] items, Comparator comparator) {
+	public SortedComboBoxModel(Object[] items, Comparator<Object> comparator) {
 		super(sortArray(items, comparator));
 		this.comparator = comparator;
 	}
@@ -69,7 +68,7 @@ public class SortedComboBoxModel extends DefaultComboBoxModel {
 	/*
 	 * Create a model with data and use the nature sort order of the items
 	 */
-	public SortedComboBoxModel(Vector items) {
+	public SortedComboBoxModel(Vector<Object> items) {
 		this(items, null);
 	}
 
@@ -77,7 +76,7 @@ public class SortedComboBoxModel extends DefaultComboBoxModel {
 	 * Create a model with data and use the specified Comparator
 	 */
 
-	public SortedComboBoxModel(Vector items, Comparator comparator) {
+	public SortedComboBoxModel(Vector<Object> items, Comparator<Object> comparator) {
 		super(sortVector(items, comparator));
 		this.comparator = comparator;
 	}
@@ -102,7 +101,7 @@ public class SortedComboBoxModel extends DefaultComboBoxModel {
 					break;
 				}
 			} else {
-				Comparable c = (Comparable) getElementAt(index);
+				Comparable<Object> c = (Comparable<Object>) getElementAt(index);
 
 				if (c.compareTo(element) > 0) {
 					break;

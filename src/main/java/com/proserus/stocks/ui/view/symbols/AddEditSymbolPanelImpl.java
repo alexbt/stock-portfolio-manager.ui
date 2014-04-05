@@ -20,6 +20,7 @@ import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.CurrencyComboRenderer;
 
 public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implements ActionListener, EventListener, KeyListener{
+	private static final long serialVersionUID = 201404041920L;
 
 	private static final String REQUIRED_FIELD_S_MISSING = "Required field(s) missing";
 

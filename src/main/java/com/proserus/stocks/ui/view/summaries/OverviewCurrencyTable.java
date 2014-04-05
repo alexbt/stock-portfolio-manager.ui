@@ -12,17 +12,18 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
+import com.proserus.stocks.bo.analysis.CurrencyAnalysis;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.bp.model.Filter;
-import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 
 public class OverviewCurrencyTable extends AbstractTable implements EventListener {
+	private static final long serialVersionUID = 201404041920L;
 	private Filter filter = ViewControllers.getFilter();
 	
 	private static final int ROW_SIZE = 21;
@@ -30,8 +31,6 @@ public class OverviewCurrencyTable extends AbstractTable implements EventListene
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
-
-	private PortfolioController sumController = ViewControllers.getController();
 
 	private OverviewCurrencyModel tableModel = new OverviewCurrencyModel();
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
@@ -67,7 +66,7 @@ public class OverviewCurrencyTable extends AbstractTable implements EventListene
 	@Override
 	public void update(Event event, Object model) {
 		if(SwingEvents.CURRENCY_ANALYSIS_UPDATED.equals(event)){
-			Collection col = SwingEvents.CURRENCY_ANALYSIS_UPDATED.resolveModel(model);
+			Collection<CurrencyAnalysis> col = SwingEvents.CURRENCY_ANALYSIS_UPDATED.resolveModel(model);
 			// TODO Redesign FIlter/SharedFilter
 			tableModel.setData(col);
 			setPreferredScrollableViewportSize(new Dimension(200, ROW_SIZE * col.size()));
@@ -90,6 +89,7 @@ public class OverviewCurrencyTable extends AbstractTable implements EventListene
 	}
 
 	private static class PrecisionCellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 201404041920L;
 		private static final String PERCENT_WITH_PARENTHESIS = "(%)";
 		private static final String EMPTY_STR = "";
 		private static final String PERCENT = "%";

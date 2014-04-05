@@ -23,6 +23,7 @@ import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 
 public class SymbolsModifTable extends AbstractTable implements EventListener, KeyListener {
+	private static final long serialVersionUID = 201404042021L;
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
@@ -85,6 +86,7 @@ public class SymbolsModifTable extends AbstractTable implements EventListener, K
 	}
 
 	private static class PrecisionCellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 201404041920L;
 		private NumberFormat format;
 
 		PrecisionCellRenderer(int precision) {

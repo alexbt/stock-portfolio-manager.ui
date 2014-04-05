@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import org.jfree.data.time.Year;
 
-public class FilterYearComparator implements Comparator {
+public class FilterYearComparator implements Comparator<Object> {
 
 	@Override
     public int compare(Object o1, Object o2) {

@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 
 
 public abstract class AbstractAddEditSymbolPanel extends JPanel{
+	private static final long serialVersionUID = 201404041920L;
 	private JTextField symbolField;
 	private JLabel companyNameLabel;
 	private JComboBox currencyField;

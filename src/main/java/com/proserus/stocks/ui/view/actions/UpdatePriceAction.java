@@ -3,7 +3,6 @@ package com.proserus.stocks.ui.view.actions;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 
 import com.proserus.stocks.ui.controller.ViewControllers;
 

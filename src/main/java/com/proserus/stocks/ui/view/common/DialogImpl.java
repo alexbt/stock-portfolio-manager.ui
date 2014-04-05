@@ -1,11 +1,10 @@
 package com.proserus.stocks.ui.view.common;
 
-import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
 public class DialogImpl extends AbstractDialog{
-	private static Logger LOGGER = Logger.getLogger(DialogImpl.class.toString());
+	private static final long serialVersionUID = 201404041920L;
 
 	public DialogImpl(JPanel panel, String title) {
 		super();

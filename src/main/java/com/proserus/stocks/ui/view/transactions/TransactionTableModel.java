@@ -1,12 +1,16 @@
 package com.proserus.stocks.ui.view.transactions;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
 import com.proserus.stocks.bo.symbols.Symbol;
+import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
 import com.proserus.stocks.bo.transactions.TransactionType;
 import com.proserus.stocks.ui.controller.PortfolioController;
@@ -146,12 +150,15 @@ public class TransactionTableModel extends AbstractTableModel {
 		case 6:
 			return transaction.getPrice().multiply(transaction.getQuantity()).add(transaction.getCommission());
 		case 7:
-			return transaction.getLabelsValues().toString().replaceAll("\\[\\]", "");
+			List<Label> listOfLabels = new ArrayList<Label>(transaction.getLabelsValues());
+			Collections.sort(listOfLabels);
+			return listOfLabels.toString().replaceAll("\\[\\]", "");
 		}
 
 		throw new AssertionError();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void setColValue(final Transaction t, Object value, int column) {
 		int i = 0;
 		if (column == i++) {
@@ -169,7 +176,7 @@ public class TransactionTableModel extends AbstractTableModel {
 		} else if (column == i++) {
 
 		} else if (column == i++) {
-			t.setLabels((Collection) value);
+			t.setLabels((Collection<Label>) value);
 		}
 		transactionController.updateTransaction(t);
 	}

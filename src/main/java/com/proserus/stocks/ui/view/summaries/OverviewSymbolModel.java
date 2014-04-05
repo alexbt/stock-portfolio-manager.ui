@@ -8,8 +8,6 @@ import javax.swing.table.AbstractTableModel;
 import com.proserus.stocks.bo.analysis.SymbolAnalysis;
 
 public class OverviewSymbolModel extends AbstractTableModel {
-	private static final String EMPTY_STR = "";
-
 	private static final long serialVersionUID = 20080113L;
 
 	public static final String[] COLUMN_NAMES = { "Symbol", "Currency", "Quantity", "Average Price", "Total Cost Basis" };

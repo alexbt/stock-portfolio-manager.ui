@@ -257,7 +257,7 @@ public class TransactionImpl implements Transaction {
 			throw new IllegalArgumentException();
 		}
 
-		for (Label label : this.labels) {
+		for (Label label : labels) {
 			label.removeTransaction(this);
 		}
 		this.labels.clear();
