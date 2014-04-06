@@ -68,7 +68,7 @@ public abstract class AbstractAddEditSymbolPanel extends JPanel{
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 									.addComponent(symbolLabel)
-									.addComponent(currencyField, 0, 97, Short.MAX_VALUE)
+									.addComponent(currencyField, 0, 105, Short.MAX_VALUE)
 									.addComponent(symbolField, 0, 0, Short.MAX_VALUE))
 								.addComponent(currencyLabel))
 							.addGap(22)

@@ -216,7 +216,7 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 									.addGap(18)
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 										.addComponent(currencyLabel, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
-										.addComponent(currencyField, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE))))
+										.addComponent(currencyField, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))))
 							.addGap(20))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(addButton)
