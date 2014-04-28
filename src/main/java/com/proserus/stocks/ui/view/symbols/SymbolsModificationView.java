@@ -70,18 +70,24 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		// add(new AddHistoricalPricePanelImpl(), BorderLayout.NORTH);
 
 		northPanel.getSymbolField().setText(symbol.getTicker());
-		northPanel.getSymbolField().setInputVerifier(new SymbolVerifier());
+		northPanel.getSymbolField().setEnabled(false);
+		//northPanel.getSymbolField().setInputVerifier(new SymbolVerifier());
 		northPanel.getCompanyNameField().setText(symbol.getName());
+		northPanel.getCompanyNameField().setEnabled(false);
 		// TODO Manage Date better
 		// northPanel.getPprice.setText(symbol.getPrice(DateUtil.getCurrentYear()).toString());
 		northPanel.getUseCustomPriceField().setSelected(symbol.isCustomPriceFirst());
+		northPanel.getUseCustomPriceField().setEnabled(false);
 
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
 			northPanel.getCurrencyField().addItem(cur);
 		}
+		
 		northPanel.getCurrencyField().setMaximumRowCount(11);
 		northPanel.getCurrencyField().setSelectedItem(symbol.getCurrency());
 		northPanel.getSectorField().setSelectedItem(symbol.getSector());
+		northPanel.getCurrencyField().setEnabled(false);
+		northPanel.getSectorField().setEnabled(false);
 		
 		SymbolsModifTable table = new SymbolsModifTable(symbol);
 		year.addKeyListener(table);

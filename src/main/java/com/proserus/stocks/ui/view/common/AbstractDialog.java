@@ -3,16 +3,18 @@ package com.proserus.stocks.ui.view.common;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
 import com.proserus.stocks.ui.controller.ViewControllers;
 
 abstract public class AbstractDialog extends JDialog implements KeyListener {
 	private static final long serialVersionUID = 201404031810L;
-	
+	private static final String LOGO_GIF = "images/Logo.gif";// TODO move
 	public AbstractDialog() {
 		super(ViewControllers.getWindow());
-		setIconImage(ViewControllers.getWindow().getIconImage());
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource(
+				LOGO_GIF)).getImage());
 		addKeyListener(this);
 		setFocusable(true);
 		centerOnScreen();

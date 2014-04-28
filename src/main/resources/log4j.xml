@@ -3,7 +3,7 @@
 
 <log4j:configuration>
 	<appender name="logAppender" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="./logs/traces.log" />
+		<param name="File" value="${installation.folder}/logs/traces.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern"
@@ -12,7 +12,7 @@
 	</appender>
 
 	<appender name="calculsAppender" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="./logs/calculs.log" />
+		<param name="File" value="${installation.folder}/logs/calculs.log" />
 		<param name="DatePattern" value="'.'yyyy-MM-dd" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %C{1} - %m%n" />

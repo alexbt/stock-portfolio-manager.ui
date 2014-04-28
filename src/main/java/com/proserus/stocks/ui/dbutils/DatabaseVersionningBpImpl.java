@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,6 +20,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.proserus.stocks.bo.common.BoBuilder;
 import com.proserus.stocks.bo.common.DBVersion;
+import com.proserus.stocks.bo.utils.PathUtils;
 import com.proserus.stocks.bp.dao.PersistenceManager;
 import com.proserus.stocks.bp.services.DatabaseVersionningBp;
 import com.proserus.stocks.ui.view.general.Version;
@@ -29,7 +31,8 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 	public static final String LATEST_VERSION_URL = "http://stock-portfolio-manager.googlecode.com/hg/latestversion";
 
-	private static Logger log = Logger.getLogger(DatabaseVersionningBpImpl.class.getName());
+	private static Logger log = Logger
+			.getLogger(DatabaseVersionningBpImpl.class.getName());
 
 	@Inject
 	private BoBuilder boBuilder;
@@ -47,59 +50,22 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		DBVersion version = null;
 
 		try {
-
-			try {
-				version = (DBVersion) persistenceManager.getEntityManager().createNamedQuery("version.find").getSingleResult();
-				log.debug("database version: " + version.getDatabaseVersion());
-			} catch (PersistenceException e2) {
-				
-			}
-
-			if (version == null) {
-				version = boBuilder.getVersion();
-
-				if (!DbUtils.tableExist("TRANSACTION", persistenceManager)) {
-					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_TRANSACTION.getVersion());
-				}
-
-				else if (!DbUtils.tableExist("SYMBOL", persistenceManager)) {
-					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_SYMBOL.getVersion());
-				}
-
-				else if (!DbUtils.tableExist("LABEL", persistenceManager)) {
-					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_LABEL.getVersion());
-				}
-
-				else if (!DbUtils.tableExist("HISTORICALPRICE", persistenceManager)) {
-					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_HISTORICALPRICE.getVersion());
-				}
-
-				else if (!DbUtils.tableExist("TRANSACTION_LABEL", persistenceManager)) {
-					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_TRANSACTION_LABEL.getVersion());
-				}
-
-				else if (!DbUtils.tableExist("SYMBOL_PRICES", persistenceManager)) {
-					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_SYMBOL_PRICES.getVersion());
-				}
-				
-				else if (!DbUtils.tableExist("VERSION", persistenceManager)) {
-					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_VERSION.getVersion());
-				}
-				
-				else if (!DbUtils.sequenceExist("HIBERNATE_SEQUENCE", persistenceManager)) {
-					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_HIBERNATE_SEQUENCE.getVersion());
-				}
-
-				else {
-					assert false : "Should not be here... but let's take no chances...";
-					version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_TRANSACTION.getVersion());
-				}
-			}
-
+			version = (DBVersion) persistenceManager.createNamedQuery(
+					"version.find").getSingleResult();
+			log.debug("database version: " + version.getDatabaseVersion());
 		} catch (PersistenceException e2) {
-			assert false : "Should not be here... but let's take no chances...";
-			log.debug("database does not exist");
-			version.setDatabaseVersion(DatabaseUpgradeEnum.CREATE_TABLES_TRANSACTION.getVersion());
+		}
+
+		if (version == null
+				&& DbUtils.isTableExists("TRANSACTION", persistenceManager)) {
+			version = boBuilder.getVersion();
+			version.setDatabaseVersion(DatabaseUpgradeEnum.VERSION_1
+					.getVersion());
+		}
+		if (version == null) {
+			version = boBuilder.getVersion();
+			version.setDatabaseVersion(DatabaseUpgradeEnum.VERSION_0
+					.getVersion());
 		}
 
 		assert version != null;
@@ -108,44 +74,60 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 	@Override
 	public void upgrade(DBVersion version) {
-		assert version.getDatabaseVersion() < DatabaseUpgradeEnum.getLatestVersion();
-		log.debug("Upgrading from Version " + version.getDatabaseVersion() + " to " + DatabaseUpgradeEnum.getLatestVersion());
-
-		boolean firstTime = (version.getDatabaseVersion() == DatabaseUpgradeEnum.getInitialVersion());
-		if (!firstTime) {
-			int n = JOptionPane.showConfirmDialog(null, "This new version will perform an update on the data format.\n "
-			        + "If you wish to manually backup your data first, please click 'No'.\n" +
-			        		"The most reliable way to backup your data is to make a copy of the 'data' directory\n\n"
-			        + "Do you want to perform the upgrade now and launch the application ?", "Upgrading data format", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		log.debug("Upgrading from Version " + version.getDatabaseVersion()
+				+ " to " + DatabaseUpgradeEnum.getLatestVersion());
+		boolean isFirstTime = version.getDatabaseVersion() == DatabaseUpgradeEnum.VERSION_0
+				.getVersion();
+		if (!isFirstTime) {
+			int n = JOptionPane
+					.showConfirmDialog(
+							null,
+							"This new version will perform an update on the data format.\n "
+									+ "If you wish to manually backup your data first, please click 'No'.\n"
+									+ "The most reliable way to backup your data is to make a copy of the 'data' directory\n\n"
+									+ "Do you want to perform the upgrade now and launch the application ?",
+							"Upgrading data format", JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
 
 			if (n != JOptionPane.YES_OPTION) {
 				System.exit(0);
 			}
 		}
-		persistenceManager.getEntityManager().getTransaction().begin();
+		persistenceManager.getTransaction().begin();
 
-		while (version.getDatabaseVersion() < DatabaseUpgradeEnum.getLatestVersion()) {
-			for (DatabaseStrategy strategy : DatabaseUpgradeEnum.getVersionStrategies(version.getDatabaseVersion())) {
-				strategy.applyUpgrade(persistenceManager, version);
+		for (DatabaseUpgradeEnum dbEnu : DatabaseUpgradeEnum.values()) {
+			log.debug("Upgrading to " + dbEnu.getVersion());
+			if (version.getDatabaseVersion() < dbEnu.getVersion()) {
+				for (DatabaseStrategy dbStrategy : dbEnu.getStrategies()) {
+					dbStrategy.applyUpgrade(persistenceManager);
+				}
+				version.setDatabaseVersion(dbEnu.getVersion());
+				persistenceManager.persist(version);
 			}
-			version.incrementVersion();
 		}
-		DatabaseUpgradeEnum.PERSIST_LATEST_VERSION.getStrategy().applyUpgrade(persistenceManager, version);
 
-		if (persistenceManager.getEntityManager().getTransaction().getRollbackOnly()) {
-			log.debug("Version check and upgrade is rolledback from version " + version.getDatabaseVersion());
-			persistenceManager.getEntityManager().getTransaction().rollback();
-			if (!firstTime) {
-				JOptionPane.showMessageDialog(null, "Upgrade failed!\n"
-				        + "The application will now exit.\nPlease open a bug issue on the website and provide the 'traces.log'\n"
-				        + "http://code.google.com/p/stock-portfolio-manager/issues/list", "Upgrade failed!", JOptionPane.INFORMATION_MESSAGE, null);
+		if (persistenceManager.getTransaction().getRollbackOnly()) {
+			log.debug("Version check and upgrade is rolledback from version "
+					+ version.getDatabaseVersion());
+			persistenceManager.getTransaction().rollback();
+			if (!isFirstTime) {
+				JOptionPane
+						.showMessageDialog(
+								null,
+								"Upgrade failed!\n"
+										+ "The application will now exit.\nPlease open a bug issue on the website and provide the 'traces.log'\n"
+										+ "http://code.google.com/p/stock-portfolio-manager/issues/list",
+								"Upgrade failed!",
+								JOptionPane.INFORMATION_MESSAGE, null);
 			}
 		} else {
 			log.debug("Version check and upgrade is successful");
-			persistenceManager.getEntityManager().getTransaction().commit();
-			if (!firstTime) {
-				JOptionPane.showMessageDialog(null, "Upgrade completed successfully!", "Upgrade completed!",
-				        JOptionPane.INFORMATION_MESSAGE, null);
+			persistenceManager.getTransaction().commit();
+			if (!isFirstTime) {
+				JOptionPane.showMessageDialog(null,
+						"Upgrade completed successfully!",
+						"Upgrade completed!", JOptionPane.INFORMATION_MESSAGE,
+						null);
 			}
 		}
 	}
@@ -162,7 +144,8 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		}
 
 		if (pro.getProperty(LATESTVERSION_PROPERTY) != null) {
-			double currentVersion = Double.parseDouble(pro.getProperty(LATESTVERSION_PROPERTY));
+			double currentVersion = Double.parseDouble(pro
+					.getProperty(LATESTVERSION_PROPERTY));
 
 			if (currentVersion < latestVersion) {
 				return true;
@@ -173,9 +156,11 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 	}
 
 	private void loadProperty(Properties pro) {
-		FileInputStream fis = null;
+		InputStream fis = null;
 		try {
-			fis = new FileInputStream("version.properties");
+			
+			
+			fis = new FileInputStream(PathUtils.getInstallationFolder() + "/version.properties");
 			pro.load(fis);
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
@@ -195,7 +180,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 		FileOutputStream fos = null;
 		try {
-			fos = new FileOutputStream("version.properties");
+			fos = new FileOutputStream(PathUtils.getInstallationFolder() + "/version.properties");
 			pro.store(fos, "");
 			fos.flush();
 		} catch (FileNotFoundException e) {
@@ -216,7 +201,8 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 		try {
 			URL oracle = new URL(url);
-			BufferedReader in = new BufferedReader(new InputStreamReader(oracle.openStream()));
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					oracle.openStream()));
 			String versionFromWeb;
 
 			versionFromWeb = in.readLine();

@@ -27,6 +27,8 @@ public class Toolbar extends JToolBar{
 		importCsv();
 		exportCsv();
 		colorSettings();
+		
+		setEnabled(false);
 	}
 
 	private void updateOldPrices() {

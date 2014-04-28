@@ -10,12 +10,19 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
+import com.proserus.stocks.bp.events.Event;
+import com.proserus.stocks.bp.events.EventBus;
+import com.proserus.stocks.bp.events.EventListener;
+import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.view.actions.AddSymbolAction;
 import com.proserus.stocks.ui.view.actions.AddTransactionAction;
+import com.proserus.stocks.ui.view.actions.BackupAction;
 import com.proserus.stocks.ui.view.actions.CloseApplicationAction;
+import com.proserus.stocks.ui.view.actions.DeleteAllAction;
 import com.proserus.stocks.ui.view.actions.ExportToCsvAction;
 import com.proserus.stocks.ui.view.actions.ImportFromCsvAction;
 import com.proserus.stocks.ui.view.actions.ShowAboutAction;
+import com.proserus.stocks.ui.view.actions.ShowEditSymbolAction;
 import com.proserus.stocks.ui.view.actions.ShowHideFiltersAction;
 import com.proserus.stocks.ui.view.actions.ShowHideTableColumnsAction;
 import com.proserus.stocks.ui.view.actions.ShowSettingsAction;
@@ -34,7 +41,10 @@ import com.proserus.stocks.ui.view.symbols.SymbolsTableModel;
 import com.proserus.stocks.ui.view.transactions.TransactionTable;
 import com.proserus.stocks.ui.view.transactions.TransactionTableModel;
 
-public class Menu extends JMenuBar {
+public class Menu extends JMenuBar implements EventListener {
+	private static final String BACKS_UP_THE_PORTFOLIO_AND_LOGS = "Backs up the portfolio and logs";
+	private static final String BACKUP_PORTFOLIO = "Backup portfolio";
+	private static final String DELETE_CURRENT_PORTFOLIO = "Delete current portfolio";
 	private static final long serialVersionUID = 201404041920L;
 	private static final String ABOUT = "About";
 
@@ -61,6 +71,8 @@ public class Menu extends JMenuBar {
 	static public Menu getInstance() {
 		return menu;
 	}
+
+	private JMenuItem editSymbolMenuItem;
 
 	private Menu() {
 		// Build the first menu.
@@ -93,6 +105,25 @@ public class Menu extends JMenuBar {
 
 		menu.add(new JSeparator());
 
+		// a group of JMenuItems
+		menuItem = new JMenuItem(BACKUP_PORTFOLIO);
+		menuItem.setAction(BackupAction.getInstance());
+		menuItem.setText(BACKUP_PORTFOLIO);
+		menuItem.getAccessibleContext().setAccessibleDescription(
+				BACKS_UP_THE_PORTFOLIO_AND_LOGS);
+		menuItem.setName(BACKUP_PORTFOLIO);
+		menu.add(menuItem);
+
+		// a group of JMenuItems
+		menuItem = new JMenuItem(DELETE_CURRENT_PORTFOLIO);
+		menuItem.setAction(DeleteAllAction.getInstance());
+		menuItem.setText(DELETE_CURRENT_PORTFOLIO);
+		menuItem.getAccessibleContext().setAccessibleDescription(
+				"Deletes current portfolio and all its entries");
+		menuItem.setName(DELETE_CURRENT_PORTFOLIO);
+		menu.add(menuItem);
+
+		menu.add(new JSeparator());
 		// a group of JMenuItems
 		menuItem = new JMenuItem(CLOSE, KeyEvent.VK_W);
 		menuItem.setAction(CloseApplicationAction.getInstance());
@@ -130,6 +161,15 @@ public class Menu extends JMenuBar {
 				"Adds a Symbol");
 		menuItem.setName("addSymbol");
 		menu.add(menuItem);
+
+		editSymbolMenuItem = new JMenuItem("Edit Symbol");
+		editSymbolMenuItem.setAction(ShowEditSymbolAction.getInstance());
+		editSymbolMenuItem.setText("Edit Symbol");
+		editSymbolMenuItem.getAccessibleContext().setAccessibleDescription(
+				"Edits a Symbol");
+		editSymbolMenuItem.setName("editSymbol");
+		editSymbolMenuItem.setEnabled(false);
+		menu.add(editSymbolMenuItem);
 
 		menu.add(new JSeparator());
 
@@ -181,6 +221,8 @@ public class Menu extends JMenuBar {
 				CLOSES_THE_APPLICATION);
 		menuItem.setName(ABOUT);
 		menu.add(menuItem);
+
+		EventBus.getInstance().add(this, SwingEvents.SYMBOL_SELECTION_CHANGED);
 
 	}
 
@@ -331,6 +373,14 @@ public class Menu extends JMenuBar {
 			menuItem.setText(str);
 			submenu.add(menuItem);
 			i++;
+		}
+	}
+
+	@Override
+	public void update(Event event, Object model) {
+		if (SwingEvents.SYMBOL_SELECTION_CHANGED.equals(event)) {
+			editSymbolMenuItem.setEnabled(SwingEvents.SYMBOL_SELECTION_CHANGED
+					.resolveModel(model) != null);
 		}
 	}
 }

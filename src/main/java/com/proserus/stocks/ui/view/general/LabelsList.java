@@ -11,8 +11,12 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -46,8 +50,8 @@ import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 
-public class LabelsList extends JPanel implements KeyListener, EventListener,
-		MouseListener, FocusListener {
+public class LabelsList extends JPanel implements KeyListener, EventListener, ActionListener,
+		MouseListener, FocusListener, ItemListener {
 	/**
      * 
      */
@@ -162,7 +166,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 
 		setLayout(new BorderLayout());
 		add(js, BorderLayout.CENTER);
-		listOfLabels.setCellRenderer(new CheckListRenderer(isFilteringModeOn));
+		listOfLabels.setCellRenderer(new CheckListRenderer(isFilteringModeOn, this, this));
 		listOfLabels
 				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		listOfLabels.addMouseListener(this);
@@ -261,6 +265,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 				&& (arg0.getKeyChar() == KeyEvent.VK_SPACE || arg0.getKeyChar() == KeyEvent.VK_ENTER)) {
 			updateLabelSelection();
 			updateFilter(((CheckListItem) listOfLabels.getSelectedValue()));
+			updateLabelsInTransaction(((CheckListItem) listOfLabels.getSelectedValue()));
 		} else if (arg0.getSource().equals(listOfLabels)
 				&& (arg0.getKeyChar() == KeyEvent.VK_DELETE)) {
 			deleteLabel(((CheckListItem) listOfLabels.getSelectedValue()));
@@ -276,6 +281,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 			transactionController.remove(item.get());
 			labels.remove(item.get().getName());
 			item.setSelected(false);
+			updateFilter(item);
 		}
 	}
 
@@ -393,14 +399,14 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 
 			item.setSelected(!item.isSelected());
 
-			/*
-			 * if (filtering) {
-			 * summaryController.setFilterLabels(item.toString()); }
-			 */
 			if (list.getCellBounds(index, index) != null) {
 				list.repaint(list.getCellBounds(index, index));
 			}
 		}
+		updateLabelsInTransaction(item);
+	}
+
+	private void updateLabelsInTransaction(CheckListItem item) {
 		updateFilter(item);
 
 		if (transaction != null) {
@@ -418,9 +424,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 			}
 		} else {
 			labels.remove(label.getName());
-			if (isFilteringModeOn) {
-				filter.removeLabel(label);
-			}
+			filter.removeLabel(label);
 		}
 		ViewControllers.getController().refreshFilteredData();
 	}
@@ -441,6 +445,20 @@ public class LabelsList extends JPanel implements KeyListener, EventListener,
 			listOfLabels.setSelectedIndex(0);
 			listOfLabels.repaint(listOfLabels.getCellBounds(0, 0));
 		}
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		((CheckListRenderer)e.getSource()).getCheckListItem();
+		if(ItemEvent.ITEM_STATE_CHANGED == e.getStateChange()){
+			e.getSource();
+		}
+				
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		arg0.getSource();
 	}
 }
 
@@ -498,15 +516,27 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 	private static final String IMAGES_CANCEL_GIF = "images/RemoveSmall.png";
 	private boolean isFilteringModeOn;
 
-	public CheckListRenderer(boolean isFilteringModeOn) {
+	private ItemListener changeListener;
+	private ActionListener actionListener;
+	private CheckListItem checkListItem;
+
+	public CheckListRenderer(boolean isFilteringModeOn, ItemListener l, ActionListener a) {
 		this.isFilteringModeOn = isFilteringModeOn;
+		this.changeListener = l;
+		this.actionListener = a;
+	}
+	
+	
+	public CheckListItem getCheckListItem() {
+		return checkListItem;
 	}
 
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean hasFocus) {
 		JPanel panel = new JPanel(new BorderLayout());
 		setEnabled(list.isEnabled());
-		setSelected(((CheckListItem) value).isSelected());
+		this.checkListItem = ((CheckListItem) value);
+		setSelected(checkListItem.isSelected());
 		setFont(list.getFont());
 
 		panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -531,7 +561,7 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 						.getSelectionColor());
 			}
 
-			((CheckListItem) value).setIcon(imagePanel);
+			checkListItem.setIcon(imagePanel);
 
 			if (list.getLayoutOrientation() != JList.HORIZONTAL_WRAP) {
 				panel.add(imagePanel, BorderLayout.EAST);
@@ -540,9 +570,11 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 			setBackground(list.getBackground());
 		}
 
-		setText(value.toString());
+		setText(checkListItem.toString());
 		panel.add(this, BorderLayout.CENTER);
-
+		
+		addItemListener(changeListener);
+		addActionListener(actionListener);
 		return panel;
 	}
 
@@ -566,3 +598,4 @@ class ImageBackgroundPanel extends JPanel {
 		g.drawImage(image, 0, 3, this);
 	}
 }
+

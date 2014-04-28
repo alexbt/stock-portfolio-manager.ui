@@ -4,11 +4,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.proserus.stocks.bo.common.DBVersion;
 import com.proserus.stocks.bp.dao.PersistenceManager;
 
-public class DropUnamedConstraintsStrategy implements DatabaseStrategy {
-	private static Logger log = Logger.getLogger(DropUnamedConstraintsStrategy.class.getName());
+public class DropAllConstraintsStrategy implements DatabaseStrategy {
+	private static Logger log = Logger.getLogger(DropAllConstraintsStrategy.class.getName());
 	
 	private enum CONSTRAINT_TYPES {
 		FOREIGN_KEY("FOREIGN KEY"), UNIQUE("UNIQUE"), PRIMARY_KEY("PRIMARY KEY"), CHECK("CHECK");
@@ -20,9 +19,9 @@ public class DropUnamedConstraintsStrategy implements DatabaseStrategy {
 	}
 
 	@Override
-	public void applyUpgrade(PersistenceManager pm, DBVersion version) {
+	public void applyUpgrade(PersistenceManager pm) {
 		@SuppressWarnings("unchecked")
-		List<Object> list = pm.getEntityManager().createNativeQuery("select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS").getResultList();
+		List<Object> list = pm.createNativeQuery("select * from INFORMATION_SCHEMA.TABLE_CONSTRAINTS").getResultList();
 
 		for (CONSTRAINT_TYPES constraintType : CONSTRAINT_TYPES.values()) {
 			for (Object o : list) {
@@ -32,11 +31,11 @@ public class DropUnamedConstraintsStrategy implements DatabaseStrategy {
 					String constraintName = (String) ((Object[]) o)[2];
 					String tableName = (String) ((Object[]) o)[6];
 					String command = "alter table PUBLIC." + tableName + " drop constraint " + constraintName;
-					pm.getEntityManager().createNativeQuery(command).executeUpdate();
+					pm.createNativeQuery(command).executeUpdate();
 				}
 			}
 		}
-		if(log.isDebugEnabled() && pm.getEntityManager().getTransaction().getRollbackOnly()){
+		if(log.isDebugEnabled() && pm.getTransaction().getRollbackOnly()){
 			log.debug("Upgrade is rolling back");
 		}
 	}

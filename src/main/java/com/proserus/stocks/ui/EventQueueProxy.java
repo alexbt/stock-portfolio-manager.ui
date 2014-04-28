@@ -12,7 +12,11 @@ class EventQueueProxy extends EventQueue {
         try {
             super.dispatchEvent(newEvent);
         } catch (Throwable e) {
-         	LOGGER.log(Level.FATAL, "Unexpected error", e);
+          	LOGGER.log(Level.FATAL, "Unexpected error", e);
+          	if(e instanceof RuntimeException){
+          		throw (RuntimeException)e;
+          	}
+          	
         }
     }
 }

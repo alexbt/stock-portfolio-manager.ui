@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Collection;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
@@ -36,13 +37,15 @@ import com.proserus.stocks.ui.view.symbols.EmptySymbol;
  * @author Alex
  * 
  */
-public class FilterPanelImpl extends AbstractFilterPanel implements ActionListener, EventListener, KeyListener {
+public class FilterPanelImpl extends AbstractFilterPanel implements
+		ActionListener, EventListener, KeyListener {
 	private static final long serialVersionUID = 201404041920L;
 	private SortedComboBoxModel modelSymbols = new SortedComboBoxModel();
-	private SortedComboBoxModel modelYears = new SortedComboBoxModel(new FilterYearComparator());
+	private SortedComboBoxModel modelYears = new SortedComboBoxModel(
+			new FilterYearComparator());
 	private static FilterPanelImpl singleton = new FilterPanelImpl();
 	private Filter filter = ViewControllers.getFilter();
-	
+
 	static public FilterPanelImpl getInstance() {
 		return singleton;
 	}
@@ -57,7 +60,8 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 
 		EventBus.getInstance().add(this, SwingEvents.TRANSACTION_UPDATED);
 
-		getLabelList().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		getLabelList()
+				.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		getYearField().addActionListener(this);
 		getYearField().setModel(modelYears);
@@ -98,7 +102,8 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 			Object o = modelYears.getSelectedItem();
 
 			modelYears.removeAllElements();
-			for (Year i = DateUtil.getCurrentYear(); i.getYear() >= min.getYear(); i = (Year) i.previous()) {
+			for (Year i = DateUtil.getCurrentYear(); i.getYear() >= min
+					.getYear(); i = (Year) i.previous()) {
 				modelYears.addElement(i);
 			}
 			modelYears.addElement((new EmptyYear()));
@@ -108,7 +113,8 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 	}
 
 	// private void populateSymbols() {
-	// Iterator<Symbol> iter = ViewControllers.getController().getSymbols().iterator();
+	// Iterator<Symbol> iter =
+	// ViewControllers.getController().getSymbols().iterator();
 	// modelSymbols.removeAllElements();
 	// while (iter.hasNext()) {
 	// modelSymbols.addElement(iter.next());
@@ -120,7 +126,8 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource().equals(getYearField())) {
-			Year selectedYear = (Year) ((JComboBox) arg0.getSource()).getSelectedItem();
+			Year selectedYear = (Year) ((JComboBox) arg0.getSource())
+					.getSelectedItem();
 			if (!selectedYear.toString().isEmpty()) {
 				filter.setYear(selectedYear);
 			} else {
@@ -154,7 +161,7 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 			if (o instanceof CurrencyEnum) {
 				type = (CurrencyEnum) o;
 			}
-			
+
 			filter.setCurrency(type);
 			ViewControllers.getController().refreshFilteredData();
 		} else if (arg0.getSource().equals(getSectorField())) {
@@ -177,12 +184,19 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 			Object o = modelSymbols.getSelectedItem();
 			getSymbolField().removeActionListener(this);
 			modelSymbols.removeAllElements();
-			for (Symbol symbol : SwingEvents.SYMBOLS_LIST_UPDATED.resolveModel(model)) {
+			Collection<Symbol> symbols = SwingEvents.SYMBOLS_LIST_UPDATED
+					.resolveModel(model);
+			for (Symbol symbol : symbols) {
 				modelSymbols.addElement(symbol);
 			}
 			Symbol s = new EmptySymbol();
 			modelSymbols.addElement(s);
-			modelSymbols.setSelectedItem(o);
+			if (o != null && symbols.contains(o)) {
+				modelSymbols.setSelectedItem(o);
+			} else {
+				filter.setSymbol(null);
+				ViewControllers.getController().refreshFilteredData();
+			}
 			getSymbolField().addActionListener(this);
 		}
 	}
@@ -197,7 +211,8 @@ public class FilterPanelImpl extends AbstractFilterPanel implements ActionListen
 		// textField.getSource()).getText().length();
 		// NOW BETTER ?
 		if (!((JTextField) textField.getSource()).getText().isEmpty()) {
-			ViewControllers.getController().setCustomFilter((((JTextField) textField.getSource()).getText()));
+			ViewControllers.getController().setCustomFilter(
+					(((JTextField) textField.getSource()).getText()));
 		} else {
 			ViewControllers.getController().setCustomFilter("");
 		}

@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
@@ -68,6 +69,8 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 		getCompanyNameField().addKeyListener(this);
 		getUseCustomPriceField().addKeyListener(this);
 		getCompanyNameField().setDisabledTextColor(Color.BLACK);
+		getSymbolField().setDisabledTextColor(Color.BLACK);
+		
 	}
 	
 	@Override

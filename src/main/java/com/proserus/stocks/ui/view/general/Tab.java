@@ -61,7 +61,7 @@ public class Tab extends JTabbedPane {
 		button = new JButton();
 		button.setActionCommand("editSymbol");
 		button.setContentAreaFilled(false);
-		button.setAction(new ShowEditSymbolAction());
+		button.setAction(ShowEditSymbolAction.getInstance());
 		button.setToolTipText("Edit Selected Symbol");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/EditSymbol.png")));
 		pan.add(button);

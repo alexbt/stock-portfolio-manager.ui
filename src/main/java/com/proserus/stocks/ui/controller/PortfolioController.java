@@ -3,22 +3,29 @@ package com.proserus.stocks.ui.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.jfree.data.time.Year;
 
 import com.google.inject.Inject;
 import com.proserus.stocks.bo.common.DBVersion;
+import com.proserus.stocks.bo.common.DatabasePaths;
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.DefaultCurrency;
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
+import com.proserus.stocks.bo.utils.PathUtils;
 import com.proserus.stocks.bp.dao.PersistenceManager;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.bp.model.Filter;
@@ -28,10 +35,14 @@ import com.proserus.stocks.bp.services.ImportExportBp;
 import com.proserus.stocks.bp.services.LabelsBp;
 import com.proserus.stocks.bp.services.SymbolsBp;
 import com.proserus.stocks.bp.services.TransactionsBp;
+import com.proserus.stocks.bp.utils.RecursiveFileUtils;
 import com.proserus.stocks.ui.dbutils.DatabaseUpgradeEnum;
 import com.proserus.stocks.ui.dbutils.DatabaseVersionningBpImpl;
 
 public class PortfolioController {
+	private final static Logger LOGGER = Logger
+			.getLogger(PortfolioController.class.getName());
+
 	@Inject
 	private SymbolsBp symbolsBp;
 	@Inject
@@ -59,28 +70,33 @@ public class PortfolioController {
 		boolean val = symbolsBp.updateSymbol(symbol);
 		analysisBp.recalculate(filter);
 
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
 		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
 		SwingEvents.SYMBOLS_LIST_UPDATED.fire(symbolsBp.get());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
 		return val;
 	}
 
-	public void calculateSectorAnalysis(){
-			analysisBp.calculateBySector(filter);
-			SwingEvents.SECTOR_ANALYSIS_UPDATED.fire(analysisBp.getSectorAnalysis());
+	public void calculateSectorAnalysis() {
+		analysisBp.calculateBySector(filter);
+		SwingEvents.SECTOR_ANALYSIS_UPDATED
+				.fire(analysisBp.getSectorAnalysis());
 	}
-	public void calculateLabelAnalysis(){
+
+	public void calculateLabelAnalysis() {
 		analysisBp.calculateByLabel(filter);
 		SwingEvents.LABEL_ANALYSIS_UPDATED.fire(analysisBp.getLabelAnalysis());
-}
-	
-	public void calculateYearAnalysis(){
-		analysisBp.calculateByYear(filter,getFirstYear());
+	}
+
+	public void calculateYearAnalysis() {
+		analysisBp.calculateByYear(filter, getFirstYear());
 		SwingEvents.YEAR_ANALYSIS_UPDATED.fire(analysisBp.getYearAnalysis());
-}
-	
+	}
+
 	public boolean remove(Symbol s) {
 		if (transactionsBp.contains(s)) {
 			return false;
@@ -124,10 +140,13 @@ public class PortfolioController {
 	}
 
 	public void refreshFilteredData() {
-		analysisBp.recalculate(filter); 
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
+		analysisBp.recalculate(filter);
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
 		SwingEvents.FILTER_SYMBOLS.fire(symbolsBp.get(filter));
 	}
 
@@ -138,9 +157,12 @@ public class PortfolioController {
 		t = transactionsBp.add(t);
 		analysisBp.recalculate(filter);
 
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
 		return t;
 	}
 
@@ -151,13 +173,17 @@ public class PortfolioController {
 		transactionsBp.remove(t);
 		analysisBp.recalculate(filter);
 
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
 	}
 
 	public void remove(Label label) {
-		Collection<Transaction> transactions = transactionsBp.getTransactionsByLabel(label);
+		Collection<Transaction> transactions = transactionsBp
+				.getTransactionsByLabel(label);
 		for (Transaction t : transactions) {
 			t.removeLabel(label);
 		}
@@ -165,27 +191,36 @@ public class PortfolioController {
 		SwingEvents.LABELS_UPDATED.fire(labelsBp.get());
 		analysisBp.recalculate(filter);
 
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
 	}
 
 	public void updateTransaction(Transaction t) {
 		transactionsBp.updateTransaction(t);
 		analysisBp.recalculate(filter);
 
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
 	}
 
 	public Label addLabel(Label label) {
 		Label l = labelsBp.add(label);
 		analysisBp.recalculate(filter);
 
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
 		SwingEvents.LABELS_UPDATED.fire(labelsBp.get());
 		return l;
 	}
@@ -201,18 +236,24 @@ public class PortfolioController {
 		SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED.fire();
 		SwingEvents.SYMBOLS_UPDATED.fire(symbolsBp.get(filter));
 		SwingEvents.SYMBOLS_LIST_UPDATED.fire(symbolsBp.get());
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
 	}
 
 	public void updateHistoricalPrices() {
 		symbolsBp.updateHistoricalPrices(filter);
 		analysisBp.recalculate(filter);
 
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
 		SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED.fire();
 	}
 
@@ -220,17 +261,22 @@ public class PortfolioController {
 		symbolsBp.update(hPrice);
 		analysisBp.recalculate(filter);
 
-		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(filter, true));
-		SwingEvents.SYMBOL_ANALYSIS_UPDATED.fire(analysisBp.getSymbolAnalysis());
-		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp.getCurrencyAnalysis());
+		SwingEvents.TRANSACTION_UPDATED.fire(transactionsBp.getTransactions(
+				filter, true));
+		SwingEvents.SYMBOL_ANALYSIS_UPDATED
+				.fire(analysisBp.getSymbolAnalysis());
+		SwingEvents.CURRENCY_ANALYSIS_UPDATED.fire(analysisBp
+				.getCurrencyAnalysis());
 	}
 
 	public ByteArrayOutputStream exportTransactions(boolean isFiltered) {
 		try {
 			if (isFiltered) {
-				return importExportBp.exportTransactions(transactionsBp.getTransactions(filter, true));
+				return importExportBp.exportTransactions(transactionsBp
+						.getTransactions(filter, true));
 			} else {
-				return importExportBp.exportTransactions(transactionsBp.getTransactions());
+				return importExportBp.exportTransactions(transactionsBp
+						.getTransactions());
 			}
 		} catch (IOException e) {
 		}
@@ -282,14 +328,55 @@ public class PortfolioController {
 	}
 
 	public void checkNewVersion() {
-		Double version = databaseVersionningBp.retrieveLatestVersion(DatabaseVersionningBpImpl.LATEST_VERSION_URL);
-		if(version!=null){
-			if(databaseVersionningBp.isNewerVersion(version)){
-				JOptionPane.showMessageDialog(null, "The version " + version
-				        + " is now available!\nYou can download it from the project's website", "A new version is now available!",
-				        JOptionPane.INFORMATION_MESSAGE, null);
-				databaseVersionningBp.writeVersion(new Properties(), String.valueOf(version));
+		Double version = databaseVersionningBp
+				.retrieveLatestVersion(DatabaseVersionningBpImpl.LATEST_VERSION_URL);
+		if (version != null) {
+			if (databaseVersionningBp.isNewerVersion(version)) {
+				JOptionPane
+						.showMessageDialog(
+								null,
+								"The version "
+										+ version
+										+ " is now available!\nYou can download it from the project's website",
+								"A new version is now available!",
+								JOptionPane.INFORMATION_MESSAGE, null);
+				databaseVersionningBp.writeVersion(new Properties(),
+						String.valueOf(version));
 			}
 		}
+	}
+
+	public void checkDatabaseDuplicate() {
+		final DatabasePaths dbPaths = new DatabasePaths();
+		
+		dbPaths.setBinaryCurrentFolder(PathUtils.getInstallationFolder());
+		dbPaths.setOsCurrentFolder(PathUtils.getCurrentFolder());
+
+		LOGGER.info("binaryCurrentFolder : " + dbPaths.getBinaryCurrentFolder());
+		LOGGER.info("osCurrentFolder: " + dbPaths.getOsCurrentFolder());
+		boolean isBinAndOsSame = new File(dbPaths.getBinaryCurrentFolder())
+				.equals(new File(dbPaths.getOsCurrentFolder()));
+
+		List<String> col = RecursiveFileUtils.listFiles(
+				new File(dbPaths.getBinaryCurrentFolder()), "db.script", 3);
+		if (!isBinAndOsSame) {
+			col.addAll(RecursiveFileUtils.listFiles(
+					new File(dbPaths.getOsCurrentFolder()), "db.script", 3));
+		}
+		if (col.isEmpty()) {
+			col.add(dbPaths.getBinaryCurrentFolder() + "\\data\\db");
+		}
+		Collections.sort(col);
+		for (String file : col) {
+			dbPaths.addDb(StringUtils.removeEnd(file, ".script"));
+		}
+
+		LOGGER.info("Databases detected: " + dbPaths.getDatabases());
+		SwingEvents.DATABASE_DETECTED.fire(dbPaths);
+	}
+
+	public void deleteAll() {
+		SwingEvents.CURRENT_DATABASE_DELETED.fire();
+		System.exit(0);
 	}
 }

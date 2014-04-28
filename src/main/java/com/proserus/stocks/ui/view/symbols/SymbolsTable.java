@@ -49,7 +49,7 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
 	private HashMap<String, Color> colors = new HashMap<String, Color>();
 	private TableRowSorter<SymbolsTableModel> sorter;
-	private AbstractAction openSymbol = new ShowEditSymbolAction();
+	private AbstractAction openSymbol = ShowEditSymbolAction.getInstance();
 	private static SymbolsTable symbolTable = new SymbolsTable();
 
 	static public SymbolsTable getInstance() {

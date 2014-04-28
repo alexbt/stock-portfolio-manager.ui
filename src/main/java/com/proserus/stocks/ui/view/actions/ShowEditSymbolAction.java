@@ -15,10 +15,14 @@ import com.proserus.stocks.ui.view.symbols.SymbolsModificationView;
 public class ShowEditSymbolAction extends AbstractAction implements EventListener {
 	private static final long serialVersionUID = 201404031810L;
 	private Symbol selectedSymbol = null;
-	
-	public ShowEditSymbolAction(){
+	private static ShowEditSymbolAction singleton = new ShowEditSymbolAction();
+	private ShowEditSymbolAction(){
 		EventBus.getInstance().add(this, SwingEvents.SYMBOL_SELECTION_CHANGED);
 		setEnabled(false);
+	}
+	
+	public static ShowEditSymbolAction getInstance(){
+		return singleton;
 	}
 	
 	@Override
