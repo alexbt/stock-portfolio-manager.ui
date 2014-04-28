@@ -11,3 +11,5 @@ syntax: regexp
 ^config\.properties$
 syntax: regexp
 ^version\.properties$
+syntax: regexp
+\.zip$
