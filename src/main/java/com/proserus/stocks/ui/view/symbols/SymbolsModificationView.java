@@ -30,7 +30,6 @@ import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier;
-import com.proserus.stocks.ui.view.common.verifiers.SymbolVerifier;
 import com.proserus.stocks.ui.view.common.verifiers.YearVerifier;
 
 public class SymbolsModificationView extends AbstractDialog implements ActionListener, FocusListener,EventListener {

@@ -12,10 +12,6 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 
-import com.proserus.stocks.bo.symbols.CurrencyEnum;
-import com.proserus.stocks.bo.symbols.SectorEnum;
-
-
 public abstract class AbstractAddEditSymbolPanel extends JPanel{
 	private static final long serialVersionUID = 201404041920L;
 	private JTextField symbolField;

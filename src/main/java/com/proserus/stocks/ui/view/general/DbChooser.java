@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.proserus.stocks.bo.common.DatabasePaths;
@@ -128,8 +128,10 @@ public class DbChooser  implements EventListener,
 			dialog.dispose();
 			databases.setSelectedDatabase(comboBox.getSelectedItem()
 					.toString());
+			LOGGER.log(Level.INFO, "Selected database is: " + databases.getSelectedDatabase());
 			SwingEvents.DATABASE_SELECTED.fire(databases);
 		}else if (e.getActionCommand().equals("cancel")) {
+			LOGGER.log(Level.INFO, "User dit not choose a database, closing the application");
 			System.exit(1);
 		}
 	}

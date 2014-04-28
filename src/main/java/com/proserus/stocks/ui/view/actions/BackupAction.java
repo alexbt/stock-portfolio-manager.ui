@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -29,7 +28,6 @@ import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.controller.ViewControllers;
-import com.proserus.stocks.ui.view.general.Window;
 
 public class BackupAction extends AbstractAction implements EventListener {
 	private static final String STOCK_PORTFOLIO_BACKUP_ZIP = "stock-portfolio_backup.zip";

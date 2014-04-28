@@ -5,12 +5,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.log4j.Logger;
-import org.hibernate.classic.Validatable;
 
 import com.proserus.stocks.bp.dao.PersistenceManager;
 
