@@ -1,6 +1,8 @@
 package com.proserus.stocks.ui.view.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.text.SimpleDateFormat;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -16,12 +18,20 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 //FIXME remove EventListener
 public class RemoveTransactionAction extends AbstractAction implements
 		EventListener {
+	public static int keyEvent = KeyEvent.VK_R;
 	private static final long serialVersionUID = 201404031810L;
 	private PortfolioController controller = ViewControllers.getController();
 
 	private Transaction selectedTransaction;
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	
+	private static RemoveTransactionAction singleton = new RemoveTransactionAction(); 
 
-	public RemoveTransactionAction() {
+	public static RemoveTransactionAction getInstance(){
+		return singleton;
+	}
+	private RemoveTransactionAction() {
 		EventBus.getInstance().add(this,
 				SwingEvents.TRANSACTION_SELECTION_CHANGED);
 		setEnabled(false);
@@ -30,7 +40,9 @@ public class RemoveTransactionAction extends AbstractAction implements
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		int n = JOptionPane.showConfirmDialog(null,
-				"Do you want to remove the selected transaction ?",
+				"<html>Do you want to remove the selected transaction ('"
+				+ selectedTransaction.getSymbol().getTicker() + "' - " + sdf.format(selectedTransaction.getDate())+" - " + selectedTransaction.getType()
+				+ ") ?</html>",
 				"Removing transaction", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 		if (n == JOptionPane.YES_OPTION) {

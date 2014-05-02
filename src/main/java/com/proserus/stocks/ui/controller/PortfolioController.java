@@ -325,6 +325,10 @@ public class PortfolioController {
 			databaseVersionningBp.upgrade(v);
 		}
 	}
+	
+	public DBVersion retrieveCurrentVersion(){
+		return databaseVersionningBp.retrieveCurrentVersion();
+	}
 
 	public void checkNewVersion() {
 		Double version = databaseVersionningBp
@@ -350,9 +354,7 @@ public class PortfolioController {
 		
 		dbPaths.setBinaryCurrentFolder(PathUtils.getInstallationFolder());
 		dbPaths.setOsCurrentFolder(PathUtils.getCurrentFolder());
-
-		LOGGER.info("binaryCurrentFolder : " + dbPaths.getBinaryCurrentFolder());
-		LOGGER.info("osCurrentFolder: " + dbPaths.getOsCurrentFolder());
+		
 		boolean isBinAndOsSame = new File(dbPaths.getBinaryCurrentFolder())
 				.equals(new File(dbPaths.getOsCurrentFolder()));
 

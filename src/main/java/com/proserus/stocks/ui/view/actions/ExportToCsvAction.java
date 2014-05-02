@@ -1,6 +1,7 @@
 package com.proserus.stocks.ui.view.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,6 +19,7 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Window;
 
 public class ExportToCsvAction extends AbstractAction {
+	public static int keyEvent = KeyEvent.VK_X;
 	private static final String EXPORT = "Export";
 	private static final String STOCK_PORTFOLIO_EXPORT_CSV = "stock-portfolio_export.csv";
 	private static final String CSV_EXTENSION = ".csv";
@@ -25,6 +27,16 @@ public class ExportToCsvAction extends AbstractAction {
 	private static final long serialVersionUID = 201404031819L;
 	private PortfolioController controller = ViewControllers.getController();
 	private Window window = ViewControllers.getWindow();
+	
+	private static final ExportToCsvAction singleton = new ExportToCsvAction();
+	
+	private ExportToCsvAction(){
+		
+	}
+	
+	public static ExportToCsvAction getInstance(){
+		return singleton;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

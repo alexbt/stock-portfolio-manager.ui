@@ -7,6 +7,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
 import com.proserus.stocks.ui.controller.ViewControllers;
+import com.proserus.stocks.ui.utils.ShortcutUtils;
 
 abstract public class AbstractDialog extends JDialog implements KeyListener {
 	private static final long serialVersionUID = 201404031810L;
@@ -18,6 +19,7 @@ abstract public class AbstractDialog extends JDialog implements KeyListener {
 		addKeyListener(this);
 		setFocusable(true);
 		centerOnScreen();
+		//ShortcutUtils.apply(getRootPane());
 	}
 
 	public void keyReleased(KeyEvent arg0) {

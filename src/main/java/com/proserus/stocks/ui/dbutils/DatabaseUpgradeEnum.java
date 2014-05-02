@@ -4,7 +4,11 @@ public enum DatabaseUpgradeEnum {
 	VERSION_0(0,new AbstractScriptDatabaseStrategy[]{}),
 	VERSION_1(1,new AbstractScriptDatabaseStrategy[]{}),
 	VERSION_21(21, new ExecuteScriptStrategy("21-1_createTables.sql"),
-			new DropAllConstraintsStrategy(), new ExpectedDatatypeStrategy(
+			new DropAllConstraintsStrategy(), 
+			//Do not delete, check if exist before creating... Use SequenceNotExistStrategy 
+			new ExecuteScriptStrategy("21-2_hibernateSequence.sql"),
+			//
+			new ExpectedDatatypeStrategy(
 					"SYMBOL", "SECTOR", "INTEGER", "21-3_dropSector.sql"),
 			new ColumnNotExistStrategy("SYMBOL", "SECTOR", "21-4_addSector.sql"),
 			new ExpectedDatatypeStrategy("TRANSACTION", "TYPE", "INTEGER", "21-5_typeEnum.sql"),

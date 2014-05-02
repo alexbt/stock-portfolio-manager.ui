@@ -1,11 +1,14 @@
 package com.proserus.stocks.ui.view.common;
 
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.DefaultRowSorter;
 import javax.swing.JMenuItem;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
@@ -21,6 +24,17 @@ abstract public class AbstractTable extends JTable {
 	HashMap<String, TableColumn> removedColumns = new HashMap<String, TableColumn>();
 
 	public AbstractTable() {
+	}
+	
+	@Override
+	protected boolean processKeyBinding(KeyStroke ks,
+	        KeyEvent e, int condition, boolean pressed) {
+		
+	    boolean result = super.processKeyBinding(ks, e, condition, pressed);
+	    if (isEditing() && pressed && !e.isControlDown()){
+	    	return true;
+	    }
+	    return result;
 	}
 
 	public void showHideColumn(JMenuItem item) {

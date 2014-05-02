@@ -21,6 +21,7 @@ import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jfree.ui.about.AboutDialog;
 
 import com.proserus.stocks.bo.common.DatabasePaths;
 import com.proserus.stocks.bp.events.Event;
@@ -28,8 +29,20 @@ import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.controller.ViewControllers;
+import com.proserus.stocks.ui.view.general.Version;
 
 public class BackupAction extends AbstractAction implements EventListener {
+
+	private static final String NEWLINE = "\r\n";
+
+	private static final String EQUALS = " = ";
+
+	private static final String SELECTED_DATABASE_VERSION = NEWLINE
+			+ "Selected database version" + EQUALS;
+
+	private static final String APPLICATION_VERSION = NEWLINE
+			+ "Application version" + EQUALS;
+
 	private static final String STOCK_PORTFOLIO_BACKUP_ZIP = "stock-portfolio_backup.zip";
 
 	private static final String SAVE_BACKUP = "Save backup";
@@ -56,25 +69,19 @@ public class BackupAction extends AbstractAction implements EventListener {
 	private static final String LAST_MODIFIED_SIZE_FILE = "Last modified" + TAB
 			+ "Size" + TAB + "File";
 
-	private static final String NEWLINE = "\r\n";
-
-	private static final String EQUALS = " = ";
-
 	private static final String DB = NEWLINE + "DB";
 
 	private static final String SELECTED_DATABASE = NEWLINE
 			+ "Selected database" + EQUALS;
 
-	private static final String CLASSLOADER_CURRENT = NEWLINE
-			+ "Classloader current" + EQUALS;
+	private static final String INSTALLATION_FOLDER = NEWLINE
+			+ "Installation folder" + EQUALS;
 
-	private static final String OS_CURRENT = "OS Current" + EQUALS;
+	private static final String CURRENT_FOLDER = "currentFolder" + EQUALS;
 
 	private static final String INFO_TXT = "info" + EXT;
 
-	private static final String DATA_DB = "\\data\\db";
-
-	private static final String BINARY_CURRENT = "binaryCurrent";
+	private static final String BINARY_CURRENT = "_installationFolder";
 
 	private static final String UTF8 = "UTF-8";
 
@@ -104,8 +111,10 @@ public class BackupAction extends AbstractAction implements EventListener {
 			File backupZipFile = fc.getSelectedFile();
 
 			if (backupZipFile != null) {
-				if (!backupZipFile.getName().toLowerCase().endsWith(ZIP_EXTENSION)) {
-					backupZipFile = new File(backupZipFile.getPath() + ZIP_EXTENSION);
+				if (!backupZipFile.getName().toLowerCase()
+						.endsWith(ZIP_EXTENSION)) {
+					backupZipFile = new File(backupZipFile.getPath()
+							+ ZIP_EXTENSION);
 				}
 
 				FileOutputStream dest = new FileOutputStream(backupZipFile);
@@ -117,14 +126,18 @@ public class BackupAction extends AbstractAction implements EventListener {
 						db.getSelectedDatabase(), db.getDatabases(), out);
 
 				addFiles(out, db.getBinaryCurrentFolder(), BINARY_CURRENT, true);
-				listFiles(out, db.getBinaryCurrentFolder(), BINARY_CURRENT);
+				listFiles(out, db.getBinaryCurrentFolder(), BINARY_CURRENT
+						+ "/listing");
 
-				int i = 0;
-				for (String dbFolder : db.getDatabases()) {
+				int i = 1;
+				for (String dbFile : db.getDatabaseParentFolder().keySet()) {
+					File parentFolder = db.getDatabaseParentFolder()
+							.get(dbFile);
+					String name = "db" + i + "_" + parentFolder.getName();
 					i++;
-					dbFolder = StringUtils.removeEnd(dbFolder, DATA_DB);
-					addFiles(out, dbFolder, "db" + i, false);
-					listFiles(out, dbFolder, "db" + i);
+					addFiles(out, parentFolder.getAbsolutePath(), name, false);
+					listFiles(out, parentFolder.getAbsolutePath(), name
+							+ "/listing");
 				}
 
 				out.close();
@@ -144,14 +157,18 @@ public class BackupAction extends AbstractAction implements EventListener {
 			throws IOException {
 		ZipEntry entry = new ZipEntry(INFO_TXT);
 		out.putNextEntry(entry);
-		out.write((OS_CURRENT + osCurrentPath).getBytes(UTF8));
-		out.write((CLASSLOADER_CURRENT + binCurrentPath).getBytes(UTF8));
+		out.write((APPLICATION_VERSION + Version.VERSION
+				+ Version.VERSION_SUFFIX + " - Build: " + Version.TIMESTAMP)
+				.getBytes(UTF8));
+		out.write((SELECTED_DATABASE_VERSION + ViewControllers.getController()
+				.retrieveCurrentVersion().getDatabaseVersion()).getBytes(UTF8));
+		out.write((CURRENT_FOLDER + osCurrentPath).getBytes(UTF8));
+		out.write((INSTALLATION_FOLDER + binCurrentPath).getBytes(UTF8));
 		out.write((SELECTED_DATABASE + selectedDatabase).getBytes(UTF8));
 
-		int i = 0;
+		int i = 1;
 		for (String db : databases) {
-			i++;
-			out.write((DB + i + EQUALS + db).getBytes(UTF8));
+			out.write((DB + (i++) + EQUALS + db).getBytes(UTF8));
 		}
 		out.flush();
 	}
@@ -159,6 +176,9 @@ public class BackupAction extends AbstractAction implements EventListener {
 	private void listFiles(ZipOutputStream out, String filename, String prefix)
 			throws IOException {
 		File file = new File(filename);
+		if (!file.isDirectory()) {
+			return;
+		}
 		Collection<File> allFiles = FileUtils.listFiles(file, null, true);
 		SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMP);
 
@@ -183,6 +203,9 @@ public class BackupAction extends AbstractAction implements EventListener {
 	private void addFiles(ZipOutputStream out, String rootFolder,
 			String prefix, boolean recursive) throws IOException {
 		File rootFolderFile = new File(rootFolder);
+		if (!rootFolderFile.isDirectory()) {
+			return;
+		}
 		Collection<File> filesForZip = FileUtils.listFiles(rootFolderFile,
 				EXTENSIONS, recursive);
 
@@ -209,7 +232,6 @@ public class BackupAction extends AbstractAction implements EventListener {
 			db = SwingEvents.DATABASE_DETECTED.resolveModel(model);
 		}
 	}
-
 }
 
 class ZipFileFilter extends FileFilter {

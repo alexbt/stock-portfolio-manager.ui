@@ -1,6 +1,7 @@
 package com.proserus.stocks.ui.view.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 
@@ -12,6 +13,7 @@ import com.proserus.stocks.ui.view.common.DialogImpl;
 import com.proserus.stocks.ui.view.transactions.AddTransactionPanelImpl;
 
 public class AddTransactionAction extends AbstractAction  {
+	public static int keyEvent = KeyEvent.VK_T;
 	
 	private static final long serialVersionUID = 201404031750L;
 	private final static Logger LOGGER = Logger.getLogger(AddTransactionAction.class.getName());

@@ -53,7 +53,7 @@ public class Tab extends JTabbedPane {
 		button = new JButton();
 		button.setActionCommand("removeSymbol");
 		button.setContentAreaFilled(false);
-		button.setAction(new RemoveSymbolAction());
+		button.setAction(RemoveSymbolAction.getInstance());
 		button.setToolTipText("Remove Selected Symbol");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
 		pan.add(button);
@@ -121,7 +121,7 @@ public class Tab extends JTabbedPane {
 		button = new JButton();
 		button.setActionCommand("removeTransaction");
 		button.setContentAreaFilled(false);
-		button.setAction(new RemoveTransactionAction());
+		button.setAction(RemoveTransactionAction.getInstance());
 		button.setToolTipText("Remove Selected Transaction");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
 		pan.add(button);

@@ -19,13 +19,14 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.CurrencyComboRenderer;
 
-public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implements ActionListener, EventListener, KeyListener{
+public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel
+		implements ActionListener, EventListener, KeyListener {
 	private static final long serialVersionUID = 201404041920L;
 
 	private static final String REQUIRED_FIELD_S_MISSING = "Required field(s) missing";
 
 	private static final String CANNOT_ADD_SYMBOL = "Cannot add symbol";
-	
+
 	private boolean disableWhenExist = true;
 
 	public AddEditSymbolPanelImpl(boolean buttonVisible) {
@@ -33,17 +34,17 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
 			getCurrencyField().addItem(cur);
 		}
-		getCurrencyField().setRenderer(new CurrencyComboRenderer()); 
+		getCurrencyField().setRenderer(new CurrencyComboRenderer());
 		getCurrencyField().setMaximumRowCount(12);
-		
+
 		for (SectorEnum sector : SectorEnum.retrieveSortedSectors()) {
 			getSectorField().addItem(sector);
 		}
 		getSectorField().setMaximumRowCount(12);
 		getSectorField().setSelectedItem(SectorEnum.UNKNOWN);
-		
+
 		EventBus.getInstance().add(this, SwingEvents.CURRENCY_DEFAULT_CHANGED);
-		
+
 		if (buttonVisible) {
 			getAddButton().addActionListener(this);
 			getAddButton().setActionCommand("add");
@@ -53,12 +54,12 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 
 			getCloseButton().addActionListener(this);
 			getCloseButton().setActionCommand("close");
-		}else{
+		} else {
 			getAddCloseButton().setVisible(false);
 			getAddButton().setVisible(false);
 			getCloseButton().setVisible(false);
 		}
-		
+
 		getSymbolField().addKeyListener(this);
 		getAddButton().addKeyListener(this);
 		getAddCloseButton().addKeyListener(this);
@@ -69,9 +70,9 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 		getUseCustomPriceField().addKeyListener(this);
 		getCompanyNameField().setDisabledTextColor(Color.BLACK);
 		getSymbolField().setDisabledTextColor(Color.BLACK);
-		
+
 	}
-	
+
 	@Override
 	public String getName() {
 		return getCompanyNameField().getText();
@@ -89,7 +90,8 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 	public void setVisible(boolean flag) {
 		super.setVisible(flag);
 		if (flag) {
-			getCurrencyField().setSelectedItem(ViewControllers.getController().getDefaultCurrency());
+			getCurrencyField().setSelectedItem(
+					ViewControllers.getController().getDefaultCurrency());
 			getSymbolField().requestFocus();
 		}
 	}
@@ -100,44 +102,46 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 			addSymbol();
 		}
 		if (arg0.getActionCommand().endsWith("lose")) {
-			((AbstractDialog) getParent().getParent().getParent().getParent()).dispose();
+			((AbstractDialog) getParent().getParent().getParent().getParent())
+					.dispose();
 		}
 	}
 
 	private void addSymbol() {
-	    if(!getSymbolField().getText().isEmpty()){
-	    		Symbol s = ViewControllers.getBoBuilder().getSymbol();
-	    		s.setTicker(getSymbolField().getText());
-	    		s.setCurrency((CurrencyEnum) getCurrencyField().getSelectedItem());
-	    		s.setSector((SectorEnum) getSectorField().getSelectedItem());
-	    		s.setName(getCompanyNameField().getText());
-	    		s.setCustomPriceFirst(getUseCustomPriceField().isSelected());
-	    		//s.setSector(SectorEnum.UNKNOWN);
+		if (!getSymbolField().getText().isEmpty()) {
+			Symbol s = ViewControllers.getBoBuilder().getSymbol();
+			s.setTicker(getSymbolField().getText());
+			s.setCurrency((CurrencyEnum) getCurrencyField().getSelectedItem());
+			s.setSector((SectorEnum) getSectorField().getSelectedItem());
+			s.setName(getCompanyNameField().getText());
+			s.setCustomPriceFirst(getUseCustomPriceField().isSelected());
+			// s.setSector(SectorEnum.UNKNOWN);
 
-	    		ViewControllers.getController().addSymbol(s);
-	    		
-	    		getSymbolField().setText("");
-	    		getCurrencyField().setSelectedItem("");
-	    		getSectorField().setSelectedItem(SectorEnum.UNKNOWN);
-	    		getCompanyNameField().setText("");
-	    		getUseCustomPriceField().setSelected(false);
-	    }else{
-	    	JOptionPane.showConfirmDialog(this, REQUIRED_FIELD_S_MISSING, CANNOT_ADD_SYMBOL, JOptionPane.DEFAULT_OPTION,
-	    	        JOptionPane.WARNING_MESSAGE);
-	    }
-    }
-	
-	
+			ViewControllers.getController().addSymbol(s);
+
+			getSymbolField().setText("");
+			getCurrencyField().setSelectedItem("");
+			getSectorField().setSelectedItem(SectorEnum.UNKNOWN);
+			getCompanyNameField().setText("");
+			getUseCustomPriceField().setSelected(false);
+		} else {
+			JOptionPane.showConfirmDialog(this, REQUIRED_FIELD_S_MISSING,
+					CANNOT_ADD_SYMBOL, JOptionPane.DEFAULT_OPTION,
+					JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
 	private void updateNameWithCurrentSymbol() {
-	    Symbol s = null;
-	    Object o = getSymbolField().getText();
-	    if (o instanceof String) {
-	    	s = ViewControllers.getController().getSymbol(o.toString());
-	    	if(s==null){
-	    		s= new EmptySymbol();
-	    	}
-	    }
-	    if(isDisableWhenExist()){
+		Symbol s = null;
+		Object o = getSymbolField().getText().trim();
+		if (o instanceof String) {
+			s = o.toString().isEmpty() ? null : ViewControllers.getController()
+					.getSymbol(o.toString());
+			if (s == null) {
+				s = new EmptySymbol();
+			}
+		}
+		if (isDisableWhenExist()) {
 			boolean isNew = s instanceof EmptySymbol;
 			getCompanyNameField().setEditable(isNew);
 			getCompanyNameField().setEnabled(isNew);
@@ -148,41 +152,43 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 			getAddCloseButton().setEnabled(isNew);
 			getCompanyNameField().setText(s.getName());
 		}
-    }
-
+	}
 
 	@Override
 	public void update(Event event, Object model) {
-		if(SwingEvents.CURRENCY_DEFAULT_CHANGED.equals(event)){
-			getCurrencyField().setSelectedItem(SwingEvents.CURRENCY_DEFAULT_CHANGED.resolveModel(model));
+		if (SwingEvents.CURRENCY_DEFAULT_CHANGED.equals(event)) {
+			getCurrencyField().setSelectedItem(
+					SwingEvents.CURRENCY_DEFAULT_CHANGED.resolveModel(model));
 		}
 	}
 
 	@Override
-    public void keyPressed(KeyEvent e) {
-		((AbstractDialog) getParent().getParent().getParent().getParent()).keyPressed(e);
-    }
+	public void keyPressed(KeyEvent e) {
+		((AbstractDialog) getParent().getParent().getParent().getParent())
+				.keyPressed(e);
+	}
 
 	@Override
-    public void keyReleased(KeyEvent arg0) {
-		if (arg0.getSource().equals(getSymbolField()) && arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
+	public void keyReleased(KeyEvent arg0) {
+		if (arg0.getSource().equals(getSymbolField())
+				&& arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
 			updateNameWithCurrentSymbol();
 		}
-		
+
 		if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
 			addSymbol();
 		}
-    }
-	
+	}
+
 	@Override
-    public void keyTyped(KeyEvent e) {
-    }
-	
+	public void keyTyped(KeyEvent e) {
+	}
+
 	public boolean isDisableWhenExist() {
-    	return disableWhenExist;
-    }
+		return disableWhenExist;
+	}
 
 	public void setDisableWhenExist(boolean disableWhenExist) {
-    	this.disableWhenExist = disableWhenExist;
-    }
+		this.disableWhenExist = disableWhenExist;
+	}
 }

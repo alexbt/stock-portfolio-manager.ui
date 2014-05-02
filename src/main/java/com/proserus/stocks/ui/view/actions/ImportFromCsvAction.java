@@ -1,6 +1,7 @@
 package com.proserus.stocks.ui.view.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.AbstractAction;
@@ -13,6 +14,7 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Window;
 
 public class ImportFromCsvAction extends AbstractAction {
+	public static int keyEvent = KeyEvent.VK_I;
 	private static final long serialVersionUID = 201404031810L;
 	private PortfolioController controller = ViewControllers.getController();
 	private Window window = ViewControllers.getWindow();

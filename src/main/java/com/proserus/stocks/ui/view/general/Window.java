@@ -1,6 +1,7 @@
 package com.proserus.stocks.ui.view.general;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
@@ -8,10 +9,13 @@ import java.beans.PropertyChangeListener;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.InputMap;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -21,7 +25,19 @@ import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.controller.ViewControllers;
+import com.proserus.stocks.ui.utils.ShortcutUtils;
+import com.proserus.stocks.ui.view.actions.AddSymbolAction;
+import com.proserus.stocks.ui.view.actions.AddTransactionAction;
 import com.proserus.stocks.ui.view.actions.CloseApplicationAction;
+import com.proserus.stocks.ui.view.actions.ExportToCsvAction;
+import com.proserus.stocks.ui.view.actions.ImportFromCsvAction;
+import com.proserus.stocks.ui.view.actions.RemoveSymbolAction;
+import com.proserus.stocks.ui.view.actions.ShowAboutAction;
+import com.proserus.stocks.ui.view.actions.ShowEditSymbolAction;
+import com.proserus.stocks.ui.view.actions.ShowHideFiltersAction;
+import com.proserus.stocks.ui.view.actions.ShowSettingsAction;
+import com.proserus.stocks.ui.view.actions.UpdateOldPricesAction;
+import com.proserus.stocks.ui.view.actions.UpdatePriceAction;
 
 public class Window extends JFrame implements WindowListener, Observer,
 		PropertyChangeListener, EventListener {
@@ -48,19 +64,10 @@ public class Window extends JFrame implements WindowListener, Observer,
 		// UIManager.put(COMBO_BOX_SELECTION_BACKGROUND, new Color(255, 148,
 		// 0));
 		setLayout(new BorderLayout());
-		setJMenuBar(Menu.getInstance());
 
-		// split = new JSplitPane(JSplitPane.VERTICAL_SPLIT,new FilterPanel(),);
-		// split.setName("Filter");
-		// split.setResizeWeight(0);
-		// split.setOneTouchExpandable(true);
-		// //split.setContinuousLayout(true);
-		// split.setEnabled( false );
-		// split.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY,
-		// this);
-		// UIManager.put("SplitPane.dividerSize", new Integer(70));
-		// SwingUtilities.updateComponentTreeUI(window);
-
+		ShortcutUtils.apply(getRootPane());        
+        setJMenuBar(Menu.getInstance());
+        
 		JPanel north = new JPanel();
 		north.setLayout(new BorderLayout());
 
@@ -93,6 +100,7 @@ public class Window extends JFrame implements WindowListener, Observer,
 	}
 
 	public Window() {
+		
 	}
 
 	@Override

@@ -92,7 +92,7 @@ public class Toolbar extends JToolBar{
 	    button = new JButton();
 		button.setActionCommand("export");
 		button.setContentAreaFilled(false);
-		button.setAction(new ExportToCsvAction());
+		button.setAction(ExportToCsvAction.getInstance());
 		button.setToolTipText("Export");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Export.png")));
 		add(button);

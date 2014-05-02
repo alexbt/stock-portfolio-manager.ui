@@ -97,7 +97,7 @@ public class DbChooser  implements EventListener,
 		dialog.add(panel);
 		dialog.setModal(true);
 		dialog.setTitle("More than one local database was found");
-		dialog.setSize(675, 303);
+		dialog.setSize(675, 225);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.proserus.stocks.ui.view.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 
@@ -13,6 +14,7 @@ import com.proserus.stocks.ui.view.symbols.SymbolsModificationView;
 
 //FIXME remove EventListener
 public class ShowEditSymbolAction extends AbstractAction implements EventListener {
+	public static int keyEvent = KeyEvent.VK_E;
 	private static final long serialVersionUID = 201404031810L;
 	private Symbol selectedSymbol = null;
 	private static ShowEditSymbolAction singleton = new ShowEditSymbolAction();

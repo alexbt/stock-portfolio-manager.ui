@@ -30,6 +30,12 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 	private static final String LATESTVERSION_PROPERTY = "latestversion";
 
 	public static final String LATEST_VERSION_URL = "http://stock-portfolio-manager.googlecode.com/hg/latestversion";
+	
+	private boolean ignorePopop = false;
+
+	public void setIgnorePopop(boolean ignorePopop) {
+		this.ignorePopop = ignorePopop;
+	}
 
 	private static Logger log = Logger
 			.getLogger(DatabaseVersionningBpImpl.class.getName());
@@ -78,7 +84,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 				+ " to " + DatabaseUpgradeEnum.getLatestVersion());
 		boolean isFirstTime = version.getDatabaseVersion() == DatabaseUpgradeEnum.VERSION_0
 				.getVersion();
-		if (!isFirstTime) {
+		if (!isFirstTime && !ignorePopop) {
 			int n = JOptionPane
 					.showConfirmDialog(
 							null,
@@ -110,7 +116,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 			log.debug("Version check and upgrade is rolledback from version "
 					+ version.getDatabaseVersion());
 			persistenceManager.getTransaction().rollback();
-			if (!isFirstTime) {
+			if (!isFirstTime && !ignorePopop) {
 				JOptionPane
 						.showMessageDialog(
 								null,
@@ -123,7 +129,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		} else {
 			log.debug("Version check and upgrade is successful");
 			persistenceManager.getTransaction().commit();
-			if (!isFirstTime) {
+			if (!isFirstTime && !ignorePopop) {
 				JOptionPane.showMessageDialog(null,
 						"Upgrade completed successfully!",
 						"Upgrade completed!", JOptionPane.INFORMATION_MESSAGE,

@@ -1,6 +1,7 @@
 package com.proserus.stocks.ui.view.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -15,29 +16,35 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 
 //FIXME remove EventListener
 public class RemoveSymbolAction extends AbstractAction implements EventListener {
+	public static int keyEvent = KeyEvent.VK_D;
 	private static final long serialVersionUID = 201404031810L;
 	private PortfolioController controller = ViewControllers.getController();
 	
 	private Symbol selectedSymbol = null;
 	
-	private static final String THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS = "The symbol is currently used in transactions";
-	
 	private static final String CANNOT_REMOVE_SYMBOL = "Cannot remove symbol";
 	
-	public RemoveSymbolAction(){
+	private static final RemoveSymbolAction singleton = new RemoveSymbolAction();
+	
+	public static RemoveSymbolAction getInstance(){
+		return singleton;
+	}
+	private RemoveSymbolAction(){
 		EventBus.getInstance().add(this, SwingEvents.SYMBOL_SELECTION_CHANGED);
 		setEnabled(false);
 	}
 	
 	@Override
     public void actionPerformed(ActionEvent arg0) {
-		int n = JOptionPane.showConfirmDialog(null, "Do you want to remove the selected symbol ?", "Removing symbol",
+		int n = JOptionPane.showConfirmDialog(null, "Do you want to remove symbol '"+selectedSymbol.getTicker()+"' ?", "Removing symbol",
 	            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 	    if (n == JOptionPane.YES_OPTION) {
 	    	if (controller.remove(selectedSymbol)) {
 				controller.setSelection((Symbol)null);
 			} else {
-				JOptionPane.showConfirmDialog(null, THE_SYMBOL_IS_CURRENTLY_USED_IN_TRANSACTIONS, CANNOT_REMOVE_SYMBOL,
+				JOptionPane.showConfirmDialog(null, "The symbol '"
+						+ selectedSymbol.getTicker()
+						+ "' is currently used in transactions", CANNOT_REMOVE_SYMBOL,
 				        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
 			}
 	    }

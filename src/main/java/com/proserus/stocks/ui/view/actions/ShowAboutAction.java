@@ -1,6 +1,7 @@
 package com.proserus.stocks.ui.view.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -11,6 +12,7 @@ import com.proserus.stocks.ui.view.general.Version;
 import com.proserus.stocks.ui.view.general.Window;
 
 public class ShowAboutAction extends AbstractAction {
+	public static int keyEvent = KeyEvent.VK_B;
 	private static final long serialVersionUID = 201404031810L;
 	private static String MESSAGE = "Stock Portfolio Manager was created by:\n" + "Alex Bélisle-Turcot\n" + "alex.belisleturcot@proserus.com\n\n"
 	        + "Version: " + Version.VERSION + Version.VERSION_SUFFIX + "\n" + "Build: " + Version.TIMESTAMP + "\n\n"
@@ -22,6 +24,16 @@ public class ShowAboutAction extends AbstractAction {
 	        + "\n\n(c) Copyright Groupe Proserus Inc. 2009 - 2011. All rights reserved.";
 
 	private Window window = ViewControllers.getWindow();
+	
+	private static ShowAboutAction singleton = new ShowAboutAction();
+	
+	public static ShowAboutAction getInstance(){
+		return singleton;
+	}
+	
+	private ShowAboutAction(){
+		
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
