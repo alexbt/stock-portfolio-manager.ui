@@ -1,0 +1,225 @@
+/**
+ * 
+ */
+package com.proserus.stocks.ui.view.general;
+
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Collection;
+
+import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+
+import org.jfree.data.time.Year;
+
+import com.proserus.stocks.bo.symbols.CurrencyEnum;
+import com.proserus.stocks.bo.symbols.SectorEnum;
+import com.proserus.stocks.bo.symbols.Symbol;
+import com.proserus.stocks.bo.transactions.TransactionType;
+import com.proserus.stocks.bp.events.Event;
+import com.proserus.stocks.bp.events.EventBus;
+import com.proserus.stocks.bp.events.EventListener;
+import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.model.Filter;
+import com.proserus.stocks.bp.utils.DateUtil;
+import com.proserus.stocks.ui.controller.ViewControllers;
+import com.proserus.stocks.ui.view.common.CurrencyComboRenderer;
+import com.proserus.stocks.ui.view.common.EmptyYear;
+import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
+import com.proserus.stocks.ui.view.symbols.EmptySymbol;
+
+/**
+ * @author Alex
+ * 
+ */
+public class FilterPanelImpl extends AbstractFilterPanel implements
+		ActionListener, EventListener, KeyListener {
+	private static final long serialVersionUID = 201404041920L;
+	private SortedComboBoxModel modelSymbols = new SortedComboBoxModel();
+	private SortedComboBoxModel modelYears = new SortedComboBoxModel(
+			new FilterYearComparator());
+	private static FilterPanelImpl singleton = new FilterPanelImpl();
+	private Filter filter = ViewControllers.getFilter();
+
+	static public FilterPanelImpl getInstance() {
+		return singleton;
+	}
+
+	private FilterPanelImpl() {
+		setBorder(BorderFactory.createLineBorder(Color.black));
+		getLabelList().setAddEnabled(false);
+		getLabelList().setListColor(getLabelList().getBackground());
+		getLabelList().setHorizontal(true);
+		getLabelList().setModeFilter(true);
+		EventBus.getInstance().add(getLabelList(), SwingEvents.LABELS_UPDATED);
+
+		EventBus.getInstance().add(this, SwingEvents.TRANSACTION_UPDATED);
+
+		getLabelList()
+				.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		getYearField().addActionListener(this);
+		getYearField().setModel(modelYears);
+
+		// populateSymbols();
+
+		getSymbolField().setModel(modelSymbols);
+		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_LIST_UPDATED);
+		getSymbolField().addActionListener(this);
+		getSymbolField().setMaximumRowCount(12);
+
+		getTransactionTypeField().addItem("");
+		for (TransactionType transactionType : TransactionType.values()) {
+			getTransactionTypeField().addItem(transactionType);
+		}
+		getTransactionTypeField().addActionListener(this);
+
+		getCurrencyField().addItem("");
+		for (CurrencyEnum currency : CurrencyEnum.values()) {
+			getCurrencyField().addItem(currency);
+		}
+		getCurrencyField().setRenderer(new CurrencyComboRenderer());
+		getCurrencyField().setMaximumRowCount(12);
+		getCurrencyField().addActionListener(this);
+
+		getSectorField().addItem("");
+		for (SectorEnum sector : SectorEnum.retrieveSortedSectors()) {
+			getSectorField().addItem(sector);
+		}
+		getSectorField().setMaximumRowCount(12);
+		getSectorField().addActionListener(this);
+	}
+
+	private void populateYears(Year min) {
+		if (!min.equals(modelYears.getElementAt(modelYears.getSize() - 1))) {
+			getYearField().removeActionListener(this);
+
+			Object o = modelYears.getSelectedItem();
+
+			modelYears.removeAllElements();
+			for (Year i = DateUtil.getCurrentYear(); i.getYear() >= min
+					.getYear(); i = (Year) i.previous()) {
+				modelYears.addElement(i);
+			}
+			modelYears.addElement((new EmptyYear()));
+			modelYears.setSelectedItem(o);
+			getYearField().addActionListener(this);
+		}
+	}
+
+	// private void populateSymbols() {
+	// Iterator<Symbol> iter =
+	// ViewControllers.getController().getSymbols().iterator();
+	// modelSymbols.removeAllElements();
+	// while (iter.hasNext()) {
+	// modelSymbols.addElement(iter.next());
+	// }
+	// Symbol s = new EmptySymbol();
+	// modelSymbols.addElement(s);
+	// }
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource().equals(getYearField())) {
+			Year selectedYear = (Year) ((JComboBox) arg0.getSource())
+					.getSelectedItem();
+			if (!selectedYear.toString().isEmpty()) {
+				filter.setYear(selectedYear);
+			} else {
+				filter.setYear(null);
+			}
+			ViewControllers.getController().refreshFilteredData();
+		} else if (arg0.getSource().equals(getSymbolField())) {
+			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
+			if (o instanceof Symbol) {
+				if (((Symbol) o).getId() != null) {
+					filter.setSymbol((Symbol) o);
+				}
+
+				else {
+					filter.setSymbol(null);
+				}
+			}
+			ViewControllers.getController().refreshFilteredData();
+		} else if (arg0.getSource().equals(getTransactionTypeField())) {
+			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
+			TransactionType type = null;
+			if (o instanceof TransactionType) {
+				type = (TransactionType) o;
+			}
+
+			filter.setTransactionType(type);
+			ViewControllers.getController().refreshFilteredData();
+		} else if (arg0.getSource().equals(getCurrencyField())) {
+			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
+			CurrencyEnum type = null;
+			if (o instanceof CurrencyEnum) {
+				type = (CurrencyEnum) o;
+			}
+
+			filter.setCurrency(type);
+			ViewControllers.getController().refreshFilteredData();
+		} else if (arg0.getSource().equals(getSectorField())) {
+			Object o = ((JComboBox) arg0.getSource()).getSelectedItem();
+			SectorEnum type = null;
+			if (o instanceof SectorEnum) {
+				type = (SectorEnum) o;
+			}
+
+			filter.setSector(type);
+			ViewControllers.getController().refreshFilteredData();
+		}
+	}
+
+	@Override
+	public void update(Event event, Object model) {
+		if (SwingEvents.TRANSACTION_UPDATED.equals(event)) {
+			populateYears(ViewControllers.getController().getFirstYear());
+		} else if (SwingEvents.SYMBOLS_LIST_UPDATED.equals(event)) {
+			Object o = modelSymbols.getSelectedItem();
+			getSymbolField().removeActionListener(this);
+			modelSymbols.removeAllElements();
+			Collection<Symbol> symbols = SwingEvents.SYMBOLS_LIST_UPDATED
+					.resolveModel(model);
+			for (Symbol symbol : symbols) {
+				modelSymbols.addElement(symbol);
+			}
+			Symbol s = new EmptySymbol();
+			modelSymbols.addElement(s);
+			if (o != null && symbols.contains(o)) {
+				modelSymbols.setSelectedItem(o);
+			} else {
+				filter.setSymbol(null);
+				ViewControllers.getController().refreshFilteredData();
+			}
+			getSymbolField().addActionListener(this);
+		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+	}
+
+	@Override
+	public void keyReleased(KeyEvent textField) {
+		// TODO BEFORE: int length = ((JTextField)
+		// textField.getSource()).getText().length();
+		// NOW BETTER ?
+		if (!((JTextField) textField.getSource()).getText().isEmpty()) {
+			ViewControllers.getController().setCustomFilter(
+					(((JTextField) textField.getSource()).getText()));
+		} else {
+			ViewControllers.getController().setCustomFilter("");
+		}
+
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+	}
+}
