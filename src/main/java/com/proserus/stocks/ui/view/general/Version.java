@@ -5,7 +5,7 @@
 							package com.proserus.stocks.ui.view.general;
 
 							public interface Version {
-							public static String TIMESTAMP = "20140507-0151";
+							public static String TIMESTAMP = "20140511-2225";
 							public static String VERSION = "0.24";
 							public static String VERSION_SUFFIX = "Beta";
 							}

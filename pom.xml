@@ -29,7 +29,11 @@
 							<mainClass>com.proserus.stocks.ui.Launch</mainClass>
 						</manifest>
 						<manifestEntries>
-							<built-timestamp>${maven.build.timestamp}</built-timestamp>
+							<Built-By>${user.name}</Built-By>
+							<Built-Timestamp>${maven.build.timestamp}</Built-Timestamp>
+							<Implementation-Version>${version}</Implementation-Version>
+							<Implementation-Title>${project.artifactId}</Implementation-Title>
+							<Implementation-Vendor>${organisation}</Implementation-Vendor>
 							<Class-Path>.</Class-Path>
 						</manifestEntries>
 					</archive>
