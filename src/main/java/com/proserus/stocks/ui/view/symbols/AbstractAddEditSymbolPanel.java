@@ -12,6 +12,9 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 
+import com.proserus.stocks.ui.view.transactions.ComboEditor;
+import com.proserus.stocks.ui.view.transactions.ComboRender;
+
 public abstract class AbstractAddEditSymbolPanel extends JPanel{
 	private static final long serialVersionUID = 201404041920L;
 	private JTextField symbolField;
@@ -52,10 +55,14 @@ public abstract class AbstractAddEditSymbolPanel extends JPanel{
 		companyNameField.setColumns(10);
 		
 		sectorField = new JComboBox();
+		sectorField.setRenderer(new ComboRender());
+		sectorField.setEditor(new ComboEditor());
 		
 		sectorLabel = new JLabel("Sector:");
 		
 		currencyField = new JComboBox();
+		currencyField.setRenderer(new ComboRender());
+		currencyField.setEditor(new ComboEditor());
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(

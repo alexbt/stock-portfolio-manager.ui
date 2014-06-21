@@ -1,7 +1,10 @@
 package com.proserus.stocks.ui.view.general;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -11,128 +14,143 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import com.proserus.stocks.bo.common.Database;
 import com.proserus.stocks.bo.common.DatabasePaths;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
+import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
+import com.proserus.stocks.ui.view.transactions.ComboEditor;
+import com.proserus.stocks.ui.view.transactions.ComboRender;
 
-public class DbChooser  implements EventListener,
-		ActionListener {
-	private static final Logger LOGGER = Logger
-			.getLogger(DbChooser.class.getName());
-	
-	private JComboBox comboBox;
-	private DatabasePaths databases;
-	
-	private AbstractDialog dialog = new AbstractDialog() {
-		private static final long serialVersionUID = 201404261332L;
-	};
+public class DbChooser implements EventListener, ActionListener, ComponentListener {
+    private static final Logger LOGGER = Logger.getLogger(DbChooser.class.getName());
 
-	public DbChooser() {
-		init();
+    private JComboBox comboBox;
+    private SortedComboBoxModel comboModel;
+    private DatabasePaths databases;
 
-		EventBus.getInstance().add(this, SwingEvents.DATABASE_DETECTED);
-	}
+    private AbstractDialog dialog = new AbstractDialog() {
+        private static final long serialVersionUID = 201404261332L;
+    };
 
-	private void init() {
-		JPanel panel = new JPanel();
-		JLabel lblMoreThanOne = new JLabel(
-				"More than one database was found. Please choose");
+    public DbChooser() {
+        init();
+        EventBus.getInstance().add(this, SwingEvents.DATABASE_DETECTED);
+    }
 
-		comboBox = new JComboBox();
+    private void init() {
+        JPanel panel = new JPanel();
+        JLabel lblMoreThanOne = new JLabel("More than one database was found. Please choose");
 
-		JLabel lblIfYouWish = new JLabel(
-				"<html>If you wish to get rid of this message, <br/>please choose the unwanted database and choose '<i>File -> Delete current portfolio</i>'</html>'");
+        comboModel = new SortedComboBoxModel();
+        comboBox = new JComboBox(comboModel);
+        comboBox.setRenderer(new ComboRender());
+        comboBox.setEditor(new ComboEditor());
 
-		JButton cancelButton = new JButton("Cancel (and close)");
-		cancelButton.setActionCommand("cancel");
-		cancelButton.addActionListener(this);
-		
-		JButton okButton = new JButton("OK");
-		okButton.setActionCommand("ok");
-		okButton.addActionListener(this);
-		GroupLayout groupLayout = new GroupLayout(panel);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(27)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblIfYouWish, 0, 0, Short.MAX_VALUE)
-							.addContainerGap())
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(comboBox, 0, 427, Short.MAX_VALUE)
-							.addContainerGap())
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblMoreThanOne)
-							.addContainerGap())))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(89)
-					.addComponent(cancelButton)
-					.addGap(34)
-					.addComponent(okButton)
-					.addContainerGap(190, Short.MAX_VALUE))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(lblMoreThanOne)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addComponent(lblIfYouWish, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(cancelButton)
-						.addComponent(okButton))
-					.addContainerGap(93, Short.MAX_VALUE))
-		);
-		panel.setLayout(groupLayout);
-		dialog.add(panel);
-		dialog.setModal(true);
-		dialog.setTitle("More than one local database was found");
-		dialog.setSize(675, 225);
-	}
+        JLabel lblIfYouWish = new JLabel(
+                "<html>If you wish to avoid of this message, <br/>please choose the <i>unwanted</i> database and '<i>File -> Delete current portfolio</i>'</html>'");
 
-	@Override
-	public void update(Event event, Object model) {
-		if (SwingEvents.DATABASE_DETECTED.equals(event)) {
-			databases = SwingEvents.DATABASE_DETECTED
-					.resolveModel(model);
-			if (databases.getDatabases().size() == 1) {
-				databases.setSelectedDatabase(databases.getDatabases().iterator().next());
-				SwingEvents.DATABASE_SELECTED.fire(databases);
-				dialog.dispose();
-			} else {
-				comboBox.removeAllItems();
-				for (String db : databases.getDatabases()) {
-					if (db.length() > 100) {
-						//db = StringUtils.right("..." + db, 100);
-					}
-					comboBox.addItem(db);
-				}
-				dialog.setVisible(true);
-			}
-		}
-	}
+        JButton cancelButton = new JButton("Cancel (and close)");
+        cancelButton.setActionCommand("cancel");
+        cancelButton.addActionListener(this);
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("ok")) {
-			dialog.dispose();
-			databases.setSelectedDatabase(comboBox.getSelectedItem()
-					.toString());
-			LOGGER.log(Level.INFO, "Selected database is: " + databases.getSelectedDatabase());
-			SwingEvents.DATABASE_SELECTED.fire(databases);
-		}else if (e.getActionCommand().equals("cancel")) {
-			LOGGER.log(Level.INFO, "User dit not choose a database, closing the application");
-			System.exit(1);
-		}
-	}
+        JButton okButton = new JButton("OK");
+        okButton.setActionCommand("ok");
+        okButton.addActionListener(this);
+        GroupLayout groupLayout = new GroupLayout(panel);
+        groupLayout.setHorizontalGroup(groupLayout
+                .createParallelGroup(Alignment.LEADING)
+                .addGroup(
+                        groupLayout
+                                .createSequentialGroup()
+                                .addGap(27)
+                                .addGroup(
+                                        groupLayout
+                                                .createParallelGroup(Alignment.LEADING)
+                                                .addGroup(
+                                                        groupLayout.createSequentialGroup().addComponent(lblIfYouWish, 0, 0, Short.MAX_VALUE)
+                                                                .addContainerGap())
+                                                .addGroup(
+                                                        groupLayout.createSequentialGroup().addComponent(comboBox, 0, 427, Short.MAX_VALUE)
+                                                                .addContainerGap())
+                                                .addGroup(groupLayout.createSequentialGroup().addComponent(lblMoreThanOne).addContainerGap())))
+                .addGroup(
+                        groupLayout.createSequentialGroup().addGap(89).addComponent(cancelButton).addGap(34).addComponent(okButton)
+                                .addContainerGap(190, Short.MAX_VALUE)));
+        groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
+                groupLayout.createSequentialGroup().addContainerGap().addComponent(lblMoreThanOne).addPreferredGap(ComponentPlacement.RELATED)
+                        .addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addGap(18)
+                        .addComponent(lblIfYouWish, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.UNRELATED)
+                        .addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(cancelButton).addComponent(okButton))
+                        .addContainerGap(93, Short.MAX_VALUE)));
+        panel.setLayout(groupLayout);
+        dialog.add(panel);
+        dialog.setModal(true);
+        dialog.setTitle("More than one local database was found");
+        dialog.setSize(675, 225);
+        dialog.setMaximumSize(new Dimension(800, 225));
+        dialog.setMinimumSize(new Dimension(675, 225));
+        dialog.addComponentListener(this);
+    }
+
+    @Override
+    public void update(Event event, Object model) {
+        if (SwingEvents.DATABASE_DETECTED.equals(event)) {
+            databases = SwingEvents.DATABASE_DETECTED.resolveModel(model);
+            if (databases.getDatabases().size() == 1) {
+                databases.setSelectedDatabase(databases.getDatabases().iterator().next());
+                SwingEvents.DATABASE_SELECTED.fire(databases);
+                dialog.dispose();
+            } else {
+                comboModel.removeAllElements();
+                for (Database db : databases.getDatabases()) {
+                    comboModel.addElement(db);
+                }
+                dialog.setVisible(true);
+            }
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getActionCommand().equals("ok")) {
+            dialog.dispose();
+            databases.setSelectedDatabase((Database)comboBox.getSelectedItem());
+            LOGGER.log(Level.INFO, "Selected database is: " + databases.getSelectedDatabase());
+            SwingEvents.DATABASE_SELECTED.fire(databases);
+        } else if (e.getActionCommand().equals("cancel")) {
+            LOGGER.log(Level.INFO, "User dit not choose a database, closing the application");
+            System.exit(1);
+        }
+    }
+
+    @Override
+    public void componentResized(ComponentEvent component) {
+        if (component.getSource() == dialog) {
+            Dimension currSize = (Dimension) dialog.getSize().clone();
+            if (currSize.height != dialog.getMaximumSize().getHeight()) {
+                dialog.setSize((int) dialog.getSize().getWidth(), (int) dialog.getMaximumSize().getHeight());
+            }
+        }
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent arg0) {
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent arg0) {
+    }
+
+    @Override
+    public void componentShown(ComponentEvent arg0) {
+    }
 }

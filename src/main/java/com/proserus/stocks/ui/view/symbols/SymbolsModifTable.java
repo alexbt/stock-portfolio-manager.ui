@@ -21,6 +21,7 @@ import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
+import com.proserus.stocks.ui.view.transactions.TableRender;
 
 public class SymbolsModifTable extends AbstractTable implements EventListener, KeyListener {
 	private static final long serialVersionUID = 201404042021L;
@@ -29,7 +30,7 @@ public class SymbolsModifTable extends AbstractTable implements EventListener, K
 	private static final String ZERO = "0";
 
 	private SymbolsModifModel tableModel;;
-	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
+	private TableRender tableRender = new TableRender();
 	private HashMap<String, Color> colors = new HashMap<String, Color>();
 	private TableRowSorter<SymbolsModifModel> sorter;
 	private boolean filtered = false;
@@ -82,30 +83,7 @@ public class SymbolsModifTable extends AbstractTable implements EventListener, K
 
 	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
-		return renderer;
-	}
-
-	private static class PrecisionCellRenderer extends DefaultTableCellRenderer {
-		private static final long serialVersionUID = 201404041920L;
-		private NumberFormat format;
-
-		PrecisionCellRenderer(int precision) {
-			format = NumberFormat.getNumberInstance();
-			format.setMaximumFractionDigits(precision);
-			format.setMinimumFractionDigits(precision);
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-		        boolean hasFocus, int row, int column) {
-			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			if (value instanceof Float) {
-				setText(format.format(value));
-			}if (value instanceof BigDecimal) {
-				setText(format.format(value));
-			}
-			return this;
-		}
+		return tableRender;
 	}
 
 	@Override

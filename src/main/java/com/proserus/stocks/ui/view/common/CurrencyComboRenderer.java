@@ -39,7 +39,7 @@ public class CurrencyComboRenderer extends JLabel implements ListCellRenderer {
 			setIcon(currency.getIcon());
 			setIconTextGap(10);
 			setHorizontalAlignment(LEFT);
-			setText(currency.toString());
+			setText(currency.name());
 		}else{
 			setText(" ");
 			setIcon(null);

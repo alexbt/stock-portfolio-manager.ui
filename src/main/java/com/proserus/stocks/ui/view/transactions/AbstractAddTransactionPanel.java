@@ -1,6 +1,7 @@
 package com.proserus.stocks.ui.view.transactions;
 import java.awt.Component;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.GroupLayout;
@@ -91,7 +92,7 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 		
 		JLabel dateLabel = new JLabel("Date (yyyy-MM-dd):");
 		
-		dateField = new DatePicker(new Date(),new SimpleDateFormat("yyyy-MM-dd"));
+		dateField = new DatePicker(Calendar.getInstance().getTime(),new SimpleDateFormat("yyyy-MM-dd"));
 		//dateField.setcColumns(10);
 		
 		JLabel symbolLabel = new JLabel("Symbol:");
@@ -126,12 +127,18 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 		JLabel totalLabel = new JLabel("Total:");
 		
 		currencyField = new JComboBox();
+		currencyField.setEditor(new ComboEditor());
+		currencyField.setRenderer(new ComboRender());
 		
 		typeField = new JComboBox();
+		typeField.setEditor(new ComboEditor());
+		typeField.setRenderer(new ComboRender());
 		
 		typeLabel = new JLabel("Type:");
 		
 		symbolField = new JComboBox();
+		symbolField.setEditor(new ComboEditor());
+		symbolField.setRenderer(new ComboRender());
 		
 		quantityField = new JTextField();
 		quantityField.setColumns(10);
@@ -158,6 +165,8 @@ public abstract class AbstractAddTransactionPanel extends JPanel{
 		reinvestTotalLabel = new JLabel("Total:");
 		
 		sectorField = new JComboBox();
+		sectorField.setRenderer(new ComboRender());
+		sectorField.setEditor(new ComboEditor());
 		
 		JLabel sectorLabel = new JLabel("Sector:");
 		GroupLayout groupLayout = new GroupLayout(this);

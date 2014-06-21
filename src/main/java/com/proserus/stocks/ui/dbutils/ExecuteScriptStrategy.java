@@ -14,7 +14,7 @@ public class ExecuteScriptStrategy extends AbstractScriptDatabaseStrategy {
 		this.script = script;
 	}
 	
-	@Override
+    @Override
     public void applyUpgrade(PersistenceManager pm) {
 		log.debug("will rollback?: " + pm.getTransaction().getRollbackOnly());
 		log.debug("Executing " + script);

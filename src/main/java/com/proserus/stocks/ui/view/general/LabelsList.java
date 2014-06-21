@@ -49,6 +49,7 @@ import com.proserus.stocks.bp.events.SwingEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
+import com.proserus.stocks.ui.view.transactions.ComboRender;
 
 public class LabelsList extends JPanel implements KeyListener, EventListener, ActionListener,
 		MouseListener, FocusListener, ItemListener {
@@ -213,7 +214,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 					.isSelected()) {
 				Label str = ((CheckListItem) listOfLabels.getModel()
 						.getElementAt(i)).get();
-				a.put(str.toString(), str);
+				a.put(str.getName(), str);
 			}
 		}
 		return a;
@@ -245,7 +246,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 		for (int i = 0; i < listOfLabels.getModel().getSize(); i++) {
 			CheckListItem check = (CheckListItem) listOfLabels.getModel()
 					.getElementAt(i);
-			check.setSelected(labels.containsKey(check.toString()));
+			check.setSelected(labels.containsKey(check.get().getName()));
 		}
 	}
 
@@ -274,7 +275,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 
 	private void deleteLabel(CheckListItem item) {
 		int n = JOptionPane.showConfirmDialog(this,
-				DO_YOU_WANT_TO_REMOVE_THE_TAG + item.toString() + " ?",
+				DO_YOU_WANT_TO_REMOVE_THE_TAG + item.get().getName() + " ?",
 				REMOVING_TAG, JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);
 		if (n == JOptionPane.YES_OPTION) {
@@ -304,7 +305,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 		labels = getSelectedValues();
 		Label l = ViewControllers.getBoBuilder().getLabel();
 		l.setName(newLabelField.getText());
-		labels.put(l.toString(), l);
+		labels.put(l.getName(), l);
 		l = transactionController.addLabel(l);
 
 		if (transaction != null) {
@@ -418,7 +419,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 	private void updateFilter(CheckListItem item) {
 		Label label = item.get();
 		if (item.isSelected()) {
-			labels.put(item.get().toString(), label);
+			labels.put(item.get().getName(), label);
 			if (isFilteringModeOn) {
 				filter.addLabel(label);
 			}
@@ -481,12 +482,13 @@ class CheckListItem implements Comparable<CheckListItem> {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return label.toString();
-	}
 
-	public Label get() {
+	@Override
+    public String toString() {
+        return "CheckListItem [label=" + label + ", isSelected=" + isSelected + ", icon=" + icon + "]";
+    }
+
+    public Label get() {
 		return label;
 	}
 
@@ -500,8 +502,8 @@ class CheckListItem implements Comparable<CheckListItem> {
 
 	@Override
 	public int compareTo(CheckListItem item) {
-		return toString().toLowerCase()
-				.compareTo(item.toString().toLowerCase());
+		return label.getName().toLowerCase()
+				.compareTo(item.get().getName().toLowerCase());
 	}
 }
 
@@ -570,7 +572,7 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 			setBackground(list.getBackground());
 		}
 
-		setText(checkListItem.toString());
+		setText(checkListItem.get().getName());
 		panel.add(this, BorderLayout.CENTER);
 		
 		addItemListener(changeListener);

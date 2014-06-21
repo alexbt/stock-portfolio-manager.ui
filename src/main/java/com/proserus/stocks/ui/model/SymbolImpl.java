@@ -14,7 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -24,12 +23,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
-import org.jfree.data.time.Year;
+import org.apache.commons.lang3.Validate;
+import org.hibernate.annotations.GenericGenerator;
 
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
 import com.proserus.stocks.bo.symbols.SectorEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
+import com.proserus.stocks.bo.utils.LoggerUtils;
 
 @Entity(name="Symbol")
 @NamedQueries( { @NamedQuery(name = "symbol.findAll", query = "SELECT s FROM Symbol s"),
@@ -37,7 +38,8 @@ import com.proserus.stocks.bo.symbols.Symbol;
 public class SymbolImpl implements Comparable<Symbol>, Symbol {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(generator="auto_increment")
+    @GenericGenerator(name="auto_increment", strategy="increment")
 	private Integer id;
 
 	/* (non-Javadoc)
@@ -73,13 +75,13 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
 	private Collection<HistoricalPrice> prices = new LinkedList<HistoricalPrice>();
 
 	@Transient
-	private Map<Year, HistoricalPrice> mapPrices = new HashMap<Year, HistoricalPrice>();
+	private Map<Integer, HistoricalPrice> mapPrices = new HashMap<Integer, HistoricalPrice>();
 
 	/* (non-Javadoc)
      * @see com.proserus.stocks.bo.symbols.SymbolIF#getMapPrices()
      */
 	@Override
-    public Map<Year, HistoricalPrice> getMapPrices() {
+    public Map<Integer, HistoricalPrice> getMapPrices() {
 		return mapPrices;
 	}
 
@@ -116,7 +118,7 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private CurrencyEnum currency = CurrencyEnum.valueOf(Currency.getInstance(Locale.getDefault()).toString());
+	private CurrencyEnum currency = CurrencyEnum.valueOf(Currency.getInstance(Locale.getDefault()).getCurrencyCode());
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -128,9 +130,9 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
      */
 	@Override
     public SectorEnum getSector() {
-		if (null == this.sector) {
-			return SectorEnum.UNKNOWN;
-		}
+	    if (null == this.sector) {
+            return SectorEnum.UNKNOWN;
+        }
 		return sector;
 	}
 
@@ -151,9 +153,7 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
      */
 	@Override
     public void setName(String name) {
-		if (name == null) {
-			throw new NullPointerException();
-		}
+	    Validate.notNull(name);
 		
 		//Empty is allowed
 
@@ -165,24 +165,19 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
      */
 	@Override
     public void setTicker(String ticker) {
-		if (ticker == null) {
-			throw new NullPointerException();
-		}
-		if (ticker.isEmpty()) {
-			throw new IllegalArgumentException();
-		}
+	    Validate.notNull(ticker);
+	    Validate.notEmpty(ticker);
 
 		this.ticker = ticker.toLowerCase();
 	}
 
 	/* (non-Javadoc)
-     * @see com.proserus.stocks.bo.symbols.SymbolIF#setPrice(java.math.BigDecimal, org.jfree.data.time.Year)
+     * @see com.proserus.stocks.bo.symbols.SymbolIF#setPrice(java.math.BigDecimal)
      */
 	@Override
-    public void setPrice(BigDecimal price, Year year) {
-		if (year == null || price==null) {
-			throw new NullPointerException();
-		}
+    public void setPrice(BigDecimal price, int year) {
+	    Validate.notNull(year);
+	    Validate.notNull(price);
 		
 		HistoricalPriceImpl histPrice = (HistoricalPriceImpl) mapPrices.get(year);
 		if (histPrice == null) {
@@ -203,9 +198,7 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
      */
 	@Override
     public void setCurrency(CurrencyEnum currency) {
-		if (currency == null) {
-			throw new NullPointerException();
-		}
+	    Validate.notNull(currency);
 		this.currency = currency;
 	}
 
@@ -225,19 +218,11 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
 		return ticker;
 	}
 
-	/*
-	 * public Float getPrice() { return price; }
-	 */
-	/* (non-Javadoc)
-     * @see com.proserus.stocks.bo.symbols.SymbolIF#getPrice(org.jfree.data.time.Year)
-     */
 	@Override
-    public HistoricalPrice getPrice(Year year) {//FIXME Year JFree
-		if (year == null) {
-			throw new NullPointerException();
-		}
-		
-		HistoricalPriceImpl h = (HistoricalPriceImpl)mapPrices.get(year);
+    public HistoricalPrice getPrice(int year) {
+	    Validate.notNull(year);
+
+	    HistoricalPriceImpl h = (HistoricalPriceImpl)mapPrices.get(year);
 		if(h == null){
 			h = new HistoricalPriceImpl();
 			h.setCustomPrice(BigDecimal.ZERO);
@@ -268,9 +253,7 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
      */
 	@Override
     public void addPrice(HistoricalPrice price){
-		if(price == null){
-			throw new NullPointerException();
-		}
+	    Validate.notNull(price);
 		
 		//TODO Do I need a map of prices ?
 		if(mapPrices.containsKey(price.getYear())){
@@ -284,16 +267,14 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
      */
 	@Override
     public void setPrices(Collection<HistoricalPrice> prices) {
-		if (prices == null || prices.contains(null)) {
-			throw new NullPointerException();
-		}
+	    Validate.notNull(prices);
+	    Validate.isTrue(!prices.contains(null));
+	    Validate.isTrue(!prices.contains(""));
 
-		if (prices.contains("")) {
-			throw new IllegalArgumentException();
-		}
 
 		this.prices = prices;
 		mapPrices.clear();
+		//TODO Do not use toString() for business logic
 		for (HistoricalPrice hPrice : prices) {
 			if (hPrice.getYear() == null || hPrice.getYear().toString().isEmpty()) {
 				prices.remove(hPrice);
@@ -311,16 +292,18 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
 		return currency;
 	}
 
-	public String toString() {
-		return ticker;
-	}
 
-	@Override
+    @Override
 	public int compareTo(Symbol arg0) {
 		return getTicker().compareTo(((Symbol) arg0).getTicker());
 	}
-
-	
+    
+    @Override
+    public String toString() {
+        assert LoggerUtils.validateCalledFromLogger(): LoggerUtils.callerException();
+        return "SymbolImpl [id=" + id + ", prices=" + prices + ", mapPrices=" + mapPrices + ", isCustomPriceFirst=" + isCustomPriceFirst + ", name="
+                + name + ", ticker=" + ticker + ", currency=" + currency + ", sector=" + sector + "]";
+    }
 
 	@Override
     public boolean equals(Object obj) {

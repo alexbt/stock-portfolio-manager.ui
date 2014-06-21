@@ -11,7 +11,7 @@ public class BoBuilderImpl implements BoBuilder{
 
 	public Transaction getTransaction(){
 		return new TransactionImpl();
-	}
+	} 
 	
 	public Symbol getSymbol(){
 		return new SymbolImpl();

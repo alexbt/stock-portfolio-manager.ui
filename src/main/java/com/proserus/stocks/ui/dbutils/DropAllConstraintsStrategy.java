@@ -10,7 +10,7 @@ public class DropAllConstraintsStrategy implements DatabaseStrategy {
 	private static Logger log = Logger.getLogger(DropAllConstraintsStrategy.class.getName());
 	
 	private enum CONSTRAINT_TYPES {
-		FOREIGN_KEY("FOREIGN KEY"), UNIQUE("UNIQUE"), PRIMARY_KEY("PRIMARY KEY"), CHECK("CHECK");
+	    CHECK("CHECK"),FOREIGN_KEY("FOREIGN KEY"), UNIQUE("UNIQUE"), PRIMARY_KEY("PRIMARY KEY");
 		private String name;
 
 		private CONSTRAINT_TYPES(String name) {
@@ -31,7 +31,12 @@ public class DropAllConstraintsStrategy implements DatabaseStrategy {
 					String constraintName = (String) ((Object[]) o)[2];
 					String tableName = (String) ((Object[]) o)[6];
 					String command = "alter table PUBLIC." + tableName + " drop constraint " + constraintName;
+					try{
 					pm.createNativeQuery(command).executeUpdate();
+					}catch(RuntimeException e){
+					    log.fatal("Error ", e);
+					    throw e;
+					}
 				}
 			}
 		}

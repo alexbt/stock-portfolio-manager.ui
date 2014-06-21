@@ -12,11 +12,11 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.DbChooser;
 
 public class Launch {
-	private static LoggerUtils LOGGER;
+	private static LoggerStartup LOGGER;
 	static {
 		System.setProperty("installation.folder",
 				PathUtils.getInstallationFolder());
-		LOGGER = LoggerUtils.getInstance();
+		LOGGER = LoggerStartup.getInstance();
 		LOGGER.info("**********************************");
 		LOGGER.info("Starting...");
 		LOGGER.info("**********************************");

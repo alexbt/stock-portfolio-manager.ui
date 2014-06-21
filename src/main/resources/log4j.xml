@@ -25,7 +25,7 @@
 	</logger>
 
 	<logger name="calculs.com.proserus">
-		<level value="debug" />
+		<level value="warn" />
 		<appender-ref ref="calculsAppender" />
 	</logger>
 
@@ -35,6 +35,11 @@
 	</logger>
 
 	<logger name="org.hibernate">
+		<level value="warn" />
+		<appender-ref ref="logAppender" />
+	</logger>
+	
+	<logger name="org.hibernate.type">
 		<level value="warn" />
 		<appender-ref ref="logAppender" />
 	</logger>
