@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import org.jfree.data.time.Year;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -123,8 +122,7 @@ public class AnalysisTest {
 		Symbol s = new SymbolImpl();
 		s.setCurrency(cad);
 		s.setName(name);
-		s.setPrice(currentPrice,
-				new Year(Calendar.getInstance().get(Calendar.YEAR)));
+		s.setPrice(currentPrice,Calendar.getInstance().get(Calendar.YEAR));
 
 		s.setSector(sector);
 		s.setTicker(ticker);

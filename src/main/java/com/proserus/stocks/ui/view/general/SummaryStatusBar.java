@@ -18,6 +18,7 @@ package com.proserus.stocks.ui.view.general;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
@@ -86,9 +87,9 @@ public class SummaryStatusBar extends JPanel implements EventListener {
 	 */
 	public void update(final Event event, final Object model) {
 		if(SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED.equals(event)){
-			historicalPrice.setText(TOTAL_PROFIT + new Date().toString());
+			historicalPrice.setText(TOTAL_PROFIT + Calendar.getInstance().getTime());
 		}else if(SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED.equals(event)){
-			price.setText(TOTAL_PRICE + new Date().toString());
+			price.setText(TOTAL_PRICE + Calendar.getInstance().getTime());
 		}
 	}
 }

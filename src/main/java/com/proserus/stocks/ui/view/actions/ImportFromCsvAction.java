@@ -14,6 +14,9 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Window;
 
 public class ImportFromCsvAction extends AbstractAction {
+	private static final String DEFAULT_CSV_FILENAME = "stock-portfolio_export.csv";
+	private static final String IMPORT_BUTTON = "Import";
+	private static final String IMPORT_TITLE = "Import from CSV file";
 	public static int keyEvent = KeyEvent.VK_I;
 	private static final long serialVersionUID = 201404031810L;
 	private PortfolioController controller = ViewControllers.getController();
@@ -25,12 +28,13 @@ public class ImportFromCsvAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO move code to reusable location
-		JFileChooser fc = new JFileChooser(new File("stock-portfolio_export.csv"));
+		JFileChooser fc = new JFileChooser(new File(DEFAULT_CSV_FILENAME));
 		fc.addChoosableFileFilter(new CsvFileFilter());
-		fc.setApproveButtonText("Import");
+		fc.setApproveButtonText(IMPORT_BUTTON);
+		fc.setDialogTitle(IMPORT_TITLE);
 
 		while (true) {
-			fc.showDialog(window, "Import");
+			fc.showDialog(window, IMPORT_BUTTON);
 			File file = fc.getSelectedFile();
 			if (file == null) {
 				break;

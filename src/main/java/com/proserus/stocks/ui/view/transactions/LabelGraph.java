@@ -22,7 +22,6 @@ public class LabelGraph extends ChartPanel {
 
 	public LabelGraph() {
 		super(null);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void updateData(Collection<? extends LabelAnalysis> col) {
@@ -41,33 +40,6 @@ public class LabelGraph extends ChartPanel {
 	            ItemLabelAnchor.INSIDE3, TextAnchor.CENTER_RIGHT
 	        );
 		renderer.setBasePositiveItemLabelPosition(positive);
-
-//		renderer.setBaseItemLabelGenerator(new CategoryItemLabelGenerator(){
-//
-//			@Override
-//            public String generateColumnLabel(CategoryDataset arg0, int arg1) {
-//	            return "";
-//            }
-//
-//			@Override
-//            public String generateLabel(CategoryDataset arg0, int arg1, int arg2) {
-//				return (String)arg0.getColumnKey(arg2);
-//            }
-//
-//			@Override
-//            public String generateRowLabel(CategoryDataset arg0, int arg1) {
-//	            return "";
-//            }
-//			
-//		});
-//		renderer.setBaseItemLabelsVisible(true);
-//		
-//		ItemLabelPosition positive = new ItemLabelPosition(
-//	            ItemLabelAnchor.OUTSIDE3, TextAnchor.CENTER_LEFT
-//	        );
-//		renderer.setBasePositiveItemLabelPosition(positive);
-//		renderer.setBasePositiveItemLabelPosition(positive);
-//		chart.getCategoryPlot().getDomainAxis().setVisible(false);
 		setChart(chart);
 	}
 

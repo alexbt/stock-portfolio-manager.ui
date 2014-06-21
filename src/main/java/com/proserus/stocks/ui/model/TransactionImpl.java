@@ -21,6 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import org.apache.commons.lang3.Validate;
+import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.DateTime;
 
 import com.proserus.stocks.bo.symbols.Symbol;
@@ -28,6 +30,7 @@ import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
 import com.proserus.stocks.bo.transactions.TransactionType;
 import com.proserus.stocks.bo.utils.BigDecimalUtils;
+import com.proserus.stocks.bo.utils.LoggerUtils;
 
 @Entity(name = "Transaction")
 @NamedQueries({
@@ -38,291 +41,305 @@ import com.proserus.stocks.bo.utils.BigDecimalUtils;
         @NamedQuery(name = "transaction.findMinDate", query = "SELECT min(date) FROM Transaction t") })
 public class TransactionImpl implements Transaction {
 
-	private static final String SEMICOLON_STR = ";";
+    private static final String SEMICOLON_STR = ";";
 
-	private static final String YYYY_M_MDD = "yyyyMMdd";
+    private static final String YYYY_M_MDD = "yyyyMMdd";
 
-	@Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
-	// Add constraint for min 0
-	private BigDecimal commission;
-	// Add constraint to check that the date is before Today (sysdate)
-	private Date date;
+    @Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
+    // Add constraint for min 0
+    private BigDecimal commission;
+    // Add constraint to check that the date is before Today (sysdate)
+    private Date date;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	private Integer id;
+    @Id
+    @GeneratedValue(generator = "auto_increment")
+    @GenericGenerator(name = "auto_increment", strategy = "increment")
+    private Integer id;
 
-	@ManyToMany(targetEntity = LabelImpl.class, // TODO or Label.class
-	cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinTable(name = "TRANSACTION_LABEL", joinColumns = @JoinColumn(name = "transactionId"), inverseJoinColumns = @JoinColumn(name = "labelId"))
-	private Collection<Label> labels = new ArrayList<Label>();
+    @ManyToMany(targetEntity = LabelImpl.class, // TODO or Label.class
+    cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "TRANSACTION_LABEL", joinColumns = @JoinColumn(name = "transactionId"), inverseJoinColumns = @JoinColumn(name = "labelId"))
+    private Collection<Label> labels = new ArrayList<Label>();
 
-	@Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
-	// Add constraint for min 0
-	private BigDecimal price;
+    @Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
+    // Add constraint for min 0
+    private BigDecimal price;
 
-	@Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
-	// Add constraint for min 0
-	private BigDecimal quantity;
+    @Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
+    // Add constraint for min 0
+    private BigDecimal quantity;
 
-	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, targetEntity = SymbolImpl.class, optional = false)
-	// TODO Symbol ? @Column(nullable = false)
-	private Symbol symbol;
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, targetEntity = SymbolImpl.class, optional = false)
+    // TODO Symbol ? @Column(nullable = false)
+    private Symbol symbol;
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	private TransactionType type;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TransactionType type;
 
-	public TransactionImpl() {
-		// for JPA
-	}
+    public TransactionImpl() {
+        // for JPA
+    }
 
-	// TODO Maybe the same label can be set twice
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#addLabel(com.proserus.stocks.bo.transactions.Label)
-	 */
-	@Override
-	public void addLabel(Label label) {
-		if (label == null) {
-			throw new NullPointerException();
-		}
+    // TODO Maybe the same label can be set twice
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.proserus.stocks.bo.transactions.Transaction#addLabel(com.proserus
+     * .stocks.bo.transactions.Label)
+     */
+    @Override
+    public void addLabel(Label label) {
+        if (label == null) {
+            throw new NullPointerException();
+        }
 
-		if (label.getName().isEmpty()) {
-			throw new IllegalArgumentException();
-		}
+        if (label.getName().isEmpty()) {
+            throw new IllegalArgumentException();
+        }
 
-		this.labels.add(label);
-		label.addTransaction(this);
-	}
+        this.labels.add(label);
+        label.addTransaction(this);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#getCommission()
-	 */
-	@Override
-	public BigDecimal getCommission() {
-		return commission;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#getCommission()
+     */
+    @Override
+    public BigDecimal getCommission() {
+        return commission;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#getDate()
-	 */
-	@Override
-	public Date getDate() {
-		return date;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#getDate()
+     */
+    @Override
+    public Date getDate() {
+        return date;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#getDateTime()
-	 */
-	@Override
-	public DateTime getDateTime() {
-		return new DateTime(date);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#getDateTime()
+     */
+    @Override
+    public DateTime getDateTime() {
+        return new DateTime(date);//TODO remove Joda
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#getId()
-	 */
-	@Override
-	public Integer getId() {
-		return id;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#getId()
+     */
+    @Override
+    public Integer getId() {
+        return id;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#getLabelsValues()
-	 */
-	@Override
-	public Collection<Label> getLabelsValues() {
-		return labels;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#getLabelsValues()
+     */
+    @Override
+    public Collection<Label> getLabelsValues() {
+        return labels;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#getPrice()
-	 */
-	@Override
-	public BigDecimal getPrice() {
-		return price;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#getPrice()
+     */
+    @Override
+    public BigDecimal getPrice() {
+        return price;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#getQuantity()
-	 */
-	@Override
-	public BigDecimal getQuantity() {
-		return quantity;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#getQuantity()
+     */
+    @Override
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#getSymbol()
-	 */
-	@Override
-	public Symbol getSymbol() {
-		return symbol;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#getSymbol()
+     */
+    @Override
+    public Symbol getSymbol() {
+        return symbol;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#getType()
-	 */
-	@Override
-	public TransactionType getType() {
-		return type;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#getType()
+     */
+    @Override
+    public TransactionType getType() {
+        return type;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#removeLabel(com.proserus.stocks.bo.transactions.Label)
-	 */
-	@Override
-	public void removeLabel(Label label) {
-		if (label == null) {
-			throw new NullPointerException();
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.proserus.stocks.bo.transactions.Transaction#removeLabel(com.proserus
+     * .stocks.bo.transactions.Label)
+     */
+    @Override
+    public void removeLabel(Label label) {
+        if (label == null) {
+            throw new NullPointerException();
+        }
 
-		if (label.getName().isEmpty()) {
-			throw new IllegalArgumentException();
-		}
+        if (label.getName().isEmpty()) {
+            throw new IllegalArgumentException();
+        }
 
-		labels.remove(label);
-		label.removeTransaction(this);
-	}
+        labels.remove(label);
+        label.removeTransaction(this);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#setCommission(java.math.BigDecimal)
-	 */
-	@Override
-	public void setCommission(BigDecimal commission) {
-		if (commission == null) {
-			throw new NullPointerException();
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.proserus.stocks.bo.transactions.Transaction#setCommission(java.math
+     * .BigDecimal)
+     */
+    @Override
+    public void setCommission(BigDecimal commission) {
+        if (commission == null) {
+            throw new NullPointerException();
+        }
 
-		this.commission = BigDecimalUtils.setDecimalWithScale(commission);
-	}
+        this.commission = BigDecimalUtils.setDecimalWithScale(commission);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#setDate(java.util.Date)
-	 */
-	@Override
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.proserus.stocks.bo.transactions.Transaction#setDate(java.util.Date)
+     */
+    @Override
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#setDateTime(org.joda.time.DateTime)
-	 */
-	@Override
-	public void setDateTime(DateTime date) {
-		this.date = date.toDate();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.proserus.stocks.bo.transactions.Transaction#setDateTime(org.joda.
+     * time.DateTime)
+     */
+    @Override
+    public void setDateTime(DateTime date) {
+        this.date = date.toDate();
+    }
 
-	// TODO Maybe the same label can be set twice
-	// When removing labels.. we need to remove the transaction link too...
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#setLabels(java.util.Collection)
-	 */
-	@Override
-	public void setLabels(Collection<Label> labels) {
-		if (labels == null || labels.contains(null)) {
-			throw new NullPointerException();
-		}
+    // TODO Maybe the same label can be set twice
+    // When removing labels.. we need to remove the transaction link too...
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.proserus.stocks.bo.transactions.Transaction#setLabels(java.util.
+     * Collection)
+     */
+    @Override
+    public void setLabels(Collection<Label> labels) {
+        if (labels == null || labels.contains(null)) {
+            throw new NullPointerException();
+        }
 
-		if (labels.contains("")) {
-			throw new IllegalArgumentException();
-		}
+        if (labels.contains("")) {
+            throw new IllegalArgumentException();
+        }
 
-		for (Label label : labels) {
-			label.removeTransaction(this);
-		}
-		this.labels.clear();
-		for (Label label : labels) {
-			addLabel(label);
-		}
-	}
+        for (Label label : labels) {
+            label.removeTransaction(this);
+        }
+        this.labels.clear();
+        for (Label label : labels) {
+            addLabel(label);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#setPrice(java.math.BigDecimal)
-	 */
-	@Override
-	public void setPrice(BigDecimal price) {
-		if (price == null) {
-			throw new NullPointerException();
-		}
-		this.price = BigDecimalUtils.setDecimalWithScale(price);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.proserus.stocks.bo.transactions.Transaction#setPrice(java.math.BigDecimal
+     * )
+     */
+    @Override
+    public void setPrice(BigDecimal price) {
+        if (price == null) {
+            throw new NullPointerException();
+        }
+        this.price = BigDecimalUtils.setDecimalWithScale(price);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#setQuantity(java.math.BigDecimal)
-	 */
-	@Override
-	public void setQuantity(BigDecimal quantity) {
-		if (quantity == null) {
-			throw new NullPointerException();
-		}
-		this.quantity = BigDecimalUtils.setDecimalWithScale(quantity);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.proserus.stocks.bo.transactions.Transaction#setQuantity(java.math
+     * .BigDecimal)
+     */
+    @Override
+    public void setQuantity(BigDecimal quantity) {
+        Validate.notNull(quantity);
+        this.quantity = BigDecimalUtils.setDecimalWithScale(quantity);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#setSymbol(com.proserus.stocks.bo.symbols.Symbol)
-	 */
-	@Override
-	public void setSymbol(Symbol symbol) {
-		if (symbol == null) {
-			throw new NullPointerException();
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.proserus.stocks.bo.transactions.Transaction#setSymbol(com.proserus
+     * .stocks.bo.symbols.Symbol)
+     */
+    @Override
+    public void setSymbol(Symbol symbol) {
+        Validate.notNull(symbol);
+        this.symbol = symbol;
+    }
 
-		this.symbol = symbol;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.proserus.stocks.bo.transactions.Transaction#setType(com.proserus.
+     * stocks.bo.transactions.TransactionType)
+     */
+    @Override
+    public void setType(TransactionType type) {
+        Validate.notNull(type);
+        this.type = type;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.proserus.stocks.bo.transactions.Transaction#setType(com.proserus.stocks.bo.transactions.TransactionType)
-	 */
-	@Override
-	public void setType(TransactionType type) {
-		if (type == null) {
-			throw new NullPointerException();
-		}
-		this.type = type;
-	}
+    @Override
+    public String toString() {
+        assert LoggerUtils.validateCalledFromLogger(): LoggerUtils.callerException();
+        return "TransactionImpl [commission=" + commission + ", date=" + date + ", id=" + id + ", labels=" + labels + ", price=" + price
+                + ", quantity=" + quantity + ", symbol=" + symbol + ", type=" + type + "]";
+    }
 
-	@Override
-	public String toString() {
-		SimpleDateFormat sdf = new SimpleDateFormat(YYYY_M_MDD);
-		return sdf.format(date) + SEMICOLON_STR + getType() + SEMICOLON_STR + getSymbol().getTicker() + SEMICOLON_STR + getPrice() + SEMICOLON_STR
-		        + getQuantity() + SEMICOLON_STR + getCommission() + SEMICOLON_STR + labels.toString() + SEMICOLON_STR;
-	}
+    
 }

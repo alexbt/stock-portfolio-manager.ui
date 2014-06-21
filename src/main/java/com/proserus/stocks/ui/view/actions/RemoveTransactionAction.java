@@ -41,7 +41,7 @@ public class RemoveTransactionAction extends AbstractAction implements
 	public void actionPerformed(ActionEvent arg0) {
 		int n = JOptionPane.showConfirmDialog(null,
 				"<html>Do you want to remove the selected transaction ('"
-				+ selectedTransaction.getSymbol().getTicker() + "' - " + sdf.format(selectedTransaction.getDate())+" - " + selectedTransaction.getType()
+				+ selectedTransaction.getSymbol().getTicker() + "' - " + sdf.format(selectedTransaction.getDate())+" - " + selectedTransaction.getType().getTitle()
 				+ ") ?</html>",
 				"Removing transaction", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE);

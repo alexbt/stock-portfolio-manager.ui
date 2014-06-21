@@ -7,14 +7,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
+import com.proserus.stocks.bo.utils.LoggerUtils;
 
 @Entity(name="Label")
 @NamedQueries( { @NamedQuery(name = "label.findAll", query = "SELECT s FROM Label s ORDER BY name ASC"),
@@ -22,7 +24,8 @@ import com.proserus.stocks.bo.transactions.Transaction;
         @NamedQuery(name = "label.findSubLabels", query = "SELECT s FROM Label s WHERE label in (:labels)") })
 public class LabelImpl implements Comparable<Label>, Label {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(generator="auto_increment")
+    @GenericGenerator(name="auto_increment", strategy="increment")
 	private Integer id;
 
 	/* (non-Javadoc)
@@ -110,9 +113,11 @@ public class LabelImpl implements Comparable<Label>, Label {
 		return name;
 	}
 	
-	public String toString() {
-		return getName();
-	}
+	@Override
+    public String toString() {
+	    assert LoggerUtils.validateCalledFromLogger(): LoggerUtils.callerException();
+        return "LabelImpl [id=" + id + ", name=" + name + ", nbTransactions=" + (transactions!=null?transactions.size():0) + "]";
+    }
 
 	/* (non-Javadoc)
      * @see com.proserus.stocks.bo.transactions.Label#compareTo(java.lang.Object)
@@ -122,13 +127,6 @@ public class LabelImpl implements Comparable<Label>, Label {
 		return this.getName().compareToIgnoreCase(label.getName());
 	}
 
-	/* (non-Javadoc)
-     * @see com.proserus.stocks.bo.transactions.Label#equals(java.lang.Object)
-     */
-	@Override
-    public boolean equals(Object obj) {
-		return toString().equals(((Label) obj).toString());
-	}
 
 	@Override
 	public int hashCode() {

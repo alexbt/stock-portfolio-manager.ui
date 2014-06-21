@@ -11,7 +11,7 @@ public class EmptySymbol extends SymbolImpl{
 	
 	@Override
 	public String getTicker() {
-	    return "";
+	    return " ";
 	}
 	
 	@Override

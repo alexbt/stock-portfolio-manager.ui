@@ -120,7 +120,7 @@ public class SymbolsModifModel extends AbstractTableModel {
 		int i = 0;
 		if (column == i++) {
 			//TODO Manage Date better
-			return h.getYear().equals(DateUtil.getCurrentYear()) ? "Today" : h.getYear().toString();
+			return h.getYear().equals(DateUtil.getCurrentYear()) ? "Today" : String.valueOf(h.getYear());
 		} else if (column == i++) {
 			return h.getPrice();
 		} else if (column == i++) {
