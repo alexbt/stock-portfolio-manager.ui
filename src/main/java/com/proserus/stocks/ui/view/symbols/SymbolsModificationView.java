@@ -17,8 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import org.jfree.data.time.Year;
-
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
 import com.proserus.stocks.bo.symbols.SectorEnum;
@@ -74,12 +72,14 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		northPanel.getCompanyNameField().setText(symbol.getName());
 		northPanel.getCompanyNameField().setEnabled(false);
 		// TODO Manage Date better
-		// northPanel.getPprice.setText(symbol.getPrice(DateUtil.getCurrentYear()).toString());
+
 		northPanel.getUseCustomPriceField().setSelected(symbol.isCustomPriceFirst());
 		northPanel.getUseCustomPriceField().setEnabled(false);
 
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
-			northPanel.getCurrencyField().addItem(cur);
+		    if (cur.isVisible()) {
+		        northPanel.getCurrencyField().addItem(cur);
+		    }
 		}
 		
 		northPanel.getCurrencyField().setMaximumRowCount(11);
@@ -140,7 +140,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (!year.getText().isEmpty() && !customPrice.getText().isEmpty()) {
-			if(symbol.getMapPrices().containsKey(new Year(Integer.parseInt(year.getText())))){
+			if(symbol.getMapPrices().containsKey(Integer.parseInt(year.getText()))){
 				JOptionPane.showConfirmDialog(this, "A price for year " + year.getText() + " already exists", "Error adding Price", JOptionPane.DEFAULT_OPTION,
 				        JOptionPane.WARNING_MESSAGE);
 				year.setText("");
@@ -148,7 +148,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 			HistoricalPrice h = ViewControllers.getBoBuilder().getHistoricalPrice();
 			h.setCustomPrice(new BigDecimal(Double.parseDouble(customPrice.getText())));
 			h.setPrice(BigDecimal.ZERO);
-			h.setYear(new Year(Integer.parseInt(year.getText())));
+			h.setYear(Integer.parseInt(year.getText()));
 			symbol.addPrice(h);
 			ViewControllers.getController().updateSymbol(symbol);
 			year.setText("");

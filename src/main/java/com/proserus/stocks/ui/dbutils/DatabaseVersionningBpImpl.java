@@ -30,7 +30,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 	private static final String LATESTVERSION_PROPERTY = "latestversion";
 
 	public static final String LATEST_VERSION_URL = "http://stock-portfolio-manager.googlecode.com/hg/latestversion";
-	
+
 	private boolean ignorePopop = false;
 
 	public void setIgnorePopop(boolean ignorePopop) {
@@ -62,12 +62,6 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		} catch (PersistenceException e2) {
 		}
 
-		if (version == null
-				&& DbUtils.isTableExists("TRANSACTION", persistenceManager)) {
-			version = boBuilder.getVersion();
-			version.setDatabaseVersion(DatabaseUpgradeEnum.VERSION_1
-					.getVersion());
-		}
 		if (version == null) {
 			version = boBuilder.getVersion();
 			version.setDatabaseVersion(DatabaseUpgradeEnum.VERSION_0
@@ -80,6 +74,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 	@Override
 	public void upgrade(DBVersion version) {
+
 		log.debug("Upgrading from Version " + version.getDatabaseVersion()
 				+ " to " + DatabaseUpgradeEnum.getLatestVersion());
 		boolean isFirstTime = version.getDatabaseVersion() == DatabaseUpgradeEnum.VERSION_0
@@ -99,36 +94,46 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 				System.exit(0);
 			}
 		}
-		persistenceManager.getTransaction().begin();
-
-		for (DatabaseUpgradeEnum dbEnu : DatabaseUpgradeEnum.values()) {
-			log.debug("Upgrading to " + dbEnu.getVersion());
-			if (version.getDatabaseVersion() < dbEnu.getVersion()) {
-				for (DatabaseStrategy dbStrategy : dbEnu.getStrategies()) {
-					dbStrategy.applyUpgrade(persistenceManager);
+		int initialVersion = version.getDatabaseVersion();
+		try {
+			for (DatabaseUpgradeEnum dbEnu : DatabaseUpgradeEnum.values()) {
+				persistenceManager.getTransaction().begin();
+				log.debug("Upgrading to " + dbEnu.getVersion());
+				if (version.getDatabaseVersion() < dbEnu.getVersion()) {
+					for (DatabaseStrategy dbStrategy : dbEnu.getStrategies()) {
+						dbStrategy.applyUpgrade(persistenceManager);
+					}
+					version.setDatabaseVersion(dbEnu.getVersion());
+					persistenceManager.persist(version);
 				}
-				version.setDatabaseVersion(dbEnu.getVersion());
-				persistenceManager.persist(version);
+				persistenceManager.getTransaction().commit();
+			}
+		} catch (Throwable e) {
+			if (persistenceManager.getTransaction().isActive()) {
+				log.debug("Exception while upgrading database to " + version, e);
+				persistenceManager.getTransaction().setRollbackOnly();
 			}
 		}
 
-		if (persistenceManager.getTransaction().getRollbackOnly()) {
-			log.debug("Version check and upgrade is rolledback from version "
-					+ version.getDatabaseVersion());
+		if (persistenceManager.getTransaction().isActive()
+				&& persistenceManager.getTransaction().getRollbackOnly()) {
 			persistenceManager.getTransaction().rollback();
-			if (!isFirstTime && !ignorePopop) {
-				JOptionPane
-						.showMessageDialog(
-								null,
-								"Upgrade failed!\n"
-										+ "The application will now exit.\nPlease open a bug issue on the website and provide the 'traces.log'\n"
-										+ "http://code.google.com/p/stock-portfolio-manager/issues/list",
-								"Upgrade failed!",
-								JOptionPane.INFORMATION_MESSAGE, null);
-			}
+			log.debug("Rolling back database upgrade from version " + version
+					+ " back to " + initialVersion);
+			throw new AssertionError();
+
+//			if (!isFirstTime && !ignorePopop) {
+//				JOptionPane
+//						.showMessageDialog(
+//								null,
+//								"Upgrade failed!\n"
+//										+ "The application will now exit.\nPlease open a bug issue on the website and provide the 'traces.log'\n"
+//										+ "http://code.google.com/p/stock-portfolio-manager/issues/list",
+//								"Upgrade failed!",
+//								JOptionPane.INFORMATION_MESSAGE, null);
+//			}
 		} else {
 			log.debug("Version check and upgrade is successful");
-			persistenceManager.getTransaction().commit();
 			if (!isFirstTime && !ignorePopop) {
 				JOptionPane.showMessageDialog(null,
 						"Upgrade completed successfully!",
@@ -164,9 +169,9 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 	private void loadProperty(Properties pro) {
 		InputStream fis = null;
 		try {
-			
-			
-			fis = new FileInputStream(PathUtils.getInstallationFolder() + "/version.properties");
+
+			fis = new FileInputStream(PathUtils.getInstallationFolder()
+					+ "/version.properties");
 			pro.load(fis);
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
@@ -186,7 +191,8 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 		FileOutputStream fos = null;
 		try {
-			fos = new FileOutputStream(PathUtils.getInstallationFolder() + "/version.properties");
+			fos = new FileOutputStream(PathUtils.getInstallationFolder()
+					+ "/version.properties");
 			pro.store(fos, "");
 			fos.flush();
 		} catch (FileNotFoundException e) {

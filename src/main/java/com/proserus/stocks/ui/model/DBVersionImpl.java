@@ -8,6 +8,10 @@ import javax.persistence.NamedQuery;
 
 import com.proserus.stocks.bo.common.DBVersion;
 
+/**
+ * @author Alex
+ *
+ */
 @Entity(name = "Version")
 @NamedQueries( { @NamedQuery(name = "version.find", query = "SELECT v FROM Version v where Id='1'")})
 public class DBVersionImpl implements DBVersion {
@@ -30,4 +34,10 @@ public class DBVersionImpl implements DBVersion {
     public void incrementVersion() {
 		databaseVersion = databaseVersion + 1;
     }
+
+	@Override
+	public String toString() {
+		return "DBVersionImpl [id=" + id + ", databaseVersion="
+				+ databaseVersion + "]";
+	}
 }

@@ -47,6 +47,8 @@ public class TransactionSymbolFilterPanel extends JPanel implements EventListene
 		setLayout(ff);
 		add(new JLabel(SYMBOL));
 		JComboBox dropDown = new JComboBox();
+		dropDown.setRenderer(new ComboRender());
+		dropDown.setEditor(new ComboEditor());
 		dropDown.setModel(model);
 		dropDown.addActionListener(this);
 		add(dropDown);

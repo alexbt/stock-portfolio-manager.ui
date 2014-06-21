@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyVetoException;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
@@ -48,15 +49,17 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel
 
 		enableReinvestmentFields(false);
 
+		getCurrencyField().setRenderer(new CurrencyComboRenderer());
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
-			getCurrencyField().addItem(cur);
+		    if (cur.isVisible()) {
+		        getCurrencyField().addItem(cur);
+		    }
 		}
 		getCurrencyField().setSelectedItem(DefaultCurrency.DEFAULT_CURRENCY);
-		getCurrencyField().setRenderer(new CurrencyComboRenderer());
 
 		for (SectorEnum sector : SectorEnum.retrieveSortedSectors()) {
-			getSectorField().addItem(sector);
-		}
+		        getSectorField().addItem(sector);
+        }
 		getSectorField().setSelectedItem(SectorEnum.UNKNOWN);
 
 		getCurrencyField().setMaximumRowCount(12);
@@ -91,7 +94,9 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel
 		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
 
 		for (TransactionType transactionType : TransactionType.values()) {
-			getTypeField().addItem(transactionType);
+		    if(transactionType.isVisible()){
+		        getTypeField().addItem(transactionType);
+		    }
 		}
 
 		getSymbolField().addKeyListener(this);
@@ -241,7 +246,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel
 
 	private void emptyAllFields() {
 		try {
-			getDateField().setDate(new Date());
+			getDateField().setDate(Calendar.getInstance().getTime());
 		} catch (PropertyVetoException e) {
 		}
 		getPriceField().setText(EMPTY_STR);
@@ -273,7 +278,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel
 			TransactionType type, String price, String quantity,
 			String commission, Collection<Label> lab) {
 		Transaction t = ViewControllers.getBoBuilder().getTransaction();
-		t.setDateTime(new DateTime(date));
+		t.setDateTime(new DateTime(date));//TODO remove Joda
 		t.setType(type);
 		t.setSymbol(s);
 		t.setPrice(new BigDecimal(Double.parseDouble(price)));
@@ -294,14 +299,15 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel
 	private void populateSymbolDropdown(Collection<Symbol> col) {
 		Object previous = getSymbolField().getEditor().getItem();
 		getSymbolField().setModel(new SortedComboBoxModel(col.toArray()));
-		getSymbolField().addItem(new EmptySymbol());
+		//getSymbolField().addItem(new EmptySymbol());
 
 		if (previous instanceof String && !((String) previous).isEmpty()) {
 			getSymbolField().setSelectedItem(
 					ViewControllers.getController()
 							.getSymbol((String) previous));
 		} else {
-			getSymbolField().setSelectedItem("");
+		    getSymbolField().setSelectedIndex(-1);
+			//getSymbolField().setSelectedItem("");
 		}
 
 	}
@@ -320,8 +326,8 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel
 		Symbol s = null;
 		Object o = getSymbolField().getEditor().getItem();
 		if (o instanceof String) {
-			if (!o.toString().isEmpty()) {
-				s = ViewControllers.getController().getSymbol(o.toString());
+			if (!((String)o).isEmpty()) {
+				s = ViewControllers.getController().getSymbol((String)o);
 			}
 			if (s == null) {
 				s = new EmptySymbol();
@@ -388,8 +394,8 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel
 						&& !source3.getText().isEmpty()) {
 					dest.setEnabled(false);
 					dest.setFont(dest.getFont().deriveFont(Font.BOLD));
-					dest.setText(calculateTotal(source2.getText(),
-							source3.getText(), source1.getText()).toString());
+					dest.setText(String.valueOf(calculateTotal(source2.getText(),
+							source3.getText(), source1.getText())));
 					return;
 				}
 			} catch (NumberFormatException e) {
@@ -416,8 +422,8 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel
 						&& !source3.getText().isEmpty()) {
 					dest.setEnabled(false);
 					dest.setFont(dest.getFont().deriveFont(Font.BOLD));
-					dest.setText(calculatePriceQuantity(source2.getText(),
-							source1.getText(), source3.getText()).toString());
+					dest.setText(String.valueOf(calculatePriceQuantity(source2.getText(),
+							source1.getText(), source3.getText())));
 					return;
 				}
 			} catch (NumberFormatException e) {

@@ -2,15 +2,18 @@ package com.proserus.stocks.ui.view.general;
 
 import java.util.Comparator;
 
-import org.jfree.data.time.Year;
+import com.proserus.stocks.bp.utils.DateUtil;
 
 public class FilterYearComparator implements Comparator<Object> {
 
-	@Override
+    @Override
     public int compare(Object o1, Object o2) {
-	    if(!(o1 instanceof Year && o2 instanceof Year)){
-	    	throw new ClassCastException();
-	    }
-	    return ((Year)o2).compareTo((Year)o1);
+        Integer intOne = ObjectToInt(o1);
+        Integer intTwo = ObjectToInt(o2);
+        return intTwo.compareTo(intOne);
+    }
+
+    private int ObjectToInt(Object o2) {
+        return (o2 instanceof Integer) ? (Integer) o2 : DateUtil.getNextYear();
     }
 }

@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
@@ -104,7 +106,7 @@ public class TransactionTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object obj, int row, int col) {
 		// TODO NullPointer when no data...
-		setColValue((Transaction) data[row], obj, col);
+	    setColValue((Transaction) data[row], obj, col);
 		fireTableCellUpdated(row, col);
 	}
 
@@ -121,16 +123,14 @@ public class TransactionTableModel extends AbstractTableModel {
 		case 2:
 			return TransactionType.class;
 		case 3:
-			return BigDecimal.class;
 		case 4:
-			return BigDecimal.class;
 		case 5:
-			return BigDecimal.class;
 		case 6:
-			return String.class;
-		default:
-			return BigDecimal.class;
+		    return BigDecimal.class;
+		case 7:
+		    return String.class;
 		}
+	    throw new AssertionError();
 	}
 
 	private Object getColValue(final Transaction transaction, final int column) {
@@ -150,9 +150,14 @@ public class TransactionTableModel extends AbstractTableModel {
 		case 6:
 			return transaction.getPrice().multiply(transaction.getQuantity()).add(transaction.getCommission());
 		case 7:
-			List<Label> listOfLabels = new ArrayList<Label>(transaction.getLabelsValues());
-			Collections.sort(listOfLabels);
-			return listOfLabels.toString().replaceAll("\\[\\]", "");
+		    List<Label> sortedLabels = new ArrayList<Label>(transaction.getLabelsValues());
+		    Collections.sort(sortedLabels);
+		    StringBuilder labelString = new StringBuilder();
+			for(Label l: sortedLabels){
+			    labelString.append(l.getName() + ", ");
+			}
+			
+			return StringUtils.removeEnd(String.valueOf(labelString), ", ");
 		}
 
 		throw new AssertionError();

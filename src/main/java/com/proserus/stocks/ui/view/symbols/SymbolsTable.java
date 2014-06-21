@@ -6,8 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -15,8 +13,6 @@ import javax.swing.AbstractAction;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
@@ -35,6 +31,9 @@ import com.proserus.stocks.ui.view.actions.ShowEditSymbolAction;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.common.CurrencyComboRenderer;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
+import com.proserus.stocks.ui.view.transactions.ComboEditor;
+import com.proserus.stocks.ui.view.transactions.ComboRender;
+import com.proserus.stocks.ui.view.transactions.TableRender;
 
 public class SymbolsTable extends AbstractTable implements EventListener,
 		KeyListener, MouseListener {
@@ -44,9 +43,9 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 	private static final String ZERO = "0";
 	private Filter filter = ViewControllers.getFilter();
 	private PortfolioController controller = ViewControllers.getController();
+	private TableRender tableRender = new TableRender();
 
 	private SymbolsTableModel tableModel;;
-	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
 	private HashMap<String, Color> colors = new HashMap<String, Color>();
 	private TableRowSorter<SymbolsTableModel> sorter;
 	private AbstractAction openSymbol = ShowEditSymbolAction.getInstance();
@@ -70,11 +69,14 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 		EventBus.getInstance().add(this, SwingEvents.TRANSACTION_UPDATED);
 		setRowHeight(getRowHeight() + 5);
 		setVisible(true);
-
 		TableColumn sportColumn = getColumnModel().getColumn(3);
 		JComboBox comboBox = new JComboBox();
+		comboBox.setRenderer(new ComboRender());
+		comboBox.setEditor(new ComboEditor());
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
-			comboBox.addItem(cur);
+		    if (cur.isVisible()) {
+		        comboBox.addItem(cur);
+		    }
 		}
 		comboBox.setRenderer(new CurrencyComboRenderer());
 		comboBox.setMaximumRowCount(12);
@@ -82,8 +84,10 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 
 		TableColumn sportColumnSector = getColumnModel().getColumn(4);
 		JComboBox comboBoxSector = new JComboBox();
+		comboBoxSector.setRenderer(new ComboRender());
+		comboBoxSector.setEditor(new ComboEditor());
 		for (SectorEnum cur : SectorEnum.retrieveSortedSectors()) {
-			comboBoxSector.addItem(cur);
+		    comboBoxSector.addItem(cur);
 		}
 		comboBoxSector.setMaximumRowCount(12);
 		sportColumnSector.setCellEditor(new DefaultCellEditor(comboBoxSector));
@@ -136,36 +140,11 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 
 	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
-		return renderer;
+		return tableRender;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent evt) {
-	}
-
-	private static class PrecisionCellRenderer extends DefaultTableCellRenderer {
-		private static final long serialVersionUID = 201404041920L;
-		private NumberFormat format;
-
-		PrecisionCellRenderer(int precision) {
-			format = NumberFormat.getNumberInstance();
-			format.setMaximumFractionDigits(precision);
-			format.setMinimumFractionDigits(precision);
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-			super.getTableCellRendererComponent(table, value, isSelected,
-					hasFocus, row, column);
-			if (value instanceof Float) {
-				setText(format.format(value));
-			} else if (value instanceof BigDecimal) {
-				setText(format.format(value));
-			}
-			return this;
-		}
 	}
 
 	@Override

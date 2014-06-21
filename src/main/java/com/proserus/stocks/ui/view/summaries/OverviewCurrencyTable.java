@@ -11,6 +11,9 @@ import java.util.HashMap;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableRowSorter;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.proserus.stocks.bo.analysis.CurrencyAnalysis;
 import com.proserus.stocks.bp.events.Event;
@@ -21,6 +24,7 @@ import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
+import com.proserus.stocks.ui.view.transactions.TableRender;
 
 public class OverviewCurrencyTable extends AbstractTable implements EventListener {
 	private static final long serialVersionUID = 201404041920L;
@@ -33,7 +37,8 @@ public class OverviewCurrencyTable extends AbstractTable implements EventListene
 	private static final String ZERO = "0";
 
 	private OverviewCurrencyModel tableModel = new OverviewCurrencyModel();
-	private TableCellRenderer renderer = new PrecisionCellRenderer(2);
+	private TableRender tableRender = new TableRender();
+	
 	HashMap<String, Color> colors = new HashMap<String, Color>();
 
 	private static OverviewCurrencyTable currencySummary = new OverviewCurrencyTable();
@@ -43,7 +48,6 @@ public class OverviewCurrencyTable extends AbstractTable implements EventListene
 	}
 
 	private OverviewCurrencyTable() {
-		
 		EventBus.getInstance().add(this, SwingEvents.CURRENCY_ANALYSIS_UPDATED);
 		
 		colors.put(ZERO + true, new Color(150, 190, 255));
@@ -56,21 +60,29 @@ public class OverviewCurrencyTable extends AbstractTable implements EventListene
 		setRowHeight(getRowHeight() + 5);
 		setVisible(true);
 		validate();
+		setRowSorter(new TableRowSorter<OverviewCurrencyModel>(tableModel));
+        setFirstRowSorted(true);
 	}
 
 	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
-		return renderer;
+		return tableRender;
 	}
 
 	@Override
+	//TODO Do not use toString() for business logic
 	public void update(Event event, Object model) {
 		if(SwingEvents.CURRENCY_ANALYSIS_UPDATED.equals(event)){
 			Collection<CurrencyAnalysis> col = SwingEvents.CURRENCY_ANALYSIS_UPDATED.resolveModel(model);
 			// TODO Redesign FIlter/SharedFilter
 			tableModel.setData(col);
 			setPreferredScrollableViewportSize(new Dimension(200, ROW_SIZE * col.size()));
-			setToolTipText(col.toString());
+			
+			StringBuilder sb = new StringBuilder();
+            for (CurrencyAnalysis currencyAnalysis : col) {
+                sb.append(currencyAnalysis.getSnapshot() + ", ");
+            }
+            setToolTipText(StringUtils.removeEnd(String.valueOf(sb),", "));
 			getRootPane().validate();
 		}
 	}
@@ -86,37 +98,5 @@ public class OverviewCurrencyTable extends AbstractTable implements EventListene
 			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
 		}
 		return c;
-	}
-
-	private static class PrecisionCellRenderer extends DefaultTableCellRenderer {
-		private static final long serialVersionUID = 201404041920L;
-		private static final String PERCENT_WITH_PARENTHESIS = "(%)";
-		private static final String EMPTY_STR = "";
-		private static final String PERCENT = "%";
-		private NumberFormat format;
-
-		PrecisionCellRenderer(int precision) {
-			format = NumberFormat.getNumberInstance();
-			format.setMaximumFractionDigits(precision);
-			format.setMinimumFractionDigits(precision);
-		}
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-		        boolean hasFocus, int row, int column) {
-			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			if (value instanceof BigDecimal) {
-				setAlignmentX(RIGHT_ALIGNMENT);
-				if (((BigDecimal) value).equals(BigDecimal.ZERO)) {
-					setText(EMPTY_STR);
-					return this;
-				}
-				setText(format.format(value));
-			}
-			if (table.getColumnName(column).contains(PERCENT_WITH_PARENTHESIS)) {
-				setText(getText() + PERCENT);
-			}
-			return this;
-		}
 	}
 }
