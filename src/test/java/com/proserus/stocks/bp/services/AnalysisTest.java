@@ -1,4 +1,4 @@
-package com.proserus.stocks.bp.strategies;
+package com.proserus.stocks.bp.services;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.Collection;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.proserus.stocks.bo.analysis.AnalysisImpl;
+import com.proserus.stocks.bo.analysis.Analysis;
 import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.SectorEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
@@ -16,7 +16,6 @@ import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
 import com.proserus.stocks.bo.transactions.TransactionType;
 import com.proserus.stocks.bp.model.Filter;
-import com.proserus.stocks.bp.services.PerfOverviewStrategyEnum;
 import com.proserus.stocks.ui.controller.AbstractUnit;
 import com.proserus.stocks.ui.model.LabelImpl;
 import com.proserus.stocks.ui.model.SymbolImpl;
@@ -26,7 +25,7 @@ public class AnalysisTest extends AbstractUnit {
 
 	@Test
 	public void test() {
-		AnalysisImpl ana = new AnalysisImpl();
+		Analysis ana;
 		Collection<Transaction> col = new ArrayList<Transaction>();
 		Symbol s = createSymbol("PRS", "Groupe Proserus Inc.", null, CurrencyEnum.CANADIAN, new BigDecimal(45));
 		Collection<Label> labels = createLabels(new String[] { "Label1, Label2" });
@@ -48,10 +47,7 @@ public class AnalysisTest extends AbstractUnit {
 		col.add(t);
 
 		Filter f = new Filter();
-
-		for (PerfOverviewStrategyEnum strategy : PerfOverviewStrategyEnum.values()) {
-			strategy.getStrategy().process(ana, col, f);
-		}
+		ana = new AnalysisBp().createAnalysis(col, f);
 
 		Assert.assertEquals(ana.getCommission().stripTrailingZeros(), new BigDecimal("30").stripTrailingZeros());
 		Assert.assertEquals(ana.getQuantity().stripTrailingZeros(), new BigDecimal("1000").stripTrailingZeros());
