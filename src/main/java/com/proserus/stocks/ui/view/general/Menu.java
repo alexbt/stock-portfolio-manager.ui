@@ -3,10 +3,7 @@ package com.proserus.stocks.ui.view.general;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -17,7 +14,7 @@ import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.ui.view.actions.AddSymbolAction;
 import com.proserus.stocks.ui.view.actions.AddTransactionAction;
 import com.proserus.stocks.ui.view.actions.BackupAction;
@@ -261,7 +258,7 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem.setName(ABOUT);
 		menu.add(menuItem);
 
-		EventBus.getInstance().add(this, SwingEvents.SYMBOL_SELECTION_CHANGED);
+		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOL_SELECTION_CHANGED);
 
 	}
 
@@ -418,9 +415,9 @@ public class Menu extends JMenuBar implements EventListener {
 
 	@Override
 	public void update(Event event, Object model) {
-		if (SwingEvents.SYMBOL_SELECTION_CHANGED.equals(event)) {
-			Symbol s = SwingEvents.SYMBOL_SELECTION_CHANGED.resolveModel(model);
-			if (SwingEvents.SYMBOL_SELECTION_CHANGED.resolveModel(model) != null) {
+		if (ModelChangeEvents.SYMBOL_SELECTION_CHANGED.equals(event)) {
+			Symbol s = ModelChangeEvents.SYMBOL_SELECTION_CHANGED.resolveModel(model);
+			if (ModelChangeEvents.SYMBOL_SELECTION_CHANGED.resolveModel(model) != null) {
 				editSymbolMenuItem.setText("Edit symbol '" + s.getTicker()
 						+ "'");
 				removeSymbolMenuItem.setText("Remove symbol '" + s.getTicker()

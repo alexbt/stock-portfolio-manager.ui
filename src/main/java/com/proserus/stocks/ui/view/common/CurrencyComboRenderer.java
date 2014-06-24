@@ -13,7 +13,7 @@ public class CurrencyComboRenderer extends JLabel implements ListCellRenderer {
 	/**
      * 
      */
-    private static final long serialVersionUID = 201110210750L;
+	private static final long serialVersionUID = 201110210750L;
 
 	public CurrencyComboRenderer() {
 		setOpaque(true);
@@ -23,28 +23,28 @@ public class CurrencyComboRenderer extends JLabel implements ListCellRenderer {
 
 	@Override
 	public Component getListCellRendererComponent(JList list, Object arg1, int arg2, boolean isSelected, boolean arg4) {
-		//Get the selected index. (The index param isn't
-        //always valid, so just use the value.)
+		// Get the selected index. (The index param isn't
+		// always valid, so just use the value.)
 
-        if (isSelected) {
-            setBackground(list.getSelectionBackground());
-            setForeground(list.getSelectionForeground());
-        } else {
-            setBackground(list.getBackground());
-            setForeground(list.getForeground());
-        }
-		
+		if (isSelected) {
+			setBackground(list.getSelectionBackground());
+			setForeground(list.getSelectionForeground());
+		} else {
+			setBackground(list.getBackground());
+			setForeground(list.getForeground());
+		}
+
 		if (arg1 instanceof CurrencyEnum) {
 			CurrencyEnum currency = (CurrencyEnum) arg1;
 			setIcon(currency.getIcon());
 			setIconTextGap(10);
 			setHorizontalAlignment(LEFT);
-			setText(currency.name());
-		}else{
+			setText(currency.getTitle());
+		} else {
 			setText(" ");
 			setIcon(null);
 		}
-		
+
 		return this;
 
 	}

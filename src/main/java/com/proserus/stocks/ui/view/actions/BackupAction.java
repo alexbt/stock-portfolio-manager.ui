@@ -29,7 +29,7 @@ import com.proserus.stocks.bo.common.DatabasePaths;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.bp.utils.RecursiveFileUtils;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Version;
@@ -91,8 +91,8 @@ public class BackupAction extends AbstractAction implements EventListener {
     private DatabasePaths db;
 
     private BackupAction() {
-        EventBus.getInstance().add(this, SwingEvents.DATABASE_DETECTED);
-        EventBus.getInstance().add(this, SwingEvents.DATABASE_SELECTED);
+        EventBus.getInstance().add(this, ModelChangeEvents.DATABASE_DETECTED);
+        EventBus.getInstance().add(this, ModelChangeEvents.DATABASE_SELECTED);
     }
 
     public static BackupAction getInstance() {
@@ -213,8 +213,8 @@ public class BackupAction extends AbstractAction implements EventListener {
 
     @Override
     public void update(Event event, Object model) {
-        if (SwingEvents.DATABASE_SELECTED.equals(event) || SwingEvents.DATABASE_DETECTED.equals(event)) {
-            db = SwingEvents.DATABASE_DETECTED.resolveModel(model);
+        if (ModelChangeEvents.DATABASE_SELECTED.equals(event) || ModelChangeEvents.DATABASE_DETECTED.equals(event)) {
+            db = ModelChangeEvents.DATABASE_DETECTED.resolveModel(model);
         }
     }
 }

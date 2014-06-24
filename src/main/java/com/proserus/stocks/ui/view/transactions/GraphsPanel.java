@@ -9,7 +9,7 @@ import javax.swing.event.ChangeListener;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.Tab;
@@ -34,21 +34,21 @@ public class GraphsPanel extends JPanel implements EventListener,ChangeListener{
 		add(label);
 		add(currencies);
 		add(years);
-		EventBus.getInstance().add(this, SwingEvents.YEAR_ANALYSIS_UPDATED,SwingEvents.CURRENCY_ANALYSIS_UPDATED,SwingEvents.SECTOR_ANALYSIS_UPDATED,SwingEvents.TRANSACTION_UPDATED,SwingEvents.LABEL_ANALYSIS_UPDATED);
+		EventBus.getInstance().add(this, ModelChangeEvents.YEAR_ANALYSIS_UPDATED,ModelChangeEvents.CURRENCY_ANALYSIS_UPDATED,ModelChangeEvents.SECTOR_ANALYSIS_UPDATED,ModelChangeEvents.TRANSACTION_UPDATED,ModelChangeEvents.LABEL_ANALYSIS_UPDATED);
 	}
 
 
 	@Override
     public void update(Event event, Object model) {
-		if(event.equals(SwingEvents.SECTOR_ANALYSIS_UPDATED)){
-			sector.updateData(SwingEvents.SECTOR_ANALYSIS_UPDATED.resolveModel(model));
-		}else if(event.equals(SwingEvents.LABEL_ANALYSIS_UPDATED)){
-			label.updateData(SwingEvents.LABEL_ANALYSIS_UPDATED.resolveModel(model));
-		}else if(event.equals(SwingEvents.CURRENCY_ANALYSIS_UPDATED)){
-			currencies.updateData(SwingEvents.CURRENCY_ANALYSIS_UPDATED.resolveModel(model));
-		}else if(event.equals(SwingEvents.YEAR_ANALYSIS_UPDATED)){
-			years.updateData(SwingEvents.YEAR_ANALYSIS_UPDATED.resolveModel(model));
-		}else if (SwingEvents.TRANSACTION_UPDATED.equals(event)){
+		if(event.equals(ModelChangeEvents.SECTOR_ANALYSIS_UPDATED)){
+			sector.updateData(ModelChangeEvents.SECTOR_ANALYSIS_UPDATED.resolveModel(model));
+		}else if(event.equals(ModelChangeEvents.LABEL_ANALYSIS_UPDATED)){
+			label.updateData(ModelChangeEvents.LABEL_ANALYSIS_UPDATED.resolveModel(model));
+		}else if(event.equals(ModelChangeEvents.CURRENCY_ANALYSIS_UPDATED)){
+			currencies.updateData(ModelChangeEvents.CURRENCY_ANALYSIS_UPDATED.resolveModel(model));
+		}else if(event.equals(ModelChangeEvents.YEAR_ANALYSIS_UPDATED)){
+			years.updateData(ModelChangeEvents.YEAR_ANALYSIS_UPDATED.resolveModel(model));
+		}else if (ModelChangeEvents.TRANSACTION_UPDATED.equals(event)){
 			if(graphTabVisible){
 				controller.calculateSectorAnalysis();
 				controller.calculateLabelAnalysis();

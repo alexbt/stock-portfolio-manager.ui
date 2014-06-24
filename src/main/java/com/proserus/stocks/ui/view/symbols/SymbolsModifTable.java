@@ -4,12 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.HashMap;
 
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
@@ -17,7 +13,7 @@ import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
@@ -50,8 +46,8 @@ public class SymbolsModifTable extends AbstractTable implements EventListener, K
 		setRowSorter(sorter);
 		setRowHeight(getRowHeight() + 5);
 		setVisible(true);
-		
-		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
+
+		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_UPDATED);
 
 		addKeyListener(this);
 
@@ -61,11 +57,10 @@ public class SymbolsModifTable extends AbstractTable implements EventListener, K
 
 	@Override
 	public void update(Event event, Object model) {
-	    if (SwingEvents.SYMBOLS_UPDATED.equals(event)) {
+		if (ModelChangeEvents.SYMBOLS_UPDATED.equals(event)) {
 			tableModel.setData(symbol.getHistoricalPricesValues().toArray());
 		}
 	}
-	
 
 	@Override
 	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex) {
@@ -88,7 +83,7 @@ public class SymbolsModifTable extends AbstractTable implements EventListener, K
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		((AbstractDialog)getParent().getParent().getParent().getParent().getParent().getParent()).keyPressed(arg0);
+		((AbstractDialog) getParent().getParent().getParent().getParent().getParent().getParent()).keyPressed(arg0);
 	}
 
 	@Override

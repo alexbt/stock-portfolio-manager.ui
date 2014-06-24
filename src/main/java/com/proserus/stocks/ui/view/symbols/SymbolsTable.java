@@ -23,20 +23,18 @@ import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.actions.ShowEditSymbolAction;
 import com.proserus.stocks.ui.view.common.AbstractTable;
-import com.proserus.stocks.ui.view.common.CurrencyComboRenderer;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 import com.proserus.stocks.ui.view.transactions.ComboEditor;
 import com.proserus.stocks.ui.view.transactions.ComboRender;
 import com.proserus.stocks.ui.view.transactions.TableRender;
 
-public class SymbolsTable extends AbstractTable implements EventListener,
-		KeyListener, MouseListener {
+public class SymbolsTable extends AbstractTable implements EventListener, KeyListener, MouseListener {
 	private static final long serialVersionUID = 201404042021L;
 	private static final String ONE = "1";
 
@@ -64,9 +62,9 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 		setModel(tableModel);
 		sorter = new TableRowSorter<SymbolsTableModel>(tableModel);
 		setRowSorter(sorter);
-		EventBus.getInstance().add(this, SwingEvents.FILTER_SYMBOLS);
-		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
-		EventBus.getInstance().add(this, SwingEvents.TRANSACTION_UPDATED);
+		EventBus.getInstance().add(this, ModelChangeEvents.FILTER_SYMBOLS);
+		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_UPDATED);
+		EventBus.getInstance().add(this, ModelChangeEvents.TRANSACTION_UPDATED);
 		setRowHeight(getRowHeight() + 5);
 		setVisible(true);
 		TableColumn sportColumn = getColumnModel().getColumn(3);
@@ -74,11 +72,11 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 		comboBox.setRenderer(new ComboRender());
 		comboBox.setEditor(new ComboEditor());
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
-		    if (cur.isVisible()) {
-		        comboBox.addItem(cur);
-		    }
+			if (cur.isVisible()) {
+				comboBox.addItem(cur);
+			}
 		}
-		comboBox.setRenderer(new CurrencyComboRenderer());
+		comboBox.setRenderer(new ComboRender());
 		comboBox.setMaximumRowCount(12);
 		sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
 
@@ -87,7 +85,7 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 		comboBoxSector.setRenderer(new ComboRender());
 		comboBoxSector.setEditor(new ComboEditor());
 		for (SectorEnum cur : SectorEnum.retrieveSortedSectors()) {
-		    comboBoxSector.addItem(cur);
+			comboBoxSector.addItem(cur);
 		}
 		comboBoxSector.setMaximumRowCount(12);
 		sportColumnSector.setCellEditor(new DefaultCellEditor(comboBoxSector));
@@ -95,8 +93,7 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 		int i = 0;
 		for (String val : SymbolsTableModel.COLUMN_NAMES) {
 			if (val.contains("Custom")) {
-				getColumnModel().getColumn(i).setCellEditor(
-						new DefaultCellEditor(new JCheckBox()));
+				getColumnModel().getColumn(i).setCellEditor(new DefaultCellEditor(new JCheckBox()));
 				break;
 			}
 			i++;
@@ -110,10 +107,10 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 
 	@Override
 	public void update(Event event, Object model) {
-		if (SwingEvents.FILTER_SYMBOLS.equals(event)) {
-			updateSymbolTable(SwingEvents.FILTER_SYMBOLS.resolveModel(model));
-		} else if (SwingEvents.SYMBOLS_UPDATED.equals(event)) {
-			updateSymbolTable(SwingEvents.SYMBOLS_UPDATED.resolveModel(model));
+		if (ModelChangeEvents.FILTER_SYMBOLS.equals(event)) {
+			updateSymbolTable(ModelChangeEvents.FILTER_SYMBOLS.resolveModel(model));
+		} else if (ModelChangeEvents.SYMBOLS_UPDATED.equals(event)) {
+			updateSymbolTable(ModelChangeEvents.SYMBOLS_UPDATED.resolveModel(model));
 		}
 	}
 
@@ -124,8 +121,7 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 	}
 
 	@Override
-	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex,
-			int vColIndex) {
+	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex) {
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
 		if (getSelectedRow() == rowIndex) {
 			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
@@ -181,8 +177,7 @@ public class SymbolsTable extends AbstractTable implements EventListener,
 		if (!evt.isAltGraphDown() && !evt.isControlDown()) {
 			controller.setSelection(symbol);
 		}
-		if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2
-				&& getSelectedColumn() == 2) {
+		if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2 && getSelectedColumn() == 2) {
 			openSymbol.actionPerformed(null);
 		}
 	}

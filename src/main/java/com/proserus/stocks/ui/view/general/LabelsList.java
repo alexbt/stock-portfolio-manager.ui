@@ -45,11 +45,10 @@ import com.proserus.stocks.bo.transactions.Transaction;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
-import com.proserus.stocks.ui.view.transactions.ComboRender;
 
 public class LabelsList extends JPanel implements KeyListener, EventListener, ActionListener,
 		MouseListener, FocusListener, ItemListener {
@@ -115,7 +114,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 		this.parent = parent;
 
 		initList();
-		EventBus.getInstance().add(this, SwingEvents.LABELS_UPDATED);
+		EventBus.getInstance().add(this, ModelChangeEvents.LABELS_UPDATED);
 		ViewControllers.getController().refreshOther();
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
@@ -346,8 +345,8 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 
 	@Override
 	public void update(Event event, Object model) {
-		if (SwingEvents.LABELS_UPDATED.equals(event)) {
-			Collection<Label> col = SwingEvents.LABELS_UPDATED
+		if (ModelChangeEvents.LABELS_UPDATED.equals(event)) {
+			Collection<Label> col = ModelChangeEvents.LABELS_UPDATED
 					.resolveModel(model);
 			CheckListItem[] item = new CheckListItem[col.size()];
 			int i = 0;

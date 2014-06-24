@@ -3,33 +3,29 @@ package com.proserus.stocks.ui.view.summaries;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
 
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.proserus.stocks.bo.analysis.CurrencyAnalysis;
-import com.proserus.stocks.bo.analysis.SymbolAnalysis;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 import com.proserus.stocks.ui.view.transactions.TableRender;
+
 public class PerformanceCurrencyTable extends AbstractTable implements EventListener {
 	private static final long serialVersionUID = 201404041920L;
 	private Filter filter = ViewControllers.getFilter();
-	
+
 	private static final int ROW_SIZE = 21;
 
 	private static final String ONE = "1";
@@ -47,8 +43,8 @@ public class PerformanceCurrencyTable extends AbstractTable implements EventList
 	}
 
 	private PerformanceCurrencyTable() {
-		EventBus.getInstance().add(this, SwingEvents.CURRENCY_ANALYSIS_UPDATED);
-		
+		EventBus.getInstance().add(this, ModelChangeEvents.CURRENCY_ANALYSIS_UPDATED);
+
 		colors.put(ZERO + true, new Color(150, 190, 255));
 		colors.put(ZERO + false, new Color(255, 148, 0));
 		colors.put(ONE + true, new Color(245, 245, 245));
@@ -60,7 +56,7 @@ public class PerformanceCurrencyTable extends AbstractTable implements EventList
 		setVisible(true);
 		validate();
 		setRowSorter(new TableRowSorter<PerformanceCurrencyModel>(tableModel));
-        setFirstRowSorted(true);
+		setFirstRowSorted(true);
 	}
 
 	@Override
@@ -69,19 +65,18 @@ public class PerformanceCurrencyTable extends AbstractTable implements EventList
 	}
 
 	@Override
-	//TODO Do not use toString() for business logic
 	public void update(Event event, Object model) {
-		if(SwingEvents.CURRENCY_ANALYSIS_UPDATED.equals(event)){
-			Collection<CurrencyAnalysis> col = SwingEvents.CURRENCY_ANALYSIS_UPDATED.resolveModel(model);
+		if (ModelChangeEvents.CURRENCY_ANALYSIS_UPDATED.equals(event)) {
+			Collection<CurrencyAnalysis> col = ModelChangeEvents.CURRENCY_ANALYSIS_UPDATED.resolveModel(model);
 			// TODO Redesign FIlter/SharedFilter
 			tableModel.setData(col);
 			setPreferredScrollableViewportSize(new Dimension(200, ROW_SIZE * col.size()));
-			
+
 			StringBuilder sb = new StringBuilder();
-            for (CurrencyAnalysis currencyAnalysis : col) {
-                sb.append(currencyAnalysis.getSnapshot() + ", ");
-            }
-            setToolTipText(StringUtils.removeEnd(String.valueOf(sb),", "));
+			for (CurrencyAnalysis currencyAnalysis : col) {
+				sb.append(currencyAnalysis.getSnapshot() + ", ");
+			}
+			setToolTipText(StringUtils.removeEnd(String.valueOf(sb), ", "));
 			getRootPane().validate();
 		}
 	}

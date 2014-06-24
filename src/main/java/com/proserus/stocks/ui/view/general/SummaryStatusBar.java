@@ -19,7 +19,6 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -31,7 +30,7 @@ import javax.swing.border.EtchedBorder;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 
 public class SummaryStatusBar extends JPanel implements EventListener {
 
@@ -54,7 +53,7 @@ public class SummaryStatusBar extends JPanel implements EventListener {
 	public SummaryStatusBar() {
 		setLayout(new GridBagLayout());
 		init();
-		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED,SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED);
+		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_CURRENT_PRICE_UPDATED,ModelChangeEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED);
 	}
 
 	private void init() {
@@ -86,9 +85,9 @@ public class SummaryStatusBar extends JPanel implements EventListener {
 	 * @see Observable
 	 */
 	public void update(final Event event, final Object model) {
-		if(SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED.equals(event)){
+		if(ModelChangeEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED.equals(event)){
 			historicalPrice.setText(TOTAL_PROFIT + Calendar.getInstance().getTime());
-		}else if(SwingEvents.SYMBOLS_CURRENT_PRICE_UPDATED.equals(event)){
+		}else if(ModelChangeEvents.SYMBOLS_CURRENT_PRICE_UPDATED.equals(event)){
 			price.setText(TOTAL_PRICE + Calendar.getInstance().getTime());
 		}
 	}

@@ -2,7 +2,6 @@ package com.proserus.stocks.ui.view.transactions;
 import java.awt.Component;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;

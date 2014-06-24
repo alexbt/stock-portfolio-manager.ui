@@ -3,33 +3,29 @@ package com.proserus.stocks.ui.view.summaries;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
 
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.proserus.stocks.bo.analysis.CurrencyAnalysis;
 import com.proserus.stocks.bo.analysis.SymbolAnalysis;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 import com.proserus.stocks.ui.view.transactions.TableRender;
+
 public class PerformanceSymbolTable extends AbstractTable implements EventListener {
-    private static final long serialVersionUID = 201106191114L;
-    
-    private Filter filter = ViewControllers.getFilter();
+	private static final long serialVersionUID = 201106191114L;
+
+	private Filter filter = ViewControllers.getFilter();
 
 	private static final String ONE = "1";
 
@@ -52,8 +48,8 @@ public class PerformanceSymbolTable extends AbstractTable implements EventListen
 		colors.put(ONE + false, new Color(245, 245, 245));
 		setModel(tableModel);
 		// c.addSummaryObserver(this);
-		EventBus.getInstance().add(this, SwingEvents.SYMBOL_ANALYSIS_UPDATED);
-		
+		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOL_ANALYSIS_UPDATED);
+
 		setPreferredScrollableViewportSize(new Dimension(200, 275));
 		validate();
 		// setSize(400, 300);
@@ -64,27 +60,26 @@ public class PerformanceSymbolTable extends AbstractTable implements EventListen
 		setFirstRowSorted(true);
 	}
 
-	//TODO Do not use toString() for business logic
 	@Override
 	public void update(Event event, Object model) {
 		// TODO Redesign Filter/SharedFilter
-		if(SwingEvents.SYMBOL_ANALYSIS_UPDATED.equals(event)){
-			Collection<SymbolAnalysis> col = SwingEvents.SYMBOL_ANALYSIS_UPDATED.resolveModel(model);
+		if (ModelChangeEvents.SYMBOL_ANALYSIS_UPDATED.equals(event)) {
+			Collection<SymbolAnalysis> col = ModelChangeEvents.SYMBOL_ANALYSIS_UPDATED.resolveModel(model);
 			tableModel.setData(col);
-			
+
 			StringBuilder sb = new StringBuilder();
-            for (SymbolAnalysis symbolAnalysis : col) {
-                sb.append(symbolAnalysis.getSnapshot() + ", ");
-            }
-            setToolTipText(StringUtils.removeEnd(String.valueOf(sb),", "));
+			for (SymbolAnalysis symbolAnalysis : col) {
+				sb.append(symbolAnalysis.getSnapshot() + ", ");
+			}
+			setToolTipText(StringUtils.removeEnd(String.valueOf(sb), ", "));
 			getRootPane().validate();
 		}
 	}
 
 	@Override
-    public TableCellRenderer getCellRenderer(int row, int column) {
-        return tableRender;
-    }
+	public TableCellRenderer getCellRenderer(int row, int column) {
+		return tableRender;
+	}
 
 	@Override
 	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex) {
