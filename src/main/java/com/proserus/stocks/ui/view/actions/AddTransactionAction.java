@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

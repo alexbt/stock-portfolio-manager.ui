@@ -13,35 +13,32 @@ import org.jfree.data.general.PieDataset;
 
 import com.proserus.stocks.bo.analysis.CurrencyAnalysis;
 
-public class CurrencyGraph extends ChartPanel  {
+public class CurrencyGraph extends ChartPanel {
 	private static final long serialVersionUID = 201404041920L;
 
 	public CurrencyGraph() {
-	    super(null);
-    }
-	
-	public void updateData(Collection<? extends CurrencyAnalysis> col){
-		
-		JFreeChart chart =ChartFactory.createPieChart(
-	            "Market Value by Currencies (%)",  // chart title
-	            createDataset(col),             // data
-	            false,               // include legend
-	            false,
-	            false
-	        );
+		super(null);
+	}
+
+	public void updateData(Collection<? extends CurrencyAnalysis> col) {
+
+		JFreeChart chart = ChartFactory.createPieChart("Market Value by Currencies (%)", // chart
+																							// title
+				createDataset(col), // data
+				false, // include legend
+				false, false);
 		final PiePlot plot = (PiePlot) chart.getPlot();
-		plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
-	            "{0} = {2}", NumberFormat.getNumberInstance(), NumberFormat.getPercentInstance()
-	        ));
+		plot.setLabelGenerator(new StandardPieSectionLabelGenerator("{0} = {2}", NumberFormat.getNumberInstance(), NumberFormat
+				.getPercentInstance()));
 		setChart(chart);
 	}
-	
+
 	private static PieDataset createDataset(Collection<? extends CurrencyAnalysis> col) {
-        DefaultPieDataset dataset = new DefaultPieDataset();
-        for(CurrencyAnalysis analysis: col){
-        	dataset.setValue(analysis.getCurrency().name(), analysis.getMarketValue().floatValue());
-        }
-        return dataset;        
-    }
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		for (CurrencyAnalysis analysis : col) {
+			dataset.setValue(analysis.getCurrency().getTitle(), analysis.getMarketValue().floatValue());
+		}
+		return dataset;
+	}
 
 }

@@ -1,10 +1,10 @@
 package com.proserus.stocks.ui.view.general;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import com.proserus.stocks.ui.view.transactions.ComboEditor;

@@ -24,13 +24,13 @@ import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier;
 import com.proserus.stocks.ui.view.common.verifiers.YearVerifier;
 
-public class SymbolsModificationView extends AbstractDialog implements ActionListener, FocusListener,EventListener {
+public class SymbolsModificationView extends AbstractDialog implements ActionListener, FocusListener, EventListener {
 
 	private static final long serialVersionUID = 201404042021L;
 	private static final String REQUIRED_FIELD_MISSING = "Required field missing";
@@ -53,10 +53,10 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		setSize(595, 625);
 		setResizable(false);
 		init();
-		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED);
+		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED);
 	}
-	
-	public void setSymbol(Symbol s){
+
+	public void setSymbol(Symbol s) {
 		symbol = s;
 	}
 
@@ -68,26 +68,25 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 
 		northPanel.getSymbolField().setText(symbol.getTicker());
 		northPanel.getSymbolField().setEnabled(false);
-		//northPanel.getSymbolField().setInputVerifier(new SymbolVerifier());
+		// northPanel.getSymbolField().setInputVerifier(new SymbolVerifier());
 		northPanel.getCompanyNameField().setText(symbol.getName());
 		northPanel.getCompanyNameField().setEnabled(false);
-		// TODO Manage Date better
 
 		northPanel.getUseCustomPriceField().setSelected(symbol.isCustomPriceFirst());
 		northPanel.getUseCustomPriceField().setEnabled(false);
 
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
-		    if (cur.isVisible()) {
-		        northPanel.getCurrencyField().addItem(cur);
-		    }
+			if (cur.isVisible()) {
+				northPanel.getCurrencyField().addItem(cur);
+			}
 		}
-		
+
 		northPanel.getCurrencyField().setMaximumRowCount(11);
 		northPanel.getCurrencyField().setSelectedItem(symbol.getCurrency());
 		northPanel.getSectorField().setSelectedItem(symbol.getSector());
 		northPanel.getCurrencyField().setEnabled(false);
 		northPanel.getSectorField().setEnabled(false);
-		
+
 		SymbolsModifTable table = new SymbolsModifTable(symbol);
 		year.addKeyListener(table);
 		add.addKeyListener(table);
@@ -134,57 +133,58 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 	}
 
 	public void windowClosing(WindowEvent e) {
-		
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (!year.getText().isEmpty() && !customPrice.getText().isEmpty()) {
-			if(symbol.getMapPrices().containsKey(Integer.parseInt(year.getText()))){
-				JOptionPane.showConfirmDialog(this, "A price for year " + year.getText() + " already exists", "Error adding Price", JOptionPane.DEFAULT_OPTION,
-				        JOptionPane.WARNING_MESSAGE);
+			if (symbol.getMapPrices().containsKey(Integer.parseInt(year.getText()))) {
+				JOptionPane.showConfirmDialog(this, "A price for year " + year.getText() + " already exists", "Error adding Price",
+						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
 				year.setText("");
-			}else{
-			HistoricalPrice h = ViewControllers.getBoBuilder().getHistoricalPrice();
-			h.setCustomPrice(new BigDecimal(Double.parseDouble(customPrice.getText())));
-			h.setPrice(BigDecimal.ZERO);
-			h.setYear(Integer.parseInt(year.getText()));
-			symbol.addPrice(h);
-			ViewControllers.getController().updateSymbol(symbol);
-			year.setText("");
-			customPrice.setText("");
+			} else {
+				HistoricalPrice h = ViewControllers.getBoBuilder().getHistoricalPrice();
+				h.setCustomPrice(new BigDecimal(Double.parseDouble(customPrice.getText())));
+				h.setPrice(BigDecimal.ZERO);
+				h.setYear(Integer.parseInt(year.getText()));
+				symbol.addPrice(h);
+				ViewControllers.getController().updateSymbol(symbol);
+				year.setText("");
+				customPrice.setText("");
 			}
-		}else{
+		} else {
 			JOptionPane.showConfirmDialog(this, REQUIRED_FIELD_MISSING, CANNOT_ADD_PRICE, JOptionPane.DEFAULT_OPTION,
-			        JOptionPane.WARNING_MESSAGE);
+					JOptionPane.WARNING_MESSAGE);
 		}
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		if (e.getSource().equals(northPanel.getSymbolField()) && !northPanel.getSymbolField().equals(symbol.getTicker())){
+		if (e.getSource().equals(northPanel.getSymbolField()) && !northPanel.getSymbolField().equals(symbol.getTicker())) {
 			String oldValue = symbol.getTicker();
 			symbol.setTicker(northPanel.getSymbolField().getText());
 			symbol.setName("");
-			//TODO do not compare like this ==> Fixed
-			if(!ViewControllers.getController().addSymbol(symbol).equals(symbol)){
+
+			if (!ViewControllers.getController().addSymbol(symbol).equals(symbol)) {
 				JOptionPane.showConfirmDialog(ViewControllers.getWindow(), THE_SYMBOL_ALREADY_EXIST, CANNOT_ADD_SYMBOL,
-				        JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
 				symbol.setTicker(oldValue);
 				northPanel.getSymbolField().setText(oldValue);
 			}
 		} else {
-			if (e.getSource().equals(northPanel.getCompanyNameField()) && !northPanel.getCompanyNameField().equals(symbol.getName())){
+			if (e.getSource().equals(northPanel.getCompanyNameField()) && !northPanel.getCompanyNameField().equals(symbol.getName())) {
 				symbol.setName(northPanel.getCompanyNameField().getText());
 				ViewControllers.getController().updateSymbol(symbol);
-			}else if (e.getSource().equals(northPanel.getUseCustomPriceField()) && !northPanel.getUseCustomPriceField().equals(symbol.isCustomPriceFirst())){
+			} else if (e.getSource().equals(northPanel.getUseCustomPriceField())
+					&& !northPanel.getUseCustomPriceField().equals(symbol.isCustomPriceFirst())) {
 				symbol.setCustomPriceFirst(northPanel.getUseCustomPriceField().isSelected());
 				ViewControllers.getController().updateSymbol(symbol);
-			}else if (e.getSource().equals(northPanel.getCurrencyField()) && !northPanel.getCurrencyField().equals(symbol.getCurrency())){
-				symbol.setCurrency((CurrencyEnum)northPanel.getCurrencyField().getSelectedItem());
+			} else if (e.getSource().equals(northPanel.getCurrencyField()) && !northPanel.getCurrencyField().equals(symbol.getCurrency())) {
+				symbol.setCurrency((CurrencyEnum) northPanel.getCurrencyField().getSelectedItem());
 				ViewControllers.getController().updateSymbol(symbol);
-			}else if (e.getSource().equals(northPanel.getSectorField()) && !northPanel.getSectorField().equals(symbol.getSector())){
-				symbol.setSector((SectorEnum)northPanel.getSectorField().getSelectedItem());
+			} else if (e.getSource().equals(northPanel.getSectorField()) && !northPanel.getSectorField().equals(symbol.getSector())) {
+				symbol.setSector((SectorEnum) northPanel.getSectorField().getSelectedItem());
 				ViewControllers.getController().updateSymbol(symbol);
 			}
 		}
@@ -192,15 +192,13 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 
 	@Override
 	public void focusGained(FocusEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
-    public void update(Event event, Object model) {
-		if (SwingEvents.SYMBOLS_UPDATED.equals(event)) {
-			for(Symbol s: SwingEvents.SYMBOLS_UPDATED.resolveModel(model)){
-				if(s.equals(symbol)){
+	public void update(Event event, Object model) {
+		if (ModelChangeEvents.SYMBOLS_UPDATED.equals(event)) {
+			for (Symbol s : ModelChangeEvents.SYMBOLS_UPDATED.resolveModel(model)) {
+				if (s.equals(symbol)) {
 					symbol = s;
 					northPanel.getCompanyNameField().setText(s.getName());
 					northPanel.getUseCustomPriceField().setSelected(s.isCustomPriceFirst());
@@ -209,6 +207,6 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 				}
 			}
 		}
-	    
-    }
+
+	}
 }

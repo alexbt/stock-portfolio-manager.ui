@@ -11,7 +11,7 @@ import java.awt.event.MouseListener;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.swing.DefaultCellEditor;
@@ -32,244 +32,236 @@ import com.proserus.stocks.bo.transactions.TransactionType;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.bp.model.Filter;
+import com.proserus.stocks.bp.utils.DateUtils;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
-import com.proserus.stocks.ui.view.common.verifiers.DateVerifier;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 import com.proserus.stocks.ui.view.general.LabelsList;
 
 public class TransactionTable extends AbstractTable implements EventListener, ActionListener, MouseListener {
-    private static final long serialVersionUID = 201404042021L;
-    private Filter filter = ViewControllers.getFilter();
+	private static final long serialVersionUID = 201404042021L;
+	private Filter filter = ViewControllers.getFilter();
 
-    private static final String ONE = "1";
+	private static final String ONE = "1";
 
-    private static final String ZERO = "0";
+	private static final String ZERO = "0";
 
-    private PortfolioController controller = ViewControllers.getController();
+	private PortfolioController controller = ViewControllers.getController();
 
-    private TransactionTableModel tableModel = new TransactionTableModel();
-    private TableRender tableRender = new TableRender();
-    private LabelsList labl = null;
-    // http://72.5.124.102/thread.jspa?messageID=4220319
-    private TableRowSorter<TransactionTableModel> sorter;
-    HashMap<String, Color> colors = new HashMap<String, Color>();
+	private TransactionTableModel tableModel = new TransactionTableModel();
+	private TableRender tableRender = new TableRender();
+	private LabelsList labl = null;
+	// http://72.5.124.102/thread.jspa?messageID=4220319
+	private TableRowSorter<TransactionTableModel> sorter;
+	HashMap<String, Color> colors = new HashMap<String, Color>();
 
-    private static TransactionTable transactionTable = new TransactionTable();
-    private SortedComboBoxModel comboTickers = new SortedComboBoxModel();
+	private static TransactionTable transactionTable = new TransactionTable();
+	private SortedComboBoxModel comboTickers = new SortedComboBoxModel();
 
-    static public TransactionTable getInstance() {
-        return transactionTable;
-    }
+	static public TransactionTable getInstance() {
+		return transactionTable;
+	}
 
-    private TransactionTable() {
-        EventBus.getInstance().add(this, SwingEvents.TRANSACTION_UPDATED, SwingEvents.SYMBOLS_UPDATED);
-        setModel(tableModel);
-        colors.put(ZERO + true, new Color(150, 190, 255));
-        colors.put(ZERO + false, new Color(255, 148, 0));
-        colors.put(ONE + true, new Color(245, 245, 245));
-        colors.put(ONE + false, new Color(245, 245, 245));
-        sorter = new TableRowSorter<TransactionTableModel>(tableModel);
-        setRowSorter(sorter);
-        setRowHeight(getRowHeight() + 5);
-        setBorder(null);
-        TableColumn sportColumn = getColumnModel().getColumn(2);
+	private TransactionTable() {
+		EventBus.getInstance().add(this, ModelChangeEvents.TRANSACTION_UPDATED, ModelChangeEvents.SYMBOLS_UPDATED);
+		setModel(tableModel);
+		colors.put(ZERO + true, new Color(150, 190, 255));
+		colors.put(ZERO + false, new Color(255, 148, 0));
+		colors.put(ONE + true, new Color(245, 245, 245));
+		colors.put(ONE + false, new Color(245, 245, 245));
+		sorter = new TableRowSorter<TransactionTableModel>(tableModel);
+		setRowSorter(sorter);
+		setRowHeight(getRowHeight() + 5);
+		setBorder(null);
+		TableColumn sportColumn = getColumnModel().getColumn(2);
 
-        JComboBox comboBox = new JComboBox();
-        comboBox.setRenderer(new ComboRender());
-        comboBox.setEditor(new ComboEditor());
-        for (TransactionType transactionType : TransactionType.values()) {
-            if (transactionType.isVisible()) {
-                comboBox.addItem(transactionType);
-            }
-        }
+		JComboBox comboBox = new JComboBox();
+		comboBox.setRenderer(new ComboRender());
+		comboBox.setEditor(new ComboEditor());
+		for (TransactionType transactionType : TransactionType.values()) {
+			if (transactionType.isVisible()) {
+				comboBox.addItem(transactionType);
+			}
+		}
 
-        sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
-        sportColumn = getColumnModel().getColumn(0);
-        sportColumn.setCellEditor(new MyDateEditor());
-        // setDefaultEditor(Symbol.class, editor);
-        setVisible(true);
-        setFirstRowSorted(false);
-        addMouseListener(this);
-    }
+		sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
+		sportColumn = getColumnModel().getColumn(0);
+		sportColumn.setCellEditor(new MyDateEditor());
+		// setDefaultEditor(Symbol.class, editor);
+		setVisible(true);
+		setFirstRowSorted(false);
+		addMouseListener(this);
+	}
 
-    @Override
-    public TableCellRenderer getCellRenderer(int row, int column) {
-        return tableRender;
-    }
+	@Override
+	public TableCellRenderer getCellRenderer(int row, int column) {
+		return tableRender;
+	}
 
-    @Override
-    public void editingStopped(ChangeEvent e) {
-        super.editingStopped(e);
-    }
+	@Override
+	public void editingStopped(ChangeEvent e) {
+		super.editingStopped(e);
+	}
 
-    @Override
-    public void update(Event event, Object model) {
-        if (SwingEvents.TRANSACTION_UPDATED.equals(event)) {
-            tableModel.setData(SwingEvents.TRANSACTION_UPDATED.resolveModel(model).toArray());
-            getRootPane().validate();
-            // TODO Redesign Filter/SharedFilter
-        } else if (SwingEvents.SYMBOLS_UPDATED.equals(event)) {
-            TableColumn sportColumn = getColumnModel().getColumn(1);
-            JComboBox comboBox = new JComboBox(comboTickers);
-            comboBox.setRenderer(new ComboRender());
-            comboBox.setEditor(new ComboEditor());
-            
-            if (comboTickers.getSize() > 0) {
-                getSelectionModel().clearSelection();
-                comboTickers.removeAllElements();
-            }
-            for (Symbol symbol : SwingEvents.SYMBOLS_UPDATED.resolveModel(model)) {
-                comboTickers.addElement(symbol);
-            }
+	@Override
+	public void update(Event event, Object model) {
+		if (ModelChangeEvents.TRANSACTION_UPDATED.equals(event)) {
+			tableModel.setData(ModelChangeEvents.TRANSACTION_UPDATED.resolveModel(model).toArray());
+			getRootPane().validate();
+			// TODO Redesign Filter/SharedFilter
+		} else if (ModelChangeEvents.SYMBOLS_UPDATED.equals(event)) {
+			TableColumn sportColumn = getColumnModel().getColumn(1);
+			JComboBox comboBox = new JComboBox(comboTickers);
+			comboBox.setRenderer(new ComboRender());
+			comboBox.setEditor(new ComboEditor());
 
-            sportColumn.setCellEditor(new NotNullEditor(comboBox));
-        }
-    }
+			if (comboTickers.getSize() > 0) {
+				getSelectionModel().clearSelection();
+				comboTickers.removeAllElements();
+			}
+			for (Symbol symbol : ModelChangeEvents.SYMBOLS_UPDATED.resolveModel(model)) {
+				comboTickers.addElement(symbol);
+			}
 
-    @Override
-    public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex) {
-        Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-        if (getSelectedRow() == rowIndex) {
-            c.setBackground(ColorSettingsDialog.getTableSelectionColor());
-        } else if (rowIndex % 2 == 0) {
-            c.setBackground(ColorSettingsDialog.getColor(filter.isFiltered()));
-        } else {
-            c.setBackground(ColorSettingsDialog.getAlternateRowColor());
-        }
-        return c;
-    }
+			sportColumn.setCellEditor(new NotNullEditor(comboBox));
+		}
+	}
 
-    @Override
-    public void mouseClicked(MouseEvent evt) {
-        if (getSelectedRow() < 0) {
-            return;
-        }
+	@Override
+	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex) {
+		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+		if (getSelectedRow() == rowIndex) {
+			c.setBackground(ColorSettingsDialog.getTableSelectionColor());
+		} else if (rowIndex % 2 == 0) {
+			c.setBackground(ColorSettingsDialog.getColor(filter.isFiltered()));
+		} else {
+			c.setBackground(ColorSettingsDialog.getAlternateRowColor());
+		}
+		return c;
+	}
 
-        if (getSelectedColumn() == 7 && evt.getButton() == MouseEvent.BUTTON1) {
-            Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
-            JWindow window = new JWindow(ViewControllers.getWindow());
-            labl = new LabelsList(t, window);
-            window.add(labl);
+	@Override
+	public void mouseClicked(MouseEvent evt) {
+		if (getSelectedRow() < 0) {
+			return;
+		}
 
-            window.setSize(200, 300);
-            Point p = MouseInfo.getPointerInfo().getLocation();
-            window.setLocation(p);
-            window.setVisible(true);
-        }
-    }
+		if (getSelectedColumn() == 7 && evt.getButton() == MouseEvent.BUTTON1) {
+			Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
+			JWindow window = new JWindow(ViewControllers.getWindow());
+			labl = new LabelsList(t, window);
+			window.add(labl);
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() instanceof JComboBox) {
-            Object o = ((JComboBox) e.getSource()).getSelectedItem();
-            if (o instanceof Symbol) {
-                if (((Symbol) o).getId() != null) {
-                    filter.setSymbol((Symbol) o);
-                } else {
-                    filter.setSymbol(null);
-                }
-                ViewControllers.getController().refreshFilteredData();
-            }
-        }
-    }
+			window.setSize(200, 300);
+			Point p = MouseInfo.getPointerInfo().getLocation();
+			window.setLocation(p);
+			window.setVisible(true);
+		}
+	}
 
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() instanceof JComboBox) {
+			Object o = ((JComboBox) e.getSource()).getSelectedItem();
+			if (o instanceof Symbol) {
+				if (((Symbol) o).getId() != null) {
+					filter.setSymbol((Symbol) o);
+				} else {
+					filter.setSymbol(null);
+				}
+				ViewControllers.getController().refreshFilteredData();
+			}
+		}
+	}
 
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
 
-    @Override
-    public void mousePressed(MouseEvent evt) {
-        if (getSelectedRow() < 0) {
-            return;
-        }
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
 
-        if (!evt.isAltGraphDown() && !evt.isControlDown()) {
-            Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
-            controller.setSelection(t);
-        }
-    }
+	@Override
+	public void mousePressed(MouseEvent evt) {
+		if (getSelectedRow() < 0) {
+			return;
+		}
 
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
+		if (!evt.isAltGraphDown() && !evt.isControlDown()) {
+			Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
+			controller.setSelection(t);
+		}
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
 
 }
 
 class MyDateEditor extends DefaultCellEditor {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 201108112016L;
+	private static final long serialVersionUID = 201108112016L;
 
-    DateFormat parseFormat;
-    DateFormat editFormat;
-    Date data;
-    DateVerifier dateVerifier = new DateVerifier();
+	private DateFormat parseFormat = new SimpleDateFormat("yyyyMMdd");
+	private DateFormat editFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private Calendar data;
 
-    public MyDateEditor() {
-        // TODO use INputVerifier ? DateVerifier
-        super(new JTextField());
-        getComponent().setName("Table.editor");
-        // TODO should actually check for null
-        parseFormat = new SimpleDateFormat("yyyyMMdd");
-        editFormat = new SimpleDateFormat("yyyy-MM-dd");
-    }
+	public MyDateEditor() {
+		// TODO use INputVerifier ? DateVerifier
+		super(new JTextField());
+		getComponent().setName("Table.editor");
+	}
 
-    @Override
-    public boolean stopCellEditing() {
-        String str = (String) super.getCellEditorValue();
-        if ("".equals(str)) {
-            super.stopCellEditing();
-        }
-        str = str.replaceAll("[^0-9]", "");
-        try {
-            data = parseFormat.parse(str);
-        } catch (ParseException e) {
-            ((JComponent) getComponent()).setBorder(new LineBorder(Color.red));
-            return false;
-        }
-        return super.stopCellEditing();
-    }
+	@Override
+	public boolean stopCellEditing() {
+		String str = (String) super.getCellEditorValue();
+		if ("".equals(str)) {
+			super.stopCellEditing();
+		}
+		str = str.replaceAll("[^0-9]", "");
+		try {
+			data = DateUtils.getCalendar(parseFormat.parse(str));
+		} catch (ParseException e) {
+			((JComponent) getComponent()).setBorder(new LineBorder(Color.red));
+			return false;
+		}
+		return super.stopCellEditing();
+	}
 
-    @Override
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        this.data = null;
-        if (value instanceof Date) {
-            value = editFormat.format((Date) value);
-        }
-        ((JComponent) getComponent()).setBorder(new LineBorder(Color.black));
-        return super.getTableCellEditorComponent(table, value, isSelected, row, column);
-    }
+	@Override
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+		this.data = null;
+		if (value instanceof Calendar) {
+			value = editFormat.format(((Calendar) value).getTime());
+		}
+		((JComponent) getComponent()).setBorder(new LineBorder(Color.black));
+		return super.getTableCellEditorComponent(table, value, isSelected, row, column);
+	}
 
-    @Override
-    public Object getCellEditorValue() {
-        return data;
-    }
+	@Override
+	public Object getCellEditorValue() {
+		return data;
+	}
 }
 
-
 class NotNullEditor extends DefaultCellEditor {
-    private static final long serialVersionUID = 201108112016L;
+	private static final long serialVersionUID = 201108112016L;
 
-    public NotNullEditor(JComboBox combobox) {
-        super(combobox);
-    }
+	public NotNullEditor(JComboBox combobox) {
+		super(combobox);
+	}
 
-    @Override
-    public boolean stopCellEditing() {
-        JComboBox combo = (JComboBox) getComponent();
-        if(combo.getSelectedItem()==null){
-            return false;
-        }
-        return super.stopCellEditing();
-    }
+	@Override
+	public boolean stopCellEditing() {
+		JComboBox combo = (JComboBox) getComponent();
+		if (combo.getSelectedItem() == null) {
+			return false;
+		}
+		return super.stopCellEditing();
+	}
 }

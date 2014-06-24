@@ -27,7 +27,7 @@ import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
-import com.proserus.stocks.bp.events.SwingEvents;
+import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
@@ -41,7 +41,7 @@ public class TransactionSymbolFilterPanel extends JPanel implements EventListene
 	private SortedComboBoxModel model = new SortedComboBoxModel();
 
 	public TransactionSymbolFilterPanel() {
-		EventBus.getInstance().add(this, SwingEvents.SYMBOLS_UPDATED);
+		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_UPDATED);
 		FlowLayout ff = new FlowLayout();
 		ff.setAlignment(FlowLayout.LEFT);
 		setLayout(ff);
@@ -56,9 +56,9 @@ public class TransactionSymbolFilterPanel extends JPanel implements EventListene
 
 	@Override
 	public void update(Event event, Object mo) {
-		if(SwingEvents.SYMBOLS_UPDATED.equals(event)){
+		if(ModelChangeEvents.SYMBOLS_UPDATED.equals(event)){
 			model.removeAllElements();
-			for (Symbol symbol : SwingEvents.SYMBOLS_UPDATED.resolveModel(mo)) {
+			for (Symbol symbol : ModelChangeEvents.SYMBOLS_UPDATED.resolveModel(mo)) {
 				model.addElement(symbol);
 			}
 			Symbol s = new EmptySymbol();

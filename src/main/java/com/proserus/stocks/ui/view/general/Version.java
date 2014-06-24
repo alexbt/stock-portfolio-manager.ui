@@ -6,7 +6,7 @@
 							com.proserus.stocks.ui.view.general;
 
 							public interface Version {
-							public static String TIMESTAMP = "20140621-0115";
+							public static String TIMESTAMP = "20140623-2319";
 							public static String VERSION = "0.24";
 							public static
 							String VERSION_SUFFIX = "Beta";

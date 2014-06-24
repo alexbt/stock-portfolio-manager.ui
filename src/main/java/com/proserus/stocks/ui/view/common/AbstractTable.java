@@ -1,6 +1,6 @@
 package com.proserus.stocks.ui.view.common;
 
-import java.awt.event.InputEvent;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,17 +24,17 @@ abstract public class AbstractTable extends JTable {
 	HashMap<String, TableColumn> removedColumns = new HashMap<String, TableColumn>();
 
 	public AbstractTable() {
+		setFont(new Font("Arial", Font.BOLD, 12));
 	}
-	
+
 	@Override
-	protected boolean processKeyBinding(KeyStroke ks,
-	        KeyEvent e, int condition, boolean pressed) {
-		
-	    boolean result = super.processKeyBinding(ks, e, condition, pressed);
-	    if (isEditing() && pressed && !e.isControlDown()){
-	    	return true;
-	    }
-	    return result;
+	protected boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
+
+		boolean result = super.processKeyBinding(ks, e, condition, pressed);
+		if (isEditing() && pressed && !e.isControlDown()) {
+			return true;
+		}
+		return result;
 	}
 
 	public void showHideColumn(JMenuItem item) {
@@ -81,8 +81,8 @@ abstract public class AbstractTable extends JTable {
 		}
 		ArrayList<SortKey> alist = new ArrayList<SortKey>(1);
 		alist.add(sortKey);
-		((DefaultRowSorter<?,?>) getRowSorter()).setSortable(0, true);
-		((DefaultRowSorter<?,?>) getRowSorter()).setSortKeys(alist);
-		((DefaultRowSorter<?,?>) getRowSorter()).sort();
+		((DefaultRowSorter<?, ?>) getRowSorter()).setSortable(0, true);
+		((DefaultRowSorter<?, ?>) getRowSorter()).setSortKeys(alist);
+		((DefaultRowSorter<?, ?>) getRowSorter()).sort();
 	}
 }

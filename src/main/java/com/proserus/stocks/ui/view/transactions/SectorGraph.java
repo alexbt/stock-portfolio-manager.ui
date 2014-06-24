@@ -13,38 +13,34 @@ import org.jfree.data.general.PieDataset;
 
 import com.proserus.stocks.bo.analysis.SectorAnalysis;
 
-public class SectorGraph extends ChartPanel  {
+public class SectorGraph extends ChartPanel {
 	private static final long serialVersionUID = 201404041920L;
 
 	public SectorGraph() {
-	    super(null);
-	    // TODO Auto-generated constructor stub
-    }
-	
-	public void updateData(Collection<? extends SectorAnalysis> col){
-		
-		JFreeChart chart =ChartFactory.createPieChart(
-	            "Market Value by Sectors (%)",  // chart title
-	            createDataset(col),             // data
-	            false,               // include legend
-	            false,
-	            false
-	        );
+		super(null);
+	}
+
+	public void updateData(Collection<? extends SectorAnalysis> col) {
+
+		JFreeChart chart = ChartFactory.createPieChart("Market Value by Sectors (%)", // chart
+																						// title
+				createDataset(col), // data
+				false, // include legend
+				false, false);
 		final PiePlot plot = (PiePlot) chart.getPlot();
-//		plot.set
-//		PieRenderer renderer = ((BarRenderer) chart.getPlot().getRenderer());
-		plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
-	            "{0} = {2}", NumberFormat.getNumberInstance(), NumberFormat.getPercentInstance()
-	        ));
+		// plot.set
+		// PieRenderer renderer = ((BarRenderer) chart.getPlot().getRenderer());
+		plot.setLabelGenerator(new StandardPieSectionLabelGenerator("{0} = {2}", NumberFormat.getNumberInstance(), NumberFormat
+				.getPercentInstance()));
 		setChart(chart);
 	}
-	
+
 	private static PieDataset createDataset(Collection<? extends SectorAnalysis> col) {
-        DefaultPieDataset dataset = new DefaultPieDataset();
-        for(SectorAnalysis analysis: col){
-        	dataset.setValue(analysis.getSector().getTitle(), analysis.getMarketValue().floatValue());
-        }
-        return dataset;        
-    }
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		for (SectorAnalysis analysis : col) {
+			dataset.setValue(analysis.getSector().getTitle(), analysis.getMarketValue().floatValue());
+		}
+		return dataset;
+	}
 
 }

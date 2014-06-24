@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import javax.swing.table.AbstractTableModel;
 
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
-import com.proserus.stocks.bp.utils.DateUtil;
+import com.proserus.stocks.bp.utils.DateUtils;
 import com.proserus.stocks.ui.controller.ViewControllers;
 
 public class SymbolsModifModel extends AbstractTableModel {
@@ -89,7 +89,8 @@ public class SymbolsModifModel extends AbstractTableModel {
 	 *            The row number of the field requested.
 	 * @param columnIndex
 	 *            The column number of the field requested.
-	 * @return The coressponding field of the contracotr at the specified row and column.
+	 * @return The coressponding field of the contracotr at the specified row
+	 *         and column.
 	 * @see Contractor
 	 */
 	public Object getValueAt(final int rowIndex, final int columnIndex) {
@@ -111,16 +112,19 @@ public class SymbolsModifModel extends AbstractTableModel {
 	@Override
 	public Class<?> getColumnClass(int col) {
 		return getValueAt(0, col).getClass();/*
-											 * switch (col) { case 0: case 1: return String.class; case 2: return Float.class; case 3:
-											 * return String.class; case 4: return Boolean.class; default: return Boolean.class; }
+											 * switch (col) { case 0: case 1:
+											 * return String.class; case 2:
+											 * return Float.class; case 3:
+											 * return String.class; case 4:
+											 * return Boolean.class; default:
+											 * return Boolean.class; }
 											 */
 	}
 
 	private Object getColValue(final HistoricalPrice h, final int column) {
 		int i = 0;
 		if (column == i++) {
-			//TODO Manage Date better
-			return h.getYear().equals(DateUtil.getCurrentYear()) ? "Today" : String.valueOf(h.getYear());
+			return h.getYear().equals(DateUtils.getCurrentYear()) ? "Today" : String.valueOf(h.getYear());
 		} else if (column == i++) {
 			return h.getPrice();
 		} else if (column == i++) {
@@ -130,7 +134,7 @@ public class SymbolsModifModel extends AbstractTableModel {
 	}
 
 	private void setColValue(HistoricalPrice h, Object value, int column) {
-		h.setCustomPrice((BigDecimal)value);
+		h.setCustomPrice((BigDecimal) value);
 		ViewControllers.getController().update(h);
 	}
 }

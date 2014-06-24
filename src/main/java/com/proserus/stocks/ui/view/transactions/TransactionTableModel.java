@@ -2,9 +2,9 @@ package com.proserus.stocks.ui.view.transactions;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -117,7 +117,7 @@ public class TransactionTableModel extends AbstractTableModel {
 	public Class<?> getColumnClass(int col) {
 		switch (col) {
 		case 0:
-			return Date.class;
+			return Calendar.class;
 		case 1:
 			return Symbol.class;
 		case 2:
@@ -136,7 +136,7 @@ public class TransactionTableModel extends AbstractTableModel {
 	private Object getColValue(final Transaction transaction, final int column) {
 		switch (column) {
 		case 0:
-			return transaction.getDate();
+			return transaction.getCalendar();
 		case 1:
 			return transaction.getSymbol();
 		case 2:
@@ -167,7 +167,7 @@ public class TransactionTableModel extends AbstractTableModel {
 	private void setColValue(final Transaction t, Object value, int column) {
 		int i = 0;
 		if (column == i++) {
-			t.setDate((Date) value);
+			t.setCalendar((Calendar) value);
 		} else if (column == i++) {
 			t.setSymbol((Symbol) value);
 		} else if (column == i++) {
