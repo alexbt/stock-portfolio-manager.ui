@@ -37,8 +37,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		this.ignorePopop = ignorePopop;
 	}
 
-	private static Logger log = Logger
-			.getLogger(DatabaseVersionningBpImpl.class.getName());
+	private static Logger log = Logger.getLogger(DatabaseVersionningBpImpl.class.getName());
 
 	@Inject
 	private BoBuilder boBuilder;
@@ -56,16 +55,14 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		DBVersion version = null;
 
 		try {
-			version = (DBVersion) persistenceManager.createNamedQuery(
-					"version.find").getSingleResult();
+			version = (DBVersion) persistenceManager.createNamedQuery("version.find").getSingleResult();
 			log.debug("database version: " + version.getDatabaseVersion());
 		} catch (PersistenceException e2) {
 		}
 
 		if (version == null) {
 			version = boBuilder.getVersion();
-			version.setDatabaseVersion(DatabaseUpgradeEnum.VERSION_0
-					.getVersion());
+			version.setDatabaseVersion(DatabaseUpgradeEnum.VERSION_0.getVersion());
 		}
 
 		assert version != null;
@@ -75,20 +72,14 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 	@Override
 	public void upgrade(DBVersion version) {
 
-		log.debug("Upgrading from Version " + version.getDatabaseVersion()
-				+ " to " + DatabaseUpgradeEnum.getLatestVersion());
-		boolean isFirstTime = version.getDatabaseVersion() == DatabaseUpgradeEnum.VERSION_0
-				.getVersion();
+		log.debug("Upgrading from Version " + version.getDatabaseVersion() + " to " + DatabaseUpgradeEnum.getLatestVersion());
+		boolean isFirstTime = version.getDatabaseVersion() == DatabaseUpgradeEnum.VERSION_0.getVersion();
 		if (!isFirstTime && !ignorePopop) {
-			int n = JOptionPane
-					.showConfirmDialog(
-							null,
-							"This new version will perform an update on the data format.\n "
-									+ "If you wish to manually backup your data first, please click 'No'.\n"
-									+ "The most reliable way to backup your data is to make a copy of the 'data' directory\n\n"
-									+ "Do you want to perform the upgrade now and launch the application ?",
-							"Upgrading data format", JOptionPane.YES_NO_OPTION,
-							JOptionPane.QUESTION_MESSAGE);
+			int n = JOptionPane.showConfirmDialog(null, "This new version will perform an update on the data format.\n "
+					+ "If you wish to manually backup your data first, please click 'No'.\n"
+					+ "The most reliable way to backup your data is to make a copy of the 'data' directory\n\n"
+					+ "Do you want to perform the upgrade now and launch the application ?", "Upgrading data format",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 			if (n != JOptionPane.YES_OPTION) {
 				System.exit(0);
@@ -99,9 +90,13 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 			for (DatabaseUpgradeEnum dbEnu : DatabaseUpgradeEnum.values()) {
 				persistenceManager.getTransaction().begin();
 				log.debug("Upgrading to " + dbEnu.getVersion());
-				if (version.getDatabaseVersion() < dbEnu.getVersion()) {
+				if (version.getDatabaseVersion() < dbEnu.getVersion() && !persistenceManager.getTransaction().getRollbackOnly()) {
 					for (DatabaseStrategy dbStrategy : dbEnu.getStrategies()) {
 						dbStrategy.applyUpgrade(persistenceManager);
+						if (persistenceManager.getTransaction().getRollbackOnly()) {
+							System.out.println("problem in " + dbStrategy);
+							break;
+						}
 					}
 					version.setDatabaseVersion(dbEnu.getVersion());
 					persistenceManager.persist(version);
@@ -115,30 +110,27 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 			}
 		}
 
-		if (persistenceManager.getTransaction().isActive()
-				&& persistenceManager.getTransaction().getRollbackOnly()) {
+		if (persistenceManager.getTransaction().isActive() && persistenceManager.getTransaction().getRollbackOnly()) {
 			persistenceManager.getTransaction().rollback();
-			log.debug("Rolling back database upgrade from version " + version
-					+ " back to " + initialVersion);
+			log.debug("Rolling back database upgrade from version " + version + " back to " + initialVersion);
 			throw new AssertionError();
 
-//			if (!isFirstTime && !ignorePopop) {
-//				JOptionPane
-//						.showMessageDialog(
-//								null,
-//								"Upgrade failed!\n"
-//										+ "The application will now exit.\nPlease open a bug issue on the website and provide the 'traces.log'\n"
-//										+ "http://code.google.com/p/stock-portfolio-manager/issues/list",
-//								"Upgrade failed!",
-//								JOptionPane.INFORMATION_MESSAGE, null);
-//			}
+			// if (!isFirstTime && !ignorePopop) {
+			// JOptionPane
+			// .showMessageDialog(
+			// null,
+			// "Upgrade failed!\n"
+			// +
+			// "The application will now exit.\nPlease open a bug issue on the website and provide the 'traces.log'\n"
+			// + "http://code.google.com/p/stock-portfolio-manager/issues/list",
+			// "Upgrade failed!",
+			// JOptionPane.INFORMATION_MESSAGE, null);
+			// }
 		} else {
 			log.debug("Version check and upgrade is successful");
 			if (!isFirstTime && !ignorePopop) {
-				JOptionPane.showMessageDialog(null,
-						"Upgrade completed successfully!",
-						"Upgrade completed!", JOptionPane.INFORMATION_MESSAGE,
-						null);
+				JOptionPane.showMessageDialog(null, "Upgrade completed successfully!", "Upgrade completed!",
+						JOptionPane.INFORMATION_MESSAGE, null);
 			}
 		}
 	}
@@ -155,8 +147,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		}
 
 		if (pro.getProperty(LATESTVERSION_PROPERTY) != null) {
-			double currentVersion = Double.parseDouble(pro
-					.getProperty(LATESTVERSION_PROPERTY));
+			double currentVersion = Double.parseDouble(pro.getProperty(LATESTVERSION_PROPERTY));
 
 			if (currentVersion < latestVersion) {
 				return true;
@@ -170,8 +161,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		InputStream fis = null;
 		try {
 
-			fis = new FileInputStream(PathUtils.getInstallationFolder()
-					+ "/version.properties");
+			fis = new FileInputStream(PathUtils.getInstallationFolder() + "/version.properties");
 			pro.load(fis);
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
@@ -191,8 +181,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 		FileOutputStream fos = null;
 		try {
-			fos = new FileOutputStream(PathUtils.getInstallationFolder()
-					+ "/version.properties");
+			fos = new FileOutputStream(PathUtils.getInstallationFolder() + "/version.properties");
 			pro.store(fos, "");
 			fos.flush();
 		} catch (FileNotFoundException e) {
@@ -213,8 +202,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 		try {
 			URL oracle = new URL(url);
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					oracle.openStream()));
+			BufferedReader in = new BufferedReader(new InputStreamReader(oracle.openStream()));
 			String versionFromWeb;
 
 			versionFromWeb = in.readLine();

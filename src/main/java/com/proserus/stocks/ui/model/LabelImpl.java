@@ -13,6 +13,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import org.apache.commons.lang3.Validate;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.proserus.stocks.bo.transactions.Label;
@@ -21,8 +22,8 @@ import com.proserus.stocks.bo.utils.LoggerUtils;
 
 @Entity(name = "Label")
 @NamedQueries({ @NamedQuery(name = "label.findAll", query = "SELECT s FROM Label s ORDER BY name ASC"),
-		@NamedQuery(name = "label.findByName", query = "SELECT s FROM Label s WHERE label = :label"),
-		@NamedQuery(name = "label.findSubLabels", query = "SELECT s FROM Label s WHERE label in (:labels)") })
+		@NamedQuery(name = "label.findByName", query = "SELECT s FROM Label s WHERE name = :label"),
+		@NamedQuery(name = "label.findSubLabels", query = "SELECT s FROM Label s WHERE name in (:labels)") })
 public class LabelImpl implements Comparable<Label>, Label {
 	@Id
 	@GeneratedValue(generator = "auto_increment")
@@ -43,12 +44,8 @@ public class LabelImpl implements Comparable<Label>, Label {
 		// for JPA
 	}
 
-	// TODO 0.24 next time we update the table, change "label" column name for
-	// "name"
-	@Column(unique = true, nullable = false, name = "label")
-	// TODO add constraint to forbid empty string (or just blank space):
-	// LTRIM(LABEL) != ''
-	// @Check(constraints = "LTRIM(LABEL) != ''")
+	@Column(unique = true, nullable = false, name = "name")
+	@Check(constraints = "LTRIM(name) <> ''")
 	private String name;
 
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, mappedBy = "labels", targetEntity = TransactionImpl.class)
@@ -108,13 +105,7 @@ public class LabelImpl implements Comparable<Label>, Label {
 	 */
 	@Override
 	public void setName(String name) {
-		if (name == null) {
-			throw new NullPointerException();
-		}
-
-		if (name.isEmpty()) {
-			throw new IllegalArgumentException();
-		}
+		// Validate.notEmpty(name);
 		this.name = name.trim();
 	}
 
