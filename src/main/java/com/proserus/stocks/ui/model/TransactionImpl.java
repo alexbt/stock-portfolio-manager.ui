@@ -21,6 +21,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.Validate;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -42,9 +43,11 @@ import com.proserus.stocks.bp.utils.DateUtils;
 public class TransactionImpl implements Transaction {
 
 	@Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
-	// Add constraint for min 0
+	@Check(constraints = "commission >= 0")
 	private BigDecimal commission;
-	// Add constraint to check that the date is before Today (sysdate)
+
+	@Column(nullable = false)
+	@Check(constraints = "date < sysdate")
 	private Date date;
 
 	@Id
@@ -52,21 +55,19 @@ public class TransactionImpl implements Transaction {
 	@GenericGenerator(name = "auto_increment", strategy = "increment")
 	private Integer id;
 
-	@ManyToMany(targetEntity = LabelImpl.class, // TODO 0.24 or Label.class
-	cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(targetEntity = LabelImpl.class, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "TRANSACTION_LABEL", joinColumns = @JoinColumn(name = "transactionId"), inverseJoinColumns = @JoinColumn(name = "labelId"))
 	private Collection<Label> labels = new ArrayList<Label>();
 
 	@Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
-	// Add constraint for min 0
+	@Check(constraints = "price >= 0")
 	private BigDecimal price;
 
 	@Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
-	// Add constraint for min 0
+	@Check(constraints = "quantity >= 0")
 	private BigDecimal quantity;
 
 	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, targetEntity = SymbolImpl.class, optional = false)
-	// TODO 0.24 Symbol.class ? @Column(nullable = false)
 	private Symbol symbol;
 
 	@Type(type = "com.proserus.stocks.bo.enu.TransactionTypeUserType")
@@ -191,13 +192,8 @@ public class TransactionImpl implements Transaction {
 	 */
 	@Override
 	public void removeLabel(Label label) {
-		if (label == null) {
-			throw new NullPointerException();
-		}
-
-		if (label.getName().isEmpty()) {
-			throw new IllegalArgumentException();
-		}
+		Validate.notNull(label);
+		Validate.notEmpty(label.getName());
 
 		labels.remove(label);
 		label.removeTransaction(this);
@@ -212,9 +208,8 @@ public class TransactionImpl implements Transaction {
 	 */
 	@Override
 	public void setCommission(BigDecimal commission) {
-		if (commission == null) {
-			throw new NullPointerException();
-		}
+		Validate.notNull(commission);
+		Validate.isTrue(BigDecimalUtils.isNotNegative(commission));
 
 		this.commission = BigDecimalUtils.setDecimalWithScale(commission);
 	}
@@ -251,9 +246,8 @@ public class TransactionImpl implements Transaction {
 	 */
 	@Override
 	public void setPrice(BigDecimal price) {
-		if (price == null) {
-			throw new NullPointerException();
-		}
+		Validate.notNull(price);
+		Validate.isTrue(BigDecimalUtils.isNotNegative(price));
 		this.price = BigDecimalUtils.setDecimalWithScale(price);
 	}
 
@@ -267,6 +261,7 @@ public class TransactionImpl implements Transaction {
 	@Override
 	public void setQuantity(BigDecimal quantity) {
 		Validate.notNull(quantity);
+		Validate.isTrue(BigDecimalUtils.isNotNegative(quantity));
 		this.quantity = BigDecimalUtils.setDecimalWithScale(quantity);
 	}
 

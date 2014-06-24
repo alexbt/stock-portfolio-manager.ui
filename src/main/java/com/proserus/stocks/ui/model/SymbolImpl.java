@@ -22,6 +22,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.Validate;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -29,6 +30,7 @@ import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.HistoricalPrice;
 import com.proserus.stocks.bo.symbols.SectorEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
+import com.proserus.stocks.bo.utils.BigDecimalUtils;
 import com.proserus.stocks.bo.utils.LoggerUtils;
 
 @Entity(name = "Symbol")
@@ -53,25 +55,7 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
 
 	private static final String EMPTY_STR = "";
 
-	// http://quote.yahoo.com/d/quotes.csv?s=usdcad=X&f=nl1&e=.csv
-
-	// doc: http://code.google.com/p/yahoo-finance-managed/
-
-	// @CollectionOfElements(targetElement=java.lang.String.class)
-	// @JoinTable(name="BOOK_CHAPTER",
-	// joinColumns=@JoinColumn(name="BOOK_ID"))
-	// @MapKey (columns=@Column(name="CHAPTER_KEY"))
-	// @Column(name="CHAPTER")
-	//
-	// @CollectionOfElements(targetElement=java.lang.Float.class)
-	// @JoinTable(name="SYMBOL_PRICE",
-	// joinColumns=@JoinColumn(name="SYMBOL_ID"))
-	// @MapKey (name="PRICE_KEY")
-	// @Column(name="PRICE")
-	// @CollectionOfElements(targetElement =
-	// com.proserus.stocks.bo.symbols.HistoricalPrice.class)
 	@OneToMany(targetEntity = HistoricalPriceImpl.class, cascade = CascadeType.ALL)
-	// TODO nullable=false
 	@JoinTable(name = "SYMBOL_PRICES", joinColumns = { @JoinColumn(name = "symbolId") }, inverseJoinColumns = { @JoinColumn(name = "priceId") })
 	private Set<HistoricalPrice> prices = new LinkedHashSet<HistoricalPrice>();
 
@@ -116,12 +100,11 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
 		this.isCustomPriceFirst = isCustomPriceFirst;
 	}
 
+	@Column(nullable = false)
 	private String name = EMPTY_STR;
 
 	@Column(unique = true, nullable = false)
-	// @Check(constraints = "LTRIM(TICKER) != ''")
-	// TODO add constraint to forbid empty string (or just blank space):
-	// LTRIM(LABEL) != ''
+	@Check(constraints = "LTRIM(ticker) <> ''")
 	private String ticker;
 
 	@Type(type = "com.proserus.stocks.bo.enu.CurrencyUserType")
@@ -169,7 +152,6 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
 	@Override
 	public void setName(String name) {
 		Validate.notNull(name);
-
 		// Empty is allowed
 
 		this.name = name;
@@ -198,6 +180,7 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
 	public void setPrice(BigDecimal price, int year) {
 		Validate.notNull(year);
 		Validate.notNull(price);
+		Validate.isTrue(BigDecimalUtils.isNotNegative(price));
 
 		HistoricalPriceImpl histPrice = (HistoricalPriceImpl) mapPrices.get(year);
 		if (histPrice == null) {
