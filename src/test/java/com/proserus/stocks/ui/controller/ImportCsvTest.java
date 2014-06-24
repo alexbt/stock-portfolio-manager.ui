@@ -32,10 +32,18 @@ public class ImportCsvTest extends AbstractUIUnit {
 		int i = -1;
 		for (String line : nowLines) {
 			i++;
-			if (line.startsWith("INSERT INTO HISTORICALPRICE VALUES(52,") && line.endsWith("," + DateUtils.getCurrentYear() + ")")) {
-				continue;
+			boolean toIgnore = false;
+			// Unfortunately, historical prices will change over time (for the
+			// current year (2014) and up)...
+			for (int year = 2014; year <= DateUtils.getCurrentYear(); year++) {
+				if (line.startsWith("INSERT INTO HISTORICALPRICE VALUES(") && line.endsWith("," + year + ")")) {
+					toIgnore = true;
+					break;
+				}
 			}
-			assertEquals(expectedLines.get(i), line);
+			if (!toIgnore) {
+				assertEquals(expectedLines.get(i), line);
+			}
 		}
 		// assertEquals(FileUtils.readFileToString(expectedFile),
 		// FileToString(originalDbFile));
