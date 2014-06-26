@@ -60,11 +60,11 @@ public class TransactionImpl implements Transaction {
 	private Collection<Label> labels = new ArrayList<Label>();
 
 	@Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
-	@Check(constraints = "price >= 0")
+	@Check(constraints = "price > 0")
 	private BigDecimal price;
 
 	@Column(nullable = false, columnDefinition = "DECIMAL(38,8)")
-	@Check(constraints = "quantity >= 0")
+	@Check(constraints = "quantity > 0")
 	private BigDecimal quantity;
 
 	@ManyToOne(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, targetEntity = SymbolImpl.class, optional = false)
