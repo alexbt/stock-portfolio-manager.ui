@@ -17,30 +17,19 @@ import com.proserus.stocks.ui.view.general.DbChooser;
 public class Launch {
 	static {
 		System.setProperty("installation.folder", PathUtils.getInstallationFolder());
-		Logger LOGGER = LoggerFactory.getLogger(Launch.class);
-		LOGGER.info("**********************************");
-		LOGGER.info("Starting...");
-		LOGGER.info("**********************************");
-		LOGGER.info("installation.folder: " + PathUtils.getInstallationFolder());
-		LOGGER.info("current.folder: " + PathUtils.getCurrentFolder());
 	}
-
-	// Get exchange rate from web
-	// Set default Currency
-	// Show/Hide columns
-	// Full proof list of Symbols...
-	// Can add symbols from files, transaction and symbols
-	// All tables editable
-	// Combobox for buy,sell,div
-	// Combobox for currency
-	// Combobox for symbols
-	// Default columns hidden at startup
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		Logger LOGGER = LoggerFactory.getLogger(Launch.class);
+		LOGGER.info("**********************************");
+		LOGGER.info("Starting...");
+		LOGGER.info("**********************************");
+		LOGGER.info("installation.folder: " + PathUtils.getInstallationFolder());
+		LOGGER.info("current.folder: " + PathUtils.getCurrentFolder());
+
 		try {
 			EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
 			queue.push(new EventQueueProxy());
