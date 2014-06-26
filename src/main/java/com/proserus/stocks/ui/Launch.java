@@ -6,16 +6,18 @@ import java.awt.Toolkit;
 import javax.persistence.PersistenceException;
 import javax.swing.JOptionPane;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Guice;
 import com.proserus.stocks.bo.utils.PathUtils;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.general.DbChooser;
 
 public class Launch {
-	private static LoggerStartup LOGGER;
 	static {
 		System.setProperty("installation.folder", PathUtils.getInstallationFolder());
-		LOGGER = LoggerStartup.getInstance();
+		Logger LOGGER = LoggerFactory.getLogger(Launch.class);
 		LOGGER.info("**********************************");
 		LOGGER.info("Starting...");
 		LOGGER.info("**********************************");
@@ -38,6 +40,7 @@ public class Launch {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		Logger LOGGER = LoggerFactory.getLogger(Launch.class);
 		try {
 			EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
 			queue.push(new EventQueueProxy());
@@ -53,10 +56,10 @@ public class Launch {
 			JOptionPane.showMessageDialog(null, "Database error!\n" + "There seem to be an error with the database\n"
 					+ "If you have issues creating entries, you may want to start from scratch\n"
 					+ "Choose 'File -> Delete current portfolio'", "Database error!", JOptionPane.INFORMATION_MESSAGE, null);
-			LOGGER.fatal("Database error", e);
+			LOGGER.error("Database error", e);
 			throw e;
 		} catch (Throwable e) {
-			LOGGER.fatal("Unexpected Throwable", e);
+			LOGGER.error("Unexpected Throwable", e);
 			if (e instanceof RuntimeException) {
 				throw (RuntimeException) e;
 			}
