@@ -19,7 +19,7 @@ public class DeleteAllAction extends AbstractAction {
 	public void actionPerformed(ActionEvent arg0) {
 		try {
 			ViewControllers.getController().cleanup();
-		}  finally {
+		} finally {
 			ViewControllers.getController().deleteAll();
 		}
 	}

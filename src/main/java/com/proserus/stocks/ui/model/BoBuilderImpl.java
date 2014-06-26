@@ -7,26 +7,26 @@ import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
 
-public class BoBuilderImpl implements BoBuilder{
+public class BoBuilderImpl implements BoBuilder {
 
-	public Transaction getTransaction(){
+	public Transaction getTransaction() {
 		return new TransactionImpl();
-	} 
-	
-	public Symbol getSymbol(){
+	}
+
+	public Symbol getSymbol() {
 		return new SymbolImpl();
 	}
-	
-	public Label getLabel(){
+
+	public Label getLabel() {
 		return new LabelImpl();
 	}
-	
-	public HistoricalPrice getHistoricalPrice(){
+
+	public HistoricalPrice getHistoricalPrice() {
 		return new HistoricalPriceImpl();
 	}
 
 	@Override
-    public DBVersion getVersion() {
-	    return new DBVersionImpl();
-    }
+	public DBVersion getVersion() {
+		return new DBVersionImpl();
+	}
 }

@@ -26,19 +26,18 @@ public class LabelGraph extends ChartPanel {
 
 	public void updateData(Collection<? extends LabelAnalysis> col) {
 
-		JFreeChart chart = ChartFactory.createBarChart("Market Value by Labels (may overlap)", // chart title
-		        "", "", createDataset(col), // data
-		        PlotOrientation.HORIZONTAL, false, // include legend
-		        false, false);
+		JFreeChart chart = ChartFactory.createBarChart("Market Value by Labels (may overlap)", // chart
+																								// title
+				"", "", createDataset(col), // data
+				PlotOrientation.HORIZONTAL, false, // include legend
+				false, false);
 		BarRenderer renderer = ((BarRenderer) chart.getCategoryPlot().getRenderer());
 		renderer.setSeriesPaint(0, Color.green);
 		renderer.setMaximumBarWidth(.10d);
-		
-		renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}",NumberFormat.getInstance()));
+
+		renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", NumberFormat.getInstance()));
 		renderer.setBaseItemLabelsVisible(true);
-		ItemLabelPosition positive = new ItemLabelPosition(
-	            ItemLabelAnchor.INSIDE3, TextAnchor.CENTER_RIGHT
-	        );
+		ItemLabelPosition positive = new ItemLabelPosition(ItemLabelAnchor.INSIDE3, TextAnchor.CENTER_RIGHT);
 		renderer.setBasePositiveItemLabelPosition(positive);
 		setChart(chart);
 	}
@@ -53,5 +52,3 @@ public class LabelGraph extends ChartPanel {
 	}
 
 }
-
-

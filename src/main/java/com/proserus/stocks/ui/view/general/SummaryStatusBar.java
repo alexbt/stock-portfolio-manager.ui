@@ -38,7 +38,7 @@ public class SummaryStatusBar extends JPanel implements EventListener {
 
 	private static final String TOTAL_PRICE = "Last price update: ";
 	private static final String TOTAL_PROFIT = "Last historical price update: ";
-	
+
 	private JLabel price;
 	private JLabel historicalPrice;
 
@@ -53,7 +53,8 @@ public class SummaryStatusBar extends JPanel implements EventListener {
 	public SummaryStatusBar() {
 		setLayout(new GridBagLayout());
 		init();
-		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_CURRENT_PRICE_UPDATED,ModelChangeEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED);
+		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_CURRENT_PRICE_UPDATED,
+				ModelChangeEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED);
 	}
 
 	private void init() {
@@ -85,11 +86,10 @@ public class SummaryStatusBar extends JPanel implements EventListener {
 	 * @see Observable
 	 */
 	public void update(final Event event, final Object model) {
-		if(ModelChangeEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED.equals(event)){
+		if (ModelChangeEvents.SYMBOLS_HISTORICAL_PRICE_UPDATED.equals(event)) {
 			historicalPrice.setText(TOTAL_PROFIT + Calendar.getInstance().getTime());
-		}else if(ModelChangeEvents.SYMBOLS_CURRENT_PRICE_UPDATED.equals(event)){
+		} else if (ModelChangeEvents.SYMBOLS_CURRENT_PRICE_UPDATED.equals(event)) {
 			price.setText(TOTAL_PRICE + Calendar.getInstance().getTime());
 		}
 	}
 }
-

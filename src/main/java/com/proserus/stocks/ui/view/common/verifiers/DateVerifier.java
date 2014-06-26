@@ -20,7 +20,7 @@ public class DateVerifier extends InputVerifier {
 		JTextField date = ((JTextField) input);
 		if (date.getText().matches(DATE) || date.getText().isEmpty()) {
 			try {
-				if(!date.getText().isEmpty()){
+				if (!date.getText().isEmpty()) {
 
 					DateTimeFormatter fmt = DateTimeFormat.forPattern(DATE_FORMAT_2);
 					fmt.parseDateTime(date.getText().replaceAll("[^0-9]", ""));
@@ -28,8 +28,8 @@ public class DateVerifier extends InputVerifier {
 				date.setBackground(Color.white);
 				date.setToolTipText(EMPTY_STR);
 				return true;
-			  } catch (Exception e) {
-			  }
+			} catch (Exception e) {
+			}
 		}
 		date.setBackground(Color.red);
 		date.setToolTipText(FORMAT_IS_YYYYMMDD);

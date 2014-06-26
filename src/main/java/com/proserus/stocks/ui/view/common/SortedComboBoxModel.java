@@ -18,9 +18,10 @@ import javax.swing.DefaultComboBoxModel;
 public class SortedComboBoxModel extends DefaultComboBoxModel {
 	private static final long serialVersionUID = 201404041920L;
 	private Comparator<Object> comparator;
-	
+
 	/*
-	 * Static method is required to make sure the data is in sorted order before it is added to the model
+	 * Static method is required to make sure the data is in sorted order before
+	 * it is added to the model
 	 */
 	protected static Vector<Object> sortVector(Vector<Object> items, Comparator<Object> comparator) {
 		Collections.sort(items, comparator);
@@ -28,7 +29,8 @@ public class SortedComboBoxModel extends DefaultComboBoxModel {
 	}
 
 	/*
-	 * Static method is required to make sure the data is in sorted order before it is added to the model
+	 * Static method is required to make sure the data is in sorted order before
+	 * it is added to the model
 	 */
 	protected static Object[] sortArray(Object[] items, Comparator<Object> comparator) {
 		Arrays.sort(items, comparator);

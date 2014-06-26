@@ -6,12 +6,12 @@ import java.util.Locale;
 import org.junit.Before;
 
 public class AbstractUnit {
-	static{
+	static {
 		Locale.setDefault(Locale.CANADA);
 	}
 
 	@Before
-    public void clean() throws IOException {
-    	Locale.setDefault(Locale.CANADA);
-    }
+	public void clean() throws IOException {
+		Locale.setDefault(Locale.CANADA);
+	}
 }

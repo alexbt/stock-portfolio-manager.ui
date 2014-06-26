@@ -4,7 +4,7 @@ import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.DefaultCurrency;
 import com.proserus.stocks.bp.events.ModelChangeEvents;
 
-public class CurrencyControllerImpl{
+public class CurrencyControllerImpl {
 
 	private DefaultCurrency currencies = new DefaultCurrency();
 

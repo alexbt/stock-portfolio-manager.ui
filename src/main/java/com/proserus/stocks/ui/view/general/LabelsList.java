@@ -50,8 +50,7 @@ import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 
-public class LabelsList extends JPanel implements KeyListener, EventListener, ActionListener,
-		MouseListener, FocusListener, ItemListener {
+public class LabelsList extends JPanel implements KeyListener, EventListener, ActionListener, MouseListener, FocusListener, ItemListener {
 	/**
      * 
      */
@@ -67,8 +66,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 
 	private static final String COMMA_STR = ",";
 
-	private PortfolioController transactionController = ViewControllers
-			.getController();
+	private PortfolioController transactionController = ViewControllers.getController();
 
 	private JScrollPane js;
 	private JList listOfLabels = new JList();
@@ -167,8 +165,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 		setLayout(new BorderLayout());
 		add(js, BorderLayout.CENTER);
 		listOfLabels.setCellRenderer(new CheckListRenderer(isFilteringModeOn, this, this));
-		listOfLabels
-				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		listOfLabels.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		listOfLabels.addMouseListener(this);
 		listOfLabels.addKeyListener(this);
 	}
@@ -182,8 +179,8 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 				if (isVisible()
 						&& me.getClickCount() >= 1
 						&& me.getSource() != newLabelField
-						&& !(me.getSource() instanceof javax.swing.JDialog && ((javax.swing.JDialog) me.getSource())
-								.getTitle().contains("tag"))) {
+						&& !(me.getSource() instanceof javax.swing.JDialog && ((javax.swing.JDialog) me.getSource()).getTitle().contains(
+								"tag"))) {
 
 					if (explore((Component) me.getSource(), js)) {
 						setVisible(false);
@@ -209,10 +206,8 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 	public HashMap<String, Label> getSelectedValues() {
 		HashMap<String, Label> a = new HashMap<String, Label>();
 		for (int i = 0; i < listOfLabels.getModel().getSize(); i++) {
-			if (((CheckListItem) listOfLabels.getModel().getElementAt(i))
-					.isSelected()) {
-				Label str = ((CheckListItem) listOfLabels.getModel()
-						.getElementAt(i)).get();
+			if (((CheckListItem) listOfLabels.getModel().getElementAt(i)).isSelected()) {
+				Label str = ((CheckListItem) listOfLabels.getModel().getElementAt(i)).get();
 				a.put(str.getName(), str);
 			}
 		}
@@ -226,8 +221,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 		@Override
 		public boolean verify(JComponent input) {
 			JTextField date = ((JTextField) input);
-			if (!date.getText().contains(ONE_SPACE)
-					&& !date.getText().contains(COMMA_STR)) {
+			if (!date.getText().contains(ONE_SPACE) && !date.getText().contains(COMMA_STR)) {
 				date.setBackground(Color.white);
 				date.setToolTipText(EMPTY_STR);
 				return true;
@@ -243,8 +237,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 			labels.put(label.getName(), label);
 		}
 		for (int i = 0; i < listOfLabels.getModel().getSize(); i++) {
-			CheckListItem check = (CheckListItem) listOfLabels.getModel()
-					.getElementAt(i);
+			CheckListItem check = (CheckListItem) listOfLabels.getModel().getElementAt(i);
 			check.setSelected(labels.containsKey(check.get().getName()));
 		}
 	}
@@ -255,28 +248,22 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
-		if (arg0.getSource().equals(newLabelField)
-				&& arg0.getKeyCode() == KeyEvent.VK_ENTER
-				&& newLabelField.getInputVerifier().verify(newLabelField)
-				&& newLabelField.getText().compareTo(EMPTY_STR) != 0) {
+		if (arg0.getSource().equals(newLabelField) && arg0.getKeyCode() == KeyEvent.VK_ENTER
+				&& newLabelField.getInputVerifier().verify(newLabelField) && newLabelField.getText().compareTo(EMPTY_STR) != 0) {
 			addNewLabel();
-		} else if (arg0.getSource().equals(listOfLabels)
-				&& listOfLabels.getVisibleRowCount() > 0
+		} else if (arg0.getSource().equals(listOfLabels) && listOfLabels.getVisibleRowCount() > 0
 				&& (arg0.getKeyChar() == KeyEvent.VK_SPACE || arg0.getKeyChar() == KeyEvent.VK_ENTER)) {
 			updateLabelSelection();
 			updateFilter(((CheckListItem) listOfLabels.getSelectedValue()));
 			updateLabelsInTransaction(((CheckListItem) listOfLabels.getSelectedValue()));
-		} else if (arg0.getSource().equals(listOfLabels)
-				&& (arg0.getKeyChar() == KeyEvent.VK_DELETE)) {
+		} else if (arg0.getSource().equals(listOfLabels) && (arg0.getKeyChar() == KeyEvent.VK_DELETE)) {
 			deleteLabel(((CheckListItem) listOfLabels.getSelectedValue()));
 		}
 	}
 
 	private void deleteLabel(CheckListItem item) {
-		int n = JOptionPane.showConfirmDialog(this,
-				DO_YOU_WANT_TO_REMOVE_THE_TAG + item.get().getName() + " ?",
-				REMOVING_TAG, JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE);
+		int n = JOptionPane.showConfirmDialog(this, DO_YOU_WANT_TO_REMOVE_THE_TAG + item.get().getName() + " ?", REMOVING_TAG,
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (n == JOptionPane.YES_OPTION) {
 			transactionController.remove(item.get());
 			labels.remove(item.get().getName());
@@ -289,9 +276,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 		CheckListItem item = ((CheckListItem) listOfLabels.getSelectedValue());
 		if (item != null) {
 			item.setSelected(!item.isSelected());
-			listOfLabels.repaint(listOfLabels.getCellBounds(
-					listOfLabels.getSelectedIndex(),
-					listOfLabels.getSelectedIndex()));
+			listOfLabels.repaint(listOfLabels.getCellBounds(listOfLabels.getSelectedIndex(), listOfLabels.getSelectedIndex()));
 			if (item.isSelected()) {
 				labels.put(item.get().getName(), item.get());
 			} else {
@@ -320,8 +305,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 	public void setVisible(boolean flag) {
 		super.setVisible(flag);
 		if (transaction != null) {
-			AWTEventListener[] listeners = Toolkit.getDefaultToolkit()
-					.getAWTEventListeners();
+			AWTEventListener[] listeners = Toolkit.getDefaultToolkit().getAWTEventListeners();
 			for (AWTEventListener listener : listeners) {
 				Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
 			}
@@ -346,8 +330,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 	@Override
 	public void update(Event event, Object model) {
 		if (ModelChangeEvents.LABELS_UPDATED.equals(event)) {
-			Collection<Label> col = ModelChangeEvents.LABELS_UPDATED
-					.resolveModel(model);
+			Collection<Label> col = ModelChangeEvents.LABELS_UPDATED.resolveModel(model);
 			CheckListItem[] item = new CheckListItem[col.size()];
 			int i = 0;
 
@@ -384,16 +367,12 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 		if (index == -1) {
 			return;
 		}
-		CheckListItem item = (CheckListItem) list.getModel()
-				.getElementAt(index);
+		CheckListItem item = (CheckListItem) list.getModel().getElementAt(index);
 
-		if (item == null || event == null || item.getIcon() == null
-				|| item.getIcon().getLocation() == null) {
+		if (item == null || event == null || item.getIcon() == null || item.getIcon().getLocation() == null) {
 			return;
 		}
-		if ((item.getIcon().getLocation().getX() != 0)
-				&& item.getIcon().getLocation().getX() < event.getPoint()
-						.getX()) {
+		if ((item.getIcon().getLocation().getX() != 0) && item.getIcon().getLocation().getX() < event.getPoint().getX()) {
 			deleteLabel(item);
 		} else {
 
@@ -439,7 +418,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 
 	@Override
 	public void focusLost(FocusEvent arg0) {
-		//FIXME is this used?
+		// FIXME is this used?
 		if (arg0.paramString().startsWith("TRAVERSAL_FORWARD")) {
 			listOfLabels.requestFocus();
 			listOfLabels.setSelectedIndex(0);
@@ -449,11 +428,11 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		((CheckListRenderer)e.getSource()).getCheckListItem();
-		if(ItemEvent.ITEM_STATE_CHANGED == e.getStateChange()){
+		((CheckListRenderer) e.getSource()).getCheckListItem();
+		if (ItemEvent.ITEM_STATE_CHANGED == e.getStateChange()) {
 			e.getSource();
 		}
-				
+
 	}
 
 	@Override
@@ -481,13 +460,12 @@ class CheckListItem implements Comparable<CheckListItem> {
 		}
 	}
 
-
 	@Override
-    public String toString() {
-        return "CheckListItem [label=" + label + ", isSelected=" + isSelected + ", icon=" + icon + "]";
-    }
+	public String toString() {
+		return "CheckListItem [label=" + label + ", isSelected=" + isSelected + ", icon=" + icon + "]";
+	}
 
-    public Label get() {
+	public Label get() {
 		return label;
 	}
 
@@ -501,8 +479,7 @@ class CheckListItem implements Comparable<CheckListItem> {
 
 	@Override
 	public int compareTo(CheckListItem item) {
-		return label.getName().toLowerCase()
-				.compareTo(item.get().getName().toLowerCase());
+		return label.getName().toLowerCase().compareTo(item.get().getName().toLowerCase());
 	}
 }
 
@@ -526,14 +503,12 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 		this.changeListener = l;
 		this.actionListener = a;
 	}
-	
-	
+
 	public CheckListItem getCheckListItem() {
 		return checkListItem;
 	}
 
-	public Component getListCellRendererComponent(JList list, Object value,
-			int index, boolean isSelected, boolean hasFocus) {
+	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
 		JPanel panel = new JPanel(new BorderLayout());
 		setEnabled(list.isEnabled());
 		this.checkListItem = ((CheckListItem) value);
@@ -545,21 +520,18 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 		if (list.getSelectedIndex() == index) {
 			BufferedImage img = null;
 			try {
-				img = ImageIO.read(getClass().getClassLoader().getResource(
-						IMAGES_CANCEL_GIF));
+				img = ImageIO.read(getClass().getClassLoader().getResource(IMAGES_CANCEL_GIF));
 			} catch (IOException e) {
 			}
 			ImageBackgroundPanel imagePanel = new ImageBackgroundPanel(img);
-			imagePanel
-					.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			imagePanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			imagePanel.setPreferredSize(new Dimension(20, 20));
 			if (isFilteringModeOn) {
 				setBackground(ColorSettingsDialog.getColor(true));
 				imagePanel.setBackground(ColorSettingsDialog.getColor(true));
 			} else {
 				setBackground(ColorSettingsDialog.getSelectionColor());
-				imagePanel.setBackground(ColorSettingsDialog
-						.getSelectionColor());
+				imagePanel.setBackground(ColorSettingsDialog.getSelectionColor());
 			}
 
 			checkListItem.setIcon(imagePanel);
@@ -573,7 +545,7 @@ class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 
 		setText(checkListItem.get().getName());
 		panel.add(this, BorderLayout.CENTER);
-		
+
 		addItemListener(changeListener);
 		addActionListener(actionListener);
 		return panel;
@@ -599,4 +571,3 @@ class ImageBackgroundPanel extends JPanel {
 		g.drawImage(image, 0, 3, this);
 	}
 }
-

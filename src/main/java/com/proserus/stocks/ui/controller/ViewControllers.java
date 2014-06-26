@@ -7,19 +7,20 @@ import com.proserus.stocks.ui.view.general.Window;
 
 public class ViewControllers {
 	private static BoBuilder boBuilder;
-	
+
 	@Inject
 	public void setBoBuilder(BoBuilder boBuilder) {
 		ViewControllers.boBuilder = boBuilder;
-    }
+	}
+
 	static public BoBuilder getBoBuilder() {
-    	return boBuilder;
-    }
+		return boBuilder;
+	}
 
 	@Inject
 	public void setFilter(Filter filter) {
-    	ViewControllers.filter = filter;
-    }
+		ViewControllers.filter = filter;
+	}
 
 	private static PortfolioController controller;
 
@@ -31,15 +32,15 @@ public class ViewControllers {
 	public void setController(PortfolioController controller) {
 		ViewControllers.controller = controller;
 	}
-	
+
 	@Inject
 	public void setWindow(Window window) {
-    	ViewControllers.window = window;
-    }
+		ViewControllers.window = window;
+	}
 
 	private static Filter filter;
 
-	//TODO THIS IS NASTY! THis should be data held by the controller..
+	// TODO THIS IS NASTY! THis should be data held by the controller..
 	public static Filter getFilter() {
 		return filter;
 	}

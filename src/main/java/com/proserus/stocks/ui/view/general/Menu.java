@@ -89,10 +89,8 @@ public class Menu extends JMenuBar implements EventListener {
 		JMenuItem menuItem = new JMenuItem(IMPORT, ImportFromCsvAction.keyEvent);
 		menuItem.setAction(ImportFromCsvAction.getInstance());
 		menuItem.setText(IMPORT);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				ImportFromCsvAction.keyEvent, ActionEvent.CTRL_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Imports transactions");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(ImportFromCsvAction.keyEvent, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Imports transactions");
 		menuItem.setName(IMPORT);
 		menu.add(menuItem);
 
@@ -100,10 +98,8 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem = new JMenuItem(EXPORT, ExportToCsvAction.keyEvent);
 		menuItem.setAction(ExportToCsvAction.getInstance());
 		menuItem.setText(EXPORT);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				ExportToCsvAction.keyEvent, ActionEvent.CTRL_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Exports transactions");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(ExportToCsvAction.keyEvent, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Exports transactions");
 		menuItem.setName(EXPORT);
 		menu.add(menuItem);
 
@@ -113,8 +109,7 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem = new JMenuItem(BACKUP_PORTFOLIO);
 		menuItem.setAction(BackupAction.getInstance());
 		menuItem.setText(BACKUP_PORTFOLIO);
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				BACKS_UP_THE_PORTFOLIO_AND_LOGS);
+		menuItem.getAccessibleContext().setAccessibleDescription(BACKS_UP_THE_PORTFOLIO_AND_LOGS);
 		menuItem.setName(BACKUP_PORTFOLIO);
 		menu.add(menuItem);
 
@@ -122,8 +117,7 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem = new JMenuItem(DELETE_CURRENT_PORTFOLIO);
 		menuItem.setAction(DeleteAllAction.getInstance());
 		menuItem.setText(DELETE_CURRENT_PORTFOLIO);
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Deletes current portfolio and all its entries");
+		menuItem.getAccessibleContext().setAccessibleDescription("Deletes current portfolio and all its entries");
 		menuItem.setName(DELETE_CURRENT_PORTFOLIO);
 		menu.add(menuItem);
 
@@ -132,10 +126,8 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem = new JMenuItem(CLOSE, CloseApplicationAction.keyEvent);
 		menuItem.setAction(CloseApplicationAction.getInstance());
 		menuItem.setText(CLOSE);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				CloseApplicationAction.keyEvent, ActionEvent.CTRL_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				CLOSES_THE_APPLICATION);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(CloseApplicationAction.keyEvent, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription(CLOSES_THE_APPLICATION);
 		menuItem.setName(CLOSE);
 		menu.add(menuItem);
 
@@ -149,10 +141,8 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem.setAction(AddTransactionAction.getInstance());
 		menuItem.setText("Add Transaction");
 		menuItem.setMnemonic(AddTransactionAction.keyEvent);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				AddTransactionAction.keyEvent, KeyEvent.CTRL_DOWN_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Adds a Transaction");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(AddTransactionAction.keyEvent, KeyEvent.CTRL_DOWN_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Adds a Transaction");
 		menuItem.setName("addTransaction");
 		menu.add(menuItem);
 
@@ -161,10 +151,8 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem.setAction(RemoveTransactionAction.getInstance());
 		menuItem.setText("Remove Transaction");
 		menuItem.setMnemonic(RemoveTransactionAction.keyEvent);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				RemoveTransactionAction.keyEvent, KeyEvent.CTRL_DOWN_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Removes a Transaction");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(RemoveTransactionAction.keyEvent, KeyEvent.CTRL_DOWN_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Removes a Transaction");
 		menuItem.setName("removeTransaction");
 		menu.add(menuItem);
 
@@ -174,10 +162,8 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem.setAction(AddSymbolAction.getInstance());
 		menuItem.setText("Add Symbol");
 		menuItem.setMnemonic(AddSymbolAction.keyEvent);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				AddSymbolAction.keyEvent, KeyEvent.CTRL_DOWN_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Adds a Symbol");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(AddSymbolAction.keyEvent, KeyEvent.CTRL_DOWN_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Adds a Symbol");
 		menuItem.setName("addSymbol");
 		menu.add(menuItem);
 
@@ -185,10 +171,8 @@ public class Menu extends JMenuBar implements EventListener {
 		editSymbolMenuItem.setAction(ShowEditSymbolAction.getInstance());
 		editSymbolMenuItem.setText("Edit Symbol");
 		editSymbolMenuItem.setMnemonic(ShowEditSymbolAction.keyEvent);
-		editSymbolMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-				ShowEditSymbolAction.keyEvent, ActionEvent.CTRL_MASK));
-		editSymbolMenuItem.getAccessibleContext().setAccessibleDescription(
-				"Edits a Symbol");
+		editSymbolMenuItem.setAccelerator(KeyStroke.getKeyStroke(ShowEditSymbolAction.keyEvent, ActionEvent.CTRL_MASK));
+		editSymbolMenuItem.getAccessibleContext().setAccessibleDescription("Edits a Symbol");
 		editSymbolMenuItem.setName("editSymbol");
 		editSymbolMenuItem.setEnabled(false);
 		menu.add(editSymbolMenuItem);
@@ -197,35 +181,27 @@ public class Menu extends JMenuBar implements EventListener {
 		removeSymbolMenuItem.setAction(RemoveSymbolAction.getInstance());
 		removeSymbolMenuItem.setText("Remove Symbol");
 		removeSymbolMenuItem.setMnemonic(RemoveSymbolAction.keyEvent);
-		removeSymbolMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-				RemoveSymbolAction.keyEvent, ActionEvent.CTRL_MASK));
-		removeSymbolMenuItem.getAccessibleContext().setAccessibleDescription(
-				"Removes a Symbol");
+		removeSymbolMenuItem.setAccelerator(KeyStroke.getKeyStroke(RemoveSymbolAction.keyEvent, ActionEvent.CTRL_MASK));
+		removeSymbolMenuItem.getAccessibleContext().setAccessibleDescription("Removes a Symbol");
 		removeSymbolMenuItem.setName("removeSymbol");
 		removeSymbolMenuItem.setEnabled(false);
 		menu.add(removeSymbolMenuItem);
 
 		menu.add(new JSeparator());
 
-		menuItem = new JMenuItem("Get Current Prices",
-				UpdatePriceAction.keyEvent);
+		menuItem = new JMenuItem("Get Current Prices", UpdatePriceAction.keyEvent);
 		menuItem.setAction(UpdatePriceAction.getInstance());
 		menuItem.setText("Get Current Prices");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				UpdatePriceAction.keyEvent, ActionEvent.CTRL_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Get Current Prices");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(UpdatePriceAction.keyEvent, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Get Current Prices");
 		menuItem.setName("updatePrices");
 		menu.add(menuItem);
 
-		menuItem = new JMenuItem("Get Historical Prices",
-				UpdateOldPricesAction.keyEvent);
+		menuItem = new JMenuItem("Get Historical Prices", UpdateOldPricesAction.keyEvent);
 		menuItem.setAction(UpdateOldPricesAction.getInstance());
 		menuItem.setText("Get Historical Prices");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				UpdateOldPricesAction.keyEvent, ActionEvent.CTRL_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Get Historical Prices");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(UpdateOldPricesAction.keyEvent, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Get Historical Prices");
 		menuItem.setName("updateOldPrices");
 		menu.add(menuItem);
 
@@ -240,10 +216,8 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem = new JMenuItem(GUI_SETTINGS, ShowSettingsAction.keyEvent);
 		menuItem.setAction(ShowSettingsAction.getInstance());
 		menuItem.setText(GUI_SETTINGS);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				ShowSettingsAction.keyEvent, ActionEvent.CTRL_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				BASIC_GRAPHICAL_USER_INTERFACE_SETTINGS);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(ShowSettingsAction.keyEvent, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription(BASIC_GRAPHICAL_USER_INTERFACE_SETTINGS);
 		menuItem.setName(SETTINGS);
 		menu.add(menuItem);
 		menu.add(new JSeparator());
@@ -251,10 +225,8 @@ public class Menu extends JMenuBar implements EventListener {
 		menuItem = new JMenuItem(ABOUT, ShowAboutAction.keyEvent);
 		menuItem.setAction(ShowAboutAction.getInstance());
 		menuItem.setText(ABOUT);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				ShowAboutAction.keyEvent, ActionEvent.CTRL_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				CLOSES_THE_APPLICATION);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(ShowAboutAction.keyEvent, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription(CLOSES_THE_APPLICATION);
 		menuItem.setName(ABOUT);
 		menu.add(menuItem);
 
@@ -279,14 +251,11 @@ public class Menu extends JMenuBar implements EventListener {
 	}
 
 	private void createViewFilters(JMenu menu) {
-		JMenuItem menuItem = new JMenuItem("Show/Hide Filters",
-				ShowHideFiltersAction.keyEvent);
+		JMenuItem menuItem = new JMenuItem("Show/Hide Filters", ShowHideFiltersAction.keyEvent);
 		menuItem.setAction(ShowHideFiltersAction.getInstance());
 		menuItem.setText("Show/Hide Filters");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(
-				ShowHideFiltersAction.keyEvent, ActionEvent.CTRL_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Show/Hide Filters");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(ShowHideFiltersAction.keyEvent, ActionEvent.CTRL_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Show/Hide Filters");
 		menuItem.setName("showHideFilters");
 		menu.add(menuItem);
 		menu.add(new JSeparator());
@@ -302,8 +271,7 @@ public class Menu extends JMenuBar implements EventListener {
 		i = 0;
 		for (String str : OverviewSymbolModel.COLUMN_NAMES) {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
-			menuItem.setAction(new ShowHideTableColumnsAction(
-					OverviewSymbolTable.getInstance()));
+			menuItem.setAction(new ShowHideTableColumnsAction(OverviewSymbolTable.getInstance()));
 			menuItem.setText(str);
 			menuItem.setActionCommand("" + i);
 			menuItem.setSelected(true);
@@ -318,8 +286,7 @@ public class Menu extends JMenuBar implements EventListener {
 		i = 0;
 		for (String str : OverviewCurrencyModel.COLUMN_NAMES) {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
-			menuItem.setAction(new ShowHideTableColumnsAction(
-					OverviewCurrencyTable.getInstance()));
+			menuItem.setAction(new ShowHideTableColumnsAction(OverviewCurrencyTable.getInstance()));
 			menuItem.setText(str);
 			menuItem.setActionCommand("" + i);
 			menuItem.setSelected(true);
@@ -339,8 +306,7 @@ public class Menu extends JMenuBar implements EventListener {
 
 		for (String str : TransactionTableModel.COLUMN_NAMES) {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
-			menuItem.setAction(new ShowHideTableColumnsAction(TransactionTable
-					.getInstance()));
+			menuItem.setAction(new ShowHideTableColumnsAction(TransactionTable.getInstance()));
 			menuItem.setText(str);
 			menuItem.setActionCommand("" + i);
 			menuItem.setSelected(true);
@@ -361,8 +327,7 @@ public class Menu extends JMenuBar implements EventListener {
 		i = 0;
 		for (String str : SymbolsTableModel.COLUMN_NAMES) {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
-			menuItem.setAction(new ShowHideTableColumnsAction(SymbolsTable
-					.getInstance()));
+			menuItem.setAction(new ShowHideTableColumnsAction(SymbolsTable.getInstance()));
 			menuItem.setText(str);
 			menuItem.setActionCommand("" + i);
 			menuItem.setSelected(true);
@@ -386,8 +351,7 @@ public class Menu extends JMenuBar implements EventListener {
 		i = 0;
 		for (String str : PerformanceSymbolModel.COLUMN_NAMES) {
 			JMenuItem menuItem = new JCheckBoxMenuItem();
-			menuItem.setAction(new ShowHideTableColumnsAction(
-					PerformanceSymbolTable.getInstance()));
+			menuItem.setAction(new ShowHideTableColumnsAction(PerformanceSymbolTable.getInstance()));
 			menuItem.setText(str);
 			menuItem.setName(str);
 			menuItem.setActionCommand("" + i);
@@ -403,8 +367,7 @@ public class Menu extends JMenuBar implements EventListener {
 		i = 0;
 		for (String str : PerformanceCurrencyModel.COLUMN_NAMES) {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
-			menuItem.setAction(new ShowHideTableColumnsAction(
-					PerformanceCurrencyTable.getInstance()));
+			menuItem.setAction(new ShowHideTableColumnsAction(PerformanceCurrencyTable.getInstance()));
 			menuItem.setActionCommand("" + i);
 			menuItem.setSelected(true);
 			menuItem.setText(str);
@@ -418,10 +381,8 @@ public class Menu extends JMenuBar implements EventListener {
 		if (ModelChangeEvents.SYMBOL_SELECTION_CHANGED.equals(event)) {
 			Symbol s = ModelChangeEvents.SYMBOL_SELECTION_CHANGED.resolveModel(model);
 			if (ModelChangeEvents.SYMBOL_SELECTION_CHANGED.resolveModel(model) != null) {
-				editSymbolMenuItem.setText("Edit symbol '" + s.getTicker()
-						+ "'");
-				removeSymbolMenuItem.setText("Remove symbol '" + s.getTicker()
-						+ "'");
+				editSymbolMenuItem.setText("Edit symbol '" + s.getTicker() + "'");
+				removeSymbolMenuItem.setText("Remove symbol '" + s.getTicker() + "'");
 			} else {
 				editSymbolMenuItem.setText("Edit symbol");
 				removeSymbolMenuItem.setText("Remove symbol");
