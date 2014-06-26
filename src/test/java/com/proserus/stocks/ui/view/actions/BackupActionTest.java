@@ -87,7 +87,7 @@ public class BackupActionTest extends AbstractUnit {
 
 			ZipFile expectedZip = new ZipFile(backupZip);
 			Map<String, ZipEntry> expectedEntries = new HashMap<String, ZipEntry>();
-			for (Enumeration e = expectedZip.entries(); e.hasMoreElements();) {
+			for (Enumeration<?> e = expectedZip.entries(); e.hasMoreElements();) {
 				ZipEntry expectedEntry = (ZipEntry) e.nextElement();
 				expectedEntries.put(expectedEntry.getName(), expectedEntry);
 			}
@@ -96,7 +96,7 @@ public class BackupActionTest extends AbstractUnit {
 														// good?
 
 			ZipFile testZip = new ZipFile(expectedFileZip);
-			for (Enumeration e = testZip.entries(); e.hasMoreElements();) {
+			for (Enumeration<?> e = testZip.entries(); e.hasMoreElements();) {
 				ZipEntry testEntry = ((ZipEntry) e.nextElement());
 				ZipEntry expectedEntry = expectedEntries.remove(testEntry.getName());
 				if (expectedEntry != null) {

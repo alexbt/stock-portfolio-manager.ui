@@ -15,7 +15,6 @@ import javax.swing.JComboBox;
 import javax.swing.JWindow;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 
 import com.proserus.stocks.bo.symbols.Symbol;
@@ -114,7 +113,6 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 			getRootPane().validate();
 			// TODO Redesign Filter/SharedFilter
 		} else if (ModelChangeEvents.SYMBOLS_UPDATED.equals(event)) {
-			TableColumn sportColumn = getColumnModel().getColumn(1);
 			JComboBox comboBox = new JComboBox(comboTickers);
 			comboBox.setRenderer(new ComboBoxModelRenderer());
 			comboBox.setEditor(new ComboBoxModelEditor());

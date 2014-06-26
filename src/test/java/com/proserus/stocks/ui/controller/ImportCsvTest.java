@@ -21,6 +21,7 @@ import com.proserus.stocks.bp.utils.DateUtils;
 public class ImportCsvTest extends AbstractUIUnit {
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void test() throws IOException {
 		File originalDbFile = new File("src/test/resources/TestUIdb/data/db.script");
 
