@@ -104,7 +104,7 @@ public class AddTransactionTest extends AbstractUIUnit {
 		ModelChangeEvents.DATABASE_SELECTED.fire(databases);
 		inject.getInstance(DatabaseVersionningBp.class).setIgnorePopop(true);
 		ViewControllers.getController().checkDatabaseVersion();
-		int i = 0;
+
 		Transaction t = new TransactionImpl();
 		t.setCommission(new BigDecimal("9.99"));
 		t.setPrice(new BigDecimal("9.99"));
