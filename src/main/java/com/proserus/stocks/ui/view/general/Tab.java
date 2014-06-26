@@ -32,9 +32,9 @@ public class Tab extends JTabbedPane {
 	private static final String OVERVIEW = "Overview";
 
 	public Tab() {
-        addOverviewTab();
+		addOverviewTab();
 		addPerformanceTab();
-        addTransactionTab();
+		addTransactionTab();
 		addSymbolTab();
 		addChartsTab();
 
@@ -44,12 +44,12 @@ public class Tab extends JTabbedPane {
 	}
 
 	private void addSymbolTab() {
-	    JPanel panel;
-	    JButton button;
-	    JPanel pan;
-	    pan = new JPanel();
-		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
-		
+		JPanel panel;
+		JButton button;
+		JPanel pan;
+		pan = new JPanel();
+		pan.setLayout(new BoxLayout(pan, BoxLayout.LINE_AXIS));
+
 		button = new JButton();
 		button.setActionCommand("removeSymbol");
 		button.setContentAreaFilled(false);
@@ -57,7 +57,7 @@ public class Tab extends JTabbedPane {
 		button.setToolTipText("Remove Selected Symbol");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
 		pan.add(button);
-		
+
 		button = new JButton();
 		button.setActionCommand("editSymbol");
 		button.setContentAreaFilled(false);
@@ -65,59 +65,58 @@ public class Tab extends JTabbedPane {
 		button.setToolTipText("Edit Selected Symbol");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/EditSymbol.png")));
 		pan.add(button);
-		
-		
+
 		panel = new JPanel(new BorderLayout());
 		panel.add(pan, BorderLayout.NORTH);
 		// panel.add(new SettingsPanel(), BorderLayout.NORTH);
 		panel.add(new JScrollPane(SymbolsTable.getInstance()), BorderLayout.CENTER);
-//		panel.add(new AddSymbolsPanel(true), BorderLayout.SOUTH);
+		// panel.add(new AddSymbolsPanel(true), BorderLayout.SOUTH);
 		addTab(SYMBOLS, panel);
-    }
+	}
 
 	private void addPerformanceTab() {
-	    JPanel panel;
-	    JScrollPane js2;
-	    panel = new JPanel(new BorderLayout());
+		JPanel panel;
+		JScrollPane js2;
+		panel = new JPanel(new BorderLayout());
 		js2 = new JScrollPane(PerformanceCurrencyTable.getInstance());
 		js2.setBorder(BorderFactory.createLineBorder(Color.black));
 		panel.add(js2, BorderLayout.SOUTH);
 		panel.add(new JScrollPane(PerformanceSymbolTable.getInstance()), BorderLayout.CENTER);
 		addTab("Performance", panel);
-    }
+	}
 
 	private void addOverviewTab() {
-	    JPanel panel = new JPanel(new BorderLayout());
+		JPanel panel = new JPanel(new BorderLayout());
 		JScrollPane js2 = new JScrollPane(OverviewCurrencyTable.getInstance());
 		js2.setBorder(BorderFactory.createLineBorder(Color.black));
 		panel.add(js2, BorderLayout.SOUTH);
 		panel.add(new JScrollPane(OverviewSymbolTable.getInstance()), BorderLayout.CENTER);
 		addTab(OVERVIEW, panel);
-    }
-	
+	}
+
 	private void addChartsTab() {
 		GraphsPanel panel = new GraphsPanel();
 		addChangeListener(panel);
 		addTab("Graphs", panel);
-    }
-
+	}
 
 	private void addTransactionTab() {
-	    JPanel panel;
-	    panel = new JPanel();
+		JPanel panel;
+		panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		JScrollPane ff = new JScrollPane(TransactionTable.getInstance());
-//		ff.setBorder(new MatteBorder(null));
+		// ff.setBorder(new MatteBorder(null));
 		FlowLayout flow = new FlowLayout();
 		flow.setAlignment(FlowLayout.LEFT);
-		// TransactionSymbolFilterPanel symbolFilter = new TransactionSymbolFilterPanel(TransactionTable.getInstance());
+		// TransactionSymbolFilterPanel symbolFilter = new
+		// TransactionSymbolFilterPanel(TransactionTable.getInstance());
 		// panel.add(symbolFilter, BorderLayout.NORTH);
 		JButton button;
 
-		//button.addActionListener(this);
+		// button.addActionListener(this);
 		JPanel pan = new JPanel();
-		pan.setLayout(new BoxLayout(pan,BoxLayout.LINE_AXIS));
-		
+		pan.setLayout(new BoxLayout(pan, BoxLayout.LINE_AXIS));
+
 		button = new JButton();
 		button.setActionCommand("removeTransaction");
 		button.setContentAreaFilled(false);
@@ -125,10 +124,9 @@ public class Tab extends JTabbedPane {
 		button.setToolTipText("Remove Selected Transaction");
 		button.setIcon(new ImageIcon(getClass().getClassLoader().getResource("images/Remove.png")));
 		pan.add(button);
-		
-		
+
 		panel.add(pan, BorderLayout.NORTH);
 		panel.add(ff, BorderLayout.CENTER);
 		addTab(TRANSACTIONS, panel);
-    }
+	}
 }

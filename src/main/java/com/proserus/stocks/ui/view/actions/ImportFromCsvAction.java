@@ -21,9 +21,8 @@ public class ImportFromCsvAction extends AbstractAction {
 	private static final long serialVersionUID = 201404031810L;
 	private PortfolioController controller = ViewControllers.getController();
 	private Window window = ViewControllers.getWindow();
-	
-	private static final ImportFromCsvAction singleton = new ImportFromCsvAction();
 
+	private static final ImportFromCsvAction singleton = new ImportFromCsvAction();
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -48,12 +47,15 @@ public class ImportFromCsvAction extends AbstractAction {
 			}
 		}
 
-		// JOptionPane.showConfirmDialog(null, "Import results", (transactionOk - transactionWarning) +
+		// JOptionPane.showConfirmDialog(null, "Import results", (transactionOk
+		// - transactionWarning) +
 		// " transactions were imported with sucess\n"
-		// + transactionWarning + " transactions were imported with a warning\n" + transactionError
-		// + " transactions could not be imported, check traces.log for details\n", JOptionPane.DEFAULT_OPTION, icon);
+		// + transactionWarning + " transactions were imported with a warning\n"
+		// + transactionError
+		// +
+		// " transactions could not be imported, check traces.log for details\n",
+		// JOptionPane.DEFAULT_OPTION, icon);
 	}
-
 
 	public static ImportFromCsvAction getInstance() {
 		return singleton;

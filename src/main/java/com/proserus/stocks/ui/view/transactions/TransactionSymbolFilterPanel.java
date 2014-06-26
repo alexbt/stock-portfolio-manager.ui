@@ -34,10 +34,11 @@ import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
 import com.proserus.stocks.ui.view.general.ComboBoxModelEditor;
 import com.proserus.stocks.ui.view.general.ComboBoxModelRenderer;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
+
 public class TransactionSymbolFilterPanel extends JPanel implements EventListener, ActionListener {
 	private static final long serialVersionUID = 201404042021L;
 	private Filter filter = ViewControllers.getFilter();
-	
+
 	private static final String SYMBOL = "Symbol:";
 
 	private SortedComboBoxModel model = new SortedComboBoxModel();
@@ -58,7 +59,7 @@ public class TransactionSymbolFilterPanel extends JPanel implements EventListene
 
 	@Override
 	public void update(Event event, Object mo) {
-		if(ModelChangeEvents.SYMBOLS_UPDATED.equals(event)){
+		if (ModelChangeEvents.SYMBOLS_UPDATED.equals(event)) {
 			model.removeAllElements();
 			for (Symbol symbol : ModelChangeEvents.SYMBOLS_UPDATED.resolveModel(mo)) {
 				model.addElement(symbol);
@@ -67,7 +68,7 @@ public class TransactionSymbolFilterPanel extends JPanel implements EventListene
 			model.addElement(s);
 		}
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof JComboBox) {
@@ -75,8 +76,7 @@ public class TransactionSymbolFilterPanel extends JPanel implements EventListene
 			if (o instanceof Symbol) {
 				if (((Symbol) o).getId() != null) {
 					filter.setSymbol((Symbol) o);
-				}
-				else {
+				} else {
 					filter.setSymbol(null);
 				}
 				ViewControllers.getController().refreshFilteredData();

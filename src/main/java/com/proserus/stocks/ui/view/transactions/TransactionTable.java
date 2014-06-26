@@ -34,8 +34,8 @@ import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
 import com.proserus.stocks.ui.view.general.ComboBoxModelEditor;
 import com.proserus.stocks.ui.view.general.ComboBoxModelRenderer;
 import com.proserus.stocks.ui.view.general.LabelsList;
-import com.proserus.stocks.ui.view.general.TableDateFieldEditor;
 import com.proserus.stocks.ui.view.general.TableBigDecimalFieldEditor;
+import com.proserus.stocks.ui.view.general.TableDateFieldEditor;
 
 public class TransactionTable extends AbstractTable implements EventListener, ActionListener, MouseListener {
 	private static final long serialVersionUID = 201404042021L;

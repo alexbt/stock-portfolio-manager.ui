@@ -10,13 +10,13 @@ import javax.swing.JPanel;
 
 import com.proserus.stocks.ui.controller.ViewControllers;
 
-public class CenterPanel extends JPanel implements ActionListener{
+public class CenterPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 201404041920L;
-	
+
 	private JButton updateInternet = new JButton("Get Current Prices");
 	private JButton updateHistorical = new JButton("Get Old Prices");
-	
-	public CenterPanel(){
+
+	public CenterPanel() {
 		setLayout(new BorderLayout());
 		JPanel panel = new JPanel();
 		panel.setAlignmentX(JPanel.RIGHT_ALIGNMENT);
@@ -27,14 +27,14 @@ public class CenterPanel extends JPanel implements ActionListener{
 		updateHistorical.addActionListener(this);
 		updateHistorical.setMnemonic(KeyEvent.VK_O);
 
-		add(panel,BorderLayout.NORTH);
-		add(new Tab(),BorderLayout.CENTER);
+		add(panel, BorderLayout.NORTH);
+		add(new Tab(), BorderLayout.CENTER);
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		 if (arg0.getSource().equals(updateInternet)) {
-			 ViewControllers.getController().updatePrices();
+		if (arg0.getSource().equals(updateInternet)) {
+			ViewControllers.getController().updatePrices();
 		} else if (arg0.getSource().equals(updateHistorical)) {
 			ViewControllers.getController().updateHistoricalPrices();
 		}

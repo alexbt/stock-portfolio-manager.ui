@@ -3,20 +3,19 @@ package com.proserus.stocks.ui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class LoggerStartup {
-	private static LoggerStartup  singleton= new LoggerStartup();
-	
-	private LoggerStartup(){
+	private static LoggerStartup singleton = new LoggerStartup();
+
+	private LoggerStartup() {
 	}
-	
-	public static LoggerStartup getInstance(){
+
+	public static LoggerStartup getInstance() {
 		return singleton;
 	}
-	
+
 	private static Logger LOGGER = LoggerFactory.getLogger(Launch.class);
-	
-	public void info(String message){
+
+	public void info(String message) {
 		LOGGER.info(message);
 	}
 

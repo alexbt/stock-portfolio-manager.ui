@@ -21,7 +21,7 @@ public class CloseApplicationAction extends AbstractAction {
 	public void actionPerformed(ActionEvent arg0) {
 		try {
 			ViewControllers.getController().cleanup();
-		}  finally {
+		} finally {
 			System.exit(0);
 		}
 	}

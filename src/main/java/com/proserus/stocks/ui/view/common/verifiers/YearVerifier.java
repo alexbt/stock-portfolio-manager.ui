@@ -10,8 +10,9 @@ public class YearVerifier extends InputVerifier {
 	private static final String EMPTY_STR = "";
 	static private String PATTERN = "\\d{4}";
 
-	public YearVerifier(){
+	public YearVerifier() {
 	}
+
 	@Override
 	public boolean verify(JComponent input) {
 		String str = ((JTextField) input).getText();

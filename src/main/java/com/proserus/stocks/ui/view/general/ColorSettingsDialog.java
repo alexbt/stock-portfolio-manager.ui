@@ -26,7 +26,7 @@ import com.proserus.stocks.ui.view.common.AbstractDialog;
 
 public class ColorSettingsDialog extends AbstractDialog implements ActionListener {
 	private static final long serialVersionUID = 201404041920L;
-	
+
 	private static final String TABBED_PANE_SELECTED = "TabbedPane.selected";
 
 	private static final String COMBO_BOX_SELECTION_BACKGROUND = "ComboBox.selectionBackground";
@@ -71,11 +71,11 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 	private static AbstractDialog dialog = new ColorSettingsDialog();
 	private Properties ptrans = new Properties();
 	private JLabel[] labels = new JLabel[] { new JLabel("Unfiltered Rows:      "), new JLabel(FILTERED_TABLE_COLOR),
-	        new JLabel(TABLE_SELECTION_BACKGROUND_COLOR),
-	        new JLabel(TEXT_SELECTION_BACKGROUND_COLOR),new JLabel(SELECTION_BACKGROUND_COLOR) };
+			new JLabel(TABLE_SELECTION_BACKGROUND_COLOR), new JLabel(TEXT_SELECTION_BACKGROUND_COLOR),
+			new JLabel(SELECTION_BACKGROUND_COLOR) };
 
 	private JButton[] buttons = new JButton[] { new JButton(EMPTY_STR), new JButton(EMPTY_STR), new JButton(EMPTY_STR),
-	        new JButton(EMPTY_STR), new JButton(EMPTY_STR) };
+			new JButton(EMPTY_STR), new JButton(EMPTY_STR) };
 
 	private ColorSettingsDialog() {
 		initProperties();
@@ -118,7 +118,8 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 		GroupLayout.SequentialGroup vGroup = group.createSequentialGroup();
 		for (int i = 0; i < labels.length; i++) {
 			par = group.createParallelGroup(Alignment.CENTER);
-			par.addComponent(labels[i],GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE).addComponent(buttons[i],GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE);
+			par.addComponent(labels[i], GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE).addComponent(buttons[i],
+					GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE);
 			vGroup.addGroup(par);
 		}
 
@@ -133,8 +134,10 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 	}
 
 	/*
-	 * public void centerOnScreen() { Dimension dim = Toolkit.getDefaultToolkit().getScreenSize(); // Determine the new location of the
-	 * window int w = getSize().width; int h = getSize().height; int x = (dim.width - w) / 2; int y = (dim.height - h) / 2;
+	 * public void centerOnScreen() { Dimension dim =
+	 * Toolkit.getDefaultToolkit().getScreenSize(); // Determine the new
+	 * location of the window int w = getSize().width; int h = getSize().height;
+	 * int x = (dim.width - w) / 2; int y = (dim.height - h) / 2;
 	 * 
 	 * // Move the window setLocation(x, y); }
 	 */
@@ -150,8 +153,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 			colors = ptrans.getProperty(DEFAULT).split(COMMA_STR);
 			if (colors.length == 3) {
 
-				defaultColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer
-				        .parseInt(colors[2]));
+				defaultColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer.parseInt(colors[2]));
 
 			}
 		} catch (NumberFormatException e) {
@@ -163,8 +165,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 		try {
 			colors = ptrans.getProperty(FILTERED).split(COMMA_STR);
 			if (colors.length == 3) {
-				filteredColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer
-				        .parseInt(colors[2]));
+				filteredColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer.parseInt(colors[2]));
 			}
 		} catch (NumberFormatException e) {
 
@@ -175,8 +176,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 		try {
 			colors = ptrans.getProperty(SELECTION).split(COMMA_STR);
 			if (colors.length == 3) {
-				selectionColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer
-				        .parseInt(colors[2]));
+				selectionColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer.parseInt(colors[2]));
 			}
 		} catch (NumberFormatException e) {
 
@@ -185,8 +185,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 		try {
 			colors = ptrans.getProperty(TABLESELECTION).split(COMMA_STR);
 			if (colors.length == 3) {
-				tableSelectionColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer
-				        .parseInt(colors[2]));
+				tableSelectionColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer.parseInt(colors[2]));
 			}
 		} catch (NumberFormatException e) {
 
@@ -195,8 +194,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 		try {
 			colors = ptrans.getProperty(TEXTSELECTION).split(COMMA_STR);
 			if (colors.length == 3) {
-				textSelectionColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer
-				        .parseInt(colors[2]));
+				textSelectionColor = new Color(Integer.parseInt(colors[0]), Integer.parseInt(colors[1]), Integer.parseInt(colors[2]));
 			}
 		} catch (NumberFormatException e) {
 
@@ -244,8 +242,7 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 			} else if (button.getName().compareTo(TEXTSELECTION) == 0) {
 				textSelectionColor = newColor;
 			}
-			ptrans.setProperty(button.getName(), newColor.getRed() + COMMA_STR + newColor.getGreen() + COMMA_STR
-			        + newColor.getBlue());
+			ptrans.setProperty(button.getName(), newColor.getRed() + COMMA_STR + newColor.getGreen() + COMMA_STR + newColor.getBlue());
 			try {
 				ptrans.store(new FileOutputStream(UI_PROPERTIES), EMPTY_STR);
 			} catch (FileNotFoundException e) {
@@ -257,10 +254,10 @@ public class ColorSettingsDialog extends AbstractDialog implements ActionListene
 	}
 
 	static public void updateUI() {
-	    UIManager.put(TEXT_FIELD_SELECTION_BACKGROUND, textSelectionColor);
-	    UIManager.put(CONTROL_HIGHLIGHT, selectionColor);
-	    UIManager.put(COMBO_BOX_SELECTION_BACKGROUND, selectionColor);
-	    UIManager.put(TABBED_PANE_SELECTED, selectionColor);
-	    SwingUtilities.updateComponentTreeUI(ViewControllers.getWindow());
-    }
+		UIManager.put(TEXT_FIELD_SELECTION_BACKGROUND, textSelectionColor);
+		UIManager.put(CONTROL_HIGHLIGHT, selectionColor);
+		UIManager.put(COMBO_BOX_SELECTION_BACKGROUND, selectionColor);
+		UIManager.put(TABBED_PANE_SELECTED, selectionColor);
+		SwingUtilities.updateComponentTreeUI(ViewControllers.getWindow());
+	}
 }
