@@ -31,6 +31,8 @@ import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.bp.model.Filter;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
+import com.proserus.stocks.ui.view.general.ComboBoxModelEditor;
+import com.proserus.stocks.ui.view.general.ComboBoxModelRenderer;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
 public class TransactionSymbolFilterPanel extends JPanel implements EventListener, ActionListener {
 	private static final long serialVersionUID = 201404042021L;
@@ -47,8 +49,8 @@ public class TransactionSymbolFilterPanel extends JPanel implements EventListene
 		setLayout(ff);
 		add(new JLabel(SYMBOL));
 		JComboBox dropDown = new JComboBox();
-		dropDown.setRenderer(new ComboRender());
-		dropDown.setEditor(new ComboEditor());
+		dropDown.setRenderer(new ComboBoxModelRenderer());
+		dropDown.setEditor(new ComboBoxModelEditor());
 		dropDown.setModel(model);
 		dropDown.addActionListener(this);
 		add(dropDown);

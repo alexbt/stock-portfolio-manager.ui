@@ -7,9 +7,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import com.proserus.stocks.ui.view.transactions.ComboEditor;
-import com.proserus.stocks.ui.view.transactions.ComboRender;
-
 public class AbstractFilterPanel extends JPanel{
 	private static final long serialVersionUID = 201404041920L;
 	private LabelsList labelList;
@@ -35,29 +32,29 @@ public class AbstractFilterPanel extends JPanel{
 		labelList = new LabelsList();
 		JLabel yearLabel = new JLabel("Year:");
 		yearField = new JComboBox();
-		yearField.setRenderer(new ComboRender());
-		yearField.setEditor(new ComboEditor());
+		yearField.setRenderer(new ComboBoxModelRenderer());
+		yearField.setEditor(new ComboBoxModelEditor());
 		JLabel symbolLabel = new JLabel("Symbol:");
 		
 		transactionTypeLabel = new JLabel("Transaction type:");
 		
 		transactionTypeField = new JComboBox();
-		transactionTypeField.setRenderer(new ComboRender());
-		transactionTypeField.setEditor(new ComboEditor());
+		transactionTypeField.setRenderer(new ComboBoxModelRenderer());
+		transactionTypeField.setEditor(new ComboBoxModelEditor());
 		
 		currencyLabel = new JLabel("Currency:");
 		
 		symbolField = new JComboBox();
-		symbolField.setRenderer(new ComboRender());
-		symbolField.setEditor(new ComboEditor());
+		symbolField.setRenderer(new ComboBoxModelRenderer());
+		symbolField.setEditor(new ComboBoxModelEditor());
 		
 		currencyField = new JComboBox();
-		currencyField.setRenderer(new ComboRender());
-		currencyField.setEditor(new ComboEditor());
+		currencyField.setRenderer(new ComboBoxModelRenderer());
+		currencyField.setEditor(new ComboBoxModelEditor());
 		
 		sectorField = new JComboBox();
-		sectorField.setRenderer(new ComboRender());
-		sectorField.setEditor(new ComboEditor());
+		sectorField.setRenderer(new ComboBoxModelRenderer());
+		sectorField.setEditor(new ComboBoxModelEditor());
 		
 		JLabel sectorLabel = new JLabel("Sector:");
 		GroupLayout groupLayout = new GroupLayout(this);

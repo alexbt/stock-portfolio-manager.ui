@@ -11,7 +11,7 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 public class SymbolsModifModel extends AbstractTableModel {
 	private static final long serialVersionUID = 20080113L;
 
-	public static final String[] COLUMN_NAMES = { "Year", "Price", "Custom Price" };
+	public static final String[] COLUMN_NAMES = { "End Of Year", "Price", "Custom Price" };
 
 	private Object[] data = null;
 
@@ -94,7 +94,7 @@ public class SymbolsModifModel extends AbstractTableModel {
 	 * @see Contractor
 	 */
 	public Object getValueAt(final int rowIndex, final int columnIndex) {
-		if (data != null) {
+		if (data != null && data.length > 0) {
 			return (getColValue((HistoricalPrice) data[rowIndex], columnIndex));
 		}
 		return "";
@@ -124,7 +124,7 @@ public class SymbolsModifModel extends AbstractTableModel {
 	private Object getColValue(final HistoricalPrice h, final int column) {
 		int i = 0;
 		if (column == i++) {
-			return h.getYear().equals(DateUtils.getCurrentYear()) ? "Today" : String.valueOf(h.getYear());
+			return String.valueOf(h.getYear()) + (h.getYear().equals(DateUtils.getCurrentYear()) ? " (Today)" : "");
 		} else if (column == i++) {
 			return h.getPrice();
 		} else if (column == i++) {

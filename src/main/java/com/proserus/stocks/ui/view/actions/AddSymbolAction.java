@@ -5,8 +5,8 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.AbstractAction;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.proserus.stocks.ui.view.common.DialogImpl;
 import com.proserus.stocks.ui.view.symbols.AddEditSymbolPanelImpl;
@@ -14,17 +14,16 @@ import com.proserus.stocks.ui.view.symbols.AddEditSymbolPanelImpl;
 public class AddSymbolAction extends AbstractAction {
 	public static int keyEvent = KeyEvent.VK_S;
 	private static final long serialVersionUID = 201404031808L;
-	private final static Logger LOGGER = Logger.getLogger(AddSymbolAction.class.getName());
+	private final static Logger LOGGER = LoggerFactory.getLogger(AddSymbolAction.class.getName());
 	private static final AddSymbolAction singleton = new AddSymbolAction();
 
-	private DialogImpl addSymbolWindow = new DialogImpl(
-			new AddEditSymbolPanelImpl(true), "Add a symbol");
+	private DialogImpl addSymbolWindow = new DialogImpl(new AddEditSymbolPanelImpl(true), "Add a symbol");
 
 	private AddSymbolAction() {
 
 	}
-	
-	public static AddSymbolAction getInstance(){
+
+	public static AddSymbolAction getInstance() {
 		return singleton;
 	}
 
@@ -33,7 +32,7 @@ public class AddSymbolAction extends AbstractAction {
 		try {
 			addSymbolWindow.setVisibile(true);
 		} catch (Throwable e) {
-			LOGGER.log(Level.FATAL, "Error displaying AddEditSymbol panel", e);
+			LOGGER.error("Error displaying AddEditSymbol panel", e);
 		}
 	}
 

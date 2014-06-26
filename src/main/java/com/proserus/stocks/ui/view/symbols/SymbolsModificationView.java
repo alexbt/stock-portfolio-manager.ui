@@ -117,7 +117,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = .25;
 		southPanel.add(customPrice, gridBagConstraints);
-		customPrice.setInputVerifier(new NumberVerifier());
+		customPrice.setInputVerifier(new NumberVerifier(true, true));
 
 		gridBagConstraints.fill = GridBagConstraints.VERTICAL;
 		gridBagConstraints.anchor = GridBagConstraints.CENTER;
@@ -143,6 +143,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 				JOptionPane.showConfirmDialog(this, "A price for year " + year.getText() + " already exists", "Error adding Price",
 						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
 				year.setText("");
+				customPrice.setText("");
 			} else {
 				HistoricalPrice h = ViewControllers.getBoBuilder().getHistoricalPrice();
 				h.setCustomPrice(new BigDecimal(Double.parseDouble(customPrice.getText())));

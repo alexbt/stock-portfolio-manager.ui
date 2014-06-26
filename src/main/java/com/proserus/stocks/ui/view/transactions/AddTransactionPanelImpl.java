@@ -34,6 +34,7 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier;
+import com.proserus.stocks.ui.view.general.ComboBoxModelRenderer;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
 
 public class AddTransactionPanelImpl extends AbstractAddTransactionPanel implements ActionListener, EventListener, KeyListener {
@@ -47,7 +48,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 		enableReinvestmentFields(false);
 
-		getCurrencyField().setRenderer(new ComboRender());
+		getCurrencyField().setRenderer(new ComboBoxModelRenderer());
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
 			if (cur.isVisible()) {
 				getCurrencyField().addItem(cur);
@@ -88,9 +89,6 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		getLabelsList().setAddEnabled(true);
 		getLabelsList().setHorizontal(false);
 
-		EventBus.getInstance().add(getLabelsList(), ModelChangeEvents.LABELS_UPDATED);
-		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_UPDATED);
-
 		for (TransactionType transactionType : TransactionType.values()) {
 			if (transactionType.isVisible()) {
 				getTypeField().addItem(transactionType);
@@ -116,17 +114,21 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		// (getSymbolField().getEditor().getEditorComponent())).setInputVerifier(new
 		// SymbolVerifier());
 
-		NumberVerifier verif = new NumberVerifier();
-		getPriceField().setInputVerifier(verif);
-		getTotalField().setInputVerifier(verif);
-		getQuantityField().setInputVerifier(verif);
-		getCommissionField().setInputVerifier(verif);
-		getReinvestPriceField().setInputVerifier(verif);
-		getReinvestTotalField().setInputVerifier(verif);
-		getReinvestQuantityField().setInputVerifier(verif);
+		NumberVerifier verifMandatory = new NumberVerifier(false, false);
+		NumberVerifier verifReinvest = new NumberVerifier(false, true);
+		getPriceField().setInputVerifier(verifMandatory);
+		getTotalField().setInputVerifier(verifMandatory);
+		getQuantityField().setInputVerifier(verifMandatory);
+		getCommissionField().setInputVerifier(new NumberVerifier(true, true));
+		getReinvestPriceField().setInputVerifier(verifReinvest);
+		getReinvestTotalField().setInputVerifier(verifReinvest);
+		getReinvestQuantityField().setInputVerifier(verifReinvest);
 		getDateField().setToolTipText("Format is yyyy-MM-dd");
 
 		getCompanyNameField().setDisabledTextColor(Color.BLACK);
+
+		EventBus.getInstance().add(getLabelsList(), ModelChangeEvents.LABELS_UPDATED);
+		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_UPDATED);
 
 		getDateField().requestFocus();
 	}
@@ -141,10 +143,13 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		}
 		getReinvestLabel().setEnabled(enable);
 		getReinvestPriceField().setEnabled(enable);
+		getReinvestPriceField().setBackground(Color.white);
 		getReinvestPriceLabel().setEnabled(enable);
 		getReinvestQuantityField().setEnabled(enable);
+		getReinvestQuantityField().setBackground(Color.white);
 		getReinvestQuantityLabel().setEnabled(enable);
 		getReinvestTotalField().setEnabled(enable);
+		getReinvestTotalField().setBackground(Color.white);
 		getReinvestTotalLabel().setEnabled(enable);
 	}
 
@@ -158,7 +163,6 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-
 		if (arg0.getActionCommand().startsWith("changeSymbol")) {
 			updateNameWithCurrentSymbol();
 		} else if (arg0.getActionCommand().equals("add")) {
@@ -179,24 +183,47 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 	}
 
 	protected boolean addTransaction() {
+		getPriceField().getInputVerifier().verify(getPriceField());
+		getTotalField().getInputVerifier().verify(getTotalField());
+		getQuantityField().getInputVerifier().verify(getQuantityField());
+		getCommissionField().getInputVerifier().verify(getCommissionField());
+		if (getTypeField().getSelectedItem().equals(TransactionType.DIVIDEND)) {
+			getPriceField().getInputVerifier().verify(getReinvestPriceField());
+			getPriceField().getInputVerifier().verify(getReinvestQuantityField());
+			getPriceField().getInputVerifier().verify(getReinvestTotalField());
+		} else {
+			getReinvestPriceField().getInputVerifier().verify(getReinvestPriceField());
+			getReinvestQuantityField().getInputVerifier().verify(getReinvestQuantityField());
+			getReinvestTotalField().getInputVerifier().verify(getReinvestTotalField());
+		}
+		Object o = getSymbolField().getSelectedItem();
+		if (o == null || (o instanceof String && ((String) o).isEmpty())) {
+			// getSymbolField().setBackground(Color.red);
+			getSymbolField().getEditor().getEditorComponent().setBackground(Color.red);
+		}
+
 		boolean success = false;
+		if (fieldHasError(getPriceField()) || fieldHasError(getQuantityField()) || fieldHasError(getCommissionField())
+				|| getDateField().getDate() == null || getPriceField().getText().isEmpty() || fieldHasError(getTotalField())
+				|| getQuantityField().getText().isEmpty() || fieldHasError(getReinvestQuantityField())
+				|| fieldHasError(getReinvestPriceField()) || fieldHasError(getReinvestTotalField())) {
 
-		if (!getPriceField().getBackground().equals(Color.red) && getDateField().getDate() != null && !getPriceField().getText().isEmpty()
-				&& !getQuantityField().getText().isEmpty()) {
-			if (getCommissionField().getText().isEmpty()) {
-				getCommissionField().setText("0.00");
-			}
+		} else {
 
-			Object o = getSymbolField().getSelectedItem();
 			if ((o instanceof String && !((String) o).isEmpty()) || o instanceof Symbol) {
+
+				if (getCommissionField().getText().isEmpty()) {
+					getCommissionField().setText("0.00");
+				}
+
 				Symbol s = createSymbol(o);
 				Transaction t = createTransaction(s, getDateField().getDate(), (TransactionType) getTypeField().getSelectedItem(),
 						getPriceField().getText(), getQuantityField().getText(), getCommissionField().getText(), getLabelsList()
 								.getSelectedValues().values());
 				ViewControllers.getController().addTransaction(t);
 
-				if (t.getType().equals(TransactionType.DIVIDEND) && !getReinvestPriceField().getBackground().equals(Color.red)
-						&& !getReinvestPriceField().getText().isEmpty() && !getReinvestQuantityField().getText().isEmpty()) {
+				if (t.getType().equals(TransactionType.DIVIDEND) && !getReinvestPriceField().getText().isEmpty()
+						&& !getReinvestQuantityField().getText().isEmpty()) {
 					Transaction t2 = createTransaction(s, getDateField().getDate(), TransactionType.BUY, getReinvestPriceField().getText(),
 							getReinvestQuantityField().getText(), "0.00", getLabelsList().getSelectedValues().values());
 					ViewControllers.getController().addTransaction(t2);
@@ -214,6 +241,10 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		}
 
 		return success;
+	}
+
+	private boolean fieldHasError(JTextField field) {
+		return field.getBackground().equals(Color.red);
 	}
 
 	private Symbol createSymbol(Object o) {
@@ -306,6 +337,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 	private void updateNameWithCurrentSymbol() {
 		Symbol s = null;
 		Object o = getSymbolField().getEditor().getItem();
+		getSymbolField().getEditor().getEditorComponent().setBackground(Color.white);
 		if (o instanceof String) {
 			if (!((String) o).isEmpty()) {
 				s = ViewControllers.getController().getSymbol((String) o);
@@ -334,8 +366,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			}
 
 		// TODO 0.24 remove arg0.getComponent().getParent()!=null after testing
-		if (arg0.getComponent().getParent() != null && arg0.getComponent().getParent().equals(getSymbolField())
-				&& arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
+		if (arg0.getComponent().getParent().equals(getSymbolField()) && arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
 			updateNameWithCurrentSymbol();
 		}
 
@@ -364,6 +395,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 					dest.setEnabled(false);
 					dest.setFont(dest.getFont().deriveFont(Font.BOLD));
 					dest.setText(String.valueOf(calculateTotal(source2.getText(), source3.getText(), source1.getText())));
+					dest.getInputVerifier().verify(dest);
 					return;
 				}
 			} catch (NumberFormatException e) {
@@ -387,6 +419,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 					dest.setEnabled(false);
 					dest.setFont(dest.getFont().deriveFont(Font.BOLD));
 					dest.setText(String.valueOf(calculatePriceQuantity(source2.getText(), source1.getText(), source3.getText())));
+					dest.getInputVerifier().verify(dest);
 					return;
 				}
 			} catch (NumberFormatException e) {
@@ -409,8 +442,12 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			commission = "0";
 		}
 
-		return BigDecimalUtils.setDecimalWithScale(new BigDecimal(total)).subtract(new BigDecimal(commission))
-				.divide(new BigDecimal(divisor), BigDecimal.ROUND_UP);
+		try {
+			return BigDecimalUtils.setDecimalWithScale(new BigDecimal(total)).subtract(new BigDecimal(commission))
+					.divide(new BigDecimal(divisor), BigDecimal.ROUND_UP);
+		} catch (java.lang.ArithmeticException e) {
+			return BigDecimalUtils.setDecimalWithScale(BigDecimal.ZERO);
+		}
 	}
 
 	private BigDecimal calculateTotal(String price, String quantity, String commission) {

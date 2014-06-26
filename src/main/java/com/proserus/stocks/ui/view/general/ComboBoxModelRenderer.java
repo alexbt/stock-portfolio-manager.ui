@@ -1,4 +1,4 @@
-package com.proserus.stocks.ui.view.transactions;
+package com.proserus.stocks.ui.view.general;
 
 import java.awt.Component;
 
@@ -13,10 +13,11 @@ import com.proserus.stocks.bo.symbols.CurrencyEnum;
 import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Label;
 
-public class ComboRender extends DefaultListCellRenderer {
+public class ComboBoxModelRenderer extends DefaultListCellRenderer {
 
 	private static final long serialVersionUID = 201406192008L;
 
+	// TODO share logic with ComboBoxModelEditor
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		if (isSelected) {
 			setBackground(list.getSelectionBackground());

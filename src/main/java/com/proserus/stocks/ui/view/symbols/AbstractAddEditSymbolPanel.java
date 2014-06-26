@@ -12,8 +12,8 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 
-import com.proserus.stocks.ui.view.transactions.ComboEditor;
-import com.proserus.stocks.ui.view.transactions.ComboRender;
+import com.proserus.stocks.ui.view.general.ComboBoxModelEditor;
+import com.proserus.stocks.ui.view.general.ComboBoxModelRenderer;
 
 public abstract class AbstractAddEditSymbolPanel extends JPanel{
 	private static final long serialVersionUID = 201404041920L;
@@ -55,14 +55,14 @@ public abstract class AbstractAddEditSymbolPanel extends JPanel{
 		companyNameField.setColumns(10);
 		
 		sectorField = new JComboBox();
-		sectorField.setRenderer(new ComboRender());
-		sectorField.setEditor(new ComboEditor());
+		sectorField.setRenderer(new ComboBoxModelRenderer());
+		sectorField.setEditor(new ComboBoxModelEditor());
 		
 		sectorLabel = new JLabel("Sector:");
 		
 		currencyField = new JComboBox();
-		currencyField.setRenderer(new ComboRender());
-		currencyField.setEditor(new ComboEditor());
+		currencyField.setRenderer(new ComboBoxModelRenderer());
+		currencyField.setEditor(new ComboBoxModelEditor());
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(

@@ -14,17 +14,15 @@ import com.proserus.stocks.ui.view.general.DbChooser;
 public class Launch {
 	private static LoggerStartup LOGGER;
 	static {
-		System.setProperty("installation.folder",
-				PathUtils.getInstallationFolder());
+		System.setProperty("installation.folder", PathUtils.getInstallationFolder());
 		LOGGER = LoggerStartup.getInstance();
 		LOGGER.info("**********************************");
 		LOGGER.info("Starting...");
 		LOGGER.info("**********************************");
 		LOGGER.info("installation.folder: " + PathUtils.getInstallationFolder());
 		LOGGER.info("current.folder: " + PathUtils.getCurrentFolder());
- 	}
+	}
 
-	
 	// Get exchange rate from web
 	// Set default Currency
 	// Show/Hide columns
@@ -41,12 +39,10 @@ public class Launch {
 	 */
 	public static void main(String[] args) {
 		try {
-			EventQueue queue = Toolkit.getDefaultToolkit()
-					.getSystemEventQueue();
+			EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
 			queue.push(new EventQueueProxy());
 
-			Guice.createInjector(new SwingModule()).getInstance(
-					ViewControllers.class);
+			Guice.createInjector(new SwingModule()).getInstance(ViewControllers.class);
 
 			ViewControllers.getController().checkNewVersion();
 			ViewControllers.getWindow().start();
@@ -54,15 +50,9 @@ public class Launch {
 			ViewControllers.getController().checkDatabaseDuplicate();
 
 		} catch (PersistenceException e) {
-			JOptionPane
-					.showMessageDialog(
-							null,
-							"Database error!\n"
-									+ "There seem to be an error with the database\n"
-									+ "If you have issues creating entries, you may want to start from scratch\n"
-									+ "Choose 'File -> Delete current portfolio'",
-							"Database error!", JOptionPane.INFORMATION_MESSAGE,
-							null);
+			JOptionPane.showMessageDialog(null, "Database error!\n" + "There seem to be an error with the database\n"
+					+ "If you have issues creating entries, you may want to start from scratch\n"
+					+ "Choose 'File -> Delete current portfolio'", "Database error!", JOptionPane.INFORMATION_MESSAGE, null);
 			LOGGER.fatal("Database error", e);
 			throw e;
 		} catch (Throwable e) {

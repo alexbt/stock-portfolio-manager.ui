@@ -8,12 +8,13 @@ import java.util.List;
 import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang3.Validate;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.proserus.stocks.bp.dao.PersistenceManager;
 
 public class DbUtils {
-	private static Logger log = Logger.getLogger(DbUtils.class.getName());
+	private final static Logger LOGGER = LoggerFactory.getLogger(DbUtils.class);
 
 	public static void executeScript(PersistenceManager pm, String script) {
 		String s = new String();
@@ -31,17 +32,17 @@ public class DbUtils {
 				s = s.trim();
 				if (!s.isEmpty() && !s.startsWith("--")) {
 					try {
-						log.debug("Executing " + s);
+						LOGGER.debug("Executing " + s);
 						pm.createNativeQuery(s).executeUpdate();
-						log.debug("Executed successfully");
+						LOGGER.debug("Executed successfully");
 					} catch (PersistenceException e) {
-						// log.error("Failed to execute " + s, e);
+						// LOGGER.error("Failed to execute " + s, e);
 						if (!e.getCause().getCause().toString().toLowerCase().contains("already exists")) {
-							System.out.println("error executing " + s + ": " + e.getCause().getCause());
+							LOGGER.info("A problem occured executing {}: {}", new Object[] { s, e.getCause().getCause() });
 							pm.getTransaction().setRollbackOnly();
 						}
 					} catch (RuntimeException e) {
-						log.error("Failed to execute " + s, e);
+						LOGGER.error("Failed to execute " + s, e);
 						pm.getTransaction().setRollbackOnly();
 						throw e;
 					}
