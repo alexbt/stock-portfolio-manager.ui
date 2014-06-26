@@ -1,4 +1,4 @@
-package com.proserus.stocks.ui.view.transactions;
+package com.proserus.stocks.ui.view.general;
 
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 
@@ -11,9 +11,10 @@ import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.TransactionType;
 
-public class ComboEditor extends BasicComboBoxEditor {
+public class ComboBoxModelEditor extends BasicComboBoxEditor {
 
 	@Override
+	// TODO share logic with ComboBoxModelRenderer
 	public void setItem(Object value) {
 		String anObject = "";
 		if (value != null) {

@@ -14,7 +14,8 @@ import java.util.Properties;
 import javax.persistence.PersistenceException;
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -27,6 +28,9 @@ import com.proserus.stocks.ui.view.general.Version;
 
 @Singleton
 public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
+
+	private final static Logger LOGGER = LoggerFactory.getLogger(DatabaseVersionningBpImpl.class);
+
 	private static final String LATESTVERSION_PROPERTY = "latestversion";
 
 	public static final String LATEST_VERSION_URL = "http://stock-portfolio-manager.googlecode.com/hg/latestversion";
@@ -36,8 +40,6 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 	public void setIgnorePopop(boolean ignorePopop) {
 		this.ignorePopop = ignorePopop;
 	}
-
-	private static Logger log = Logger.getLogger(DatabaseVersionningBpImpl.class.getName());
 
 	@Inject
 	private BoBuilder boBuilder;
@@ -51,12 +53,12 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 	@Override
 	public DBVersion retrieveCurrentVersion() {
-		log.debug("Verifying the current version");
+		LOGGER.debug("Verifying the current version");
 		DBVersion version = null;
 
 		try {
 			version = (DBVersion) persistenceManager.createNamedQuery("version.find").getSingleResult();
-			log.debug("database version: " + version.getDatabaseVersion());
+			LOGGER.debug("database version: " + version.getDatabaseVersion());
 		} catch (PersistenceException e2) {
 		}
 
@@ -72,7 +74,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 	@Override
 	public void upgrade(DBVersion version) {
 
-		log.debug("Upgrading from Version " + version.getDatabaseVersion() + " to " + DatabaseUpgradeEnum.getLatestVersion());
+		LOGGER.debug("Upgrading from Version " + version.getDatabaseVersion() + " to " + DatabaseUpgradeEnum.getLatestVersion());
 		boolean isFirstTime = version.getDatabaseVersion() == DatabaseUpgradeEnum.VERSION_0.getVersion();
 		if (!isFirstTime && !ignorePopop) {
 			int n = JOptionPane.showConfirmDialog(null, "This new version will perform an update on the data format.\n "
@@ -89,12 +91,12 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		try {
 			for (DatabaseUpgradeEnum dbEnu : DatabaseUpgradeEnum.values()) {
 				persistenceManager.getTransaction().begin();
-				log.debug("Upgrading to " + dbEnu.getVersion());
+				LOGGER.debug("Upgrading to " + dbEnu.getVersion());
 				if (version.getDatabaseVersion() < dbEnu.getVersion() && !persistenceManager.getTransaction().getRollbackOnly()) {
 					for (DatabaseStrategy dbStrategy : dbEnu.getStrategies()) {
 						dbStrategy.applyUpgrade(persistenceManager);
 						if (persistenceManager.getTransaction().getRollbackOnly()) {
-							System.out.println("problem in " + dbStrategy);
+							LOGGER.info("A problem occured in {}", new Object[] { dbStrategy });
 							break;
 						}
 					}
@@ -105,14 +107,14 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 			}
 		} catch (Throwable e) {
 			if (persistenceManager.getTransaction().isActive()) {
-				log.debug("Exception while upgrading database to " + version, e);
+				LOGGER.debug("Exception while upgrading database to " + version, e);
 				persistenceManager.getTransaction().setRollbackOnly();
 			}
 		}
 
 		if (persistenceManager.getTransaction().isActive() && persistenceManager.getTransaction().getRollbackOnly()) {
 			persistenceManager.getTransaction().rollback();
-			log.debug("Rolling back database upgrade from version " + version + " back to " + initialVersion);
+			LOGGER.debug("Rolling back database upgrade from version " + version + " back to " + initialVersion);
 			throw new AssertionError();
 
 			// if (!isFirstTime && !ignorePopop) {
@@ -127,7 +129,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 			// JOptionPane.INFORMATION_MESSAGE, null);
 			// }
 		} else {
-			log.debug("Version check and upgrade is successful");
+			LOGGER.debug("Version check and upgrade is successful");
 			if (!isFirstTime && !ignorePopop) {
 				JOptionPane.showMessageDialog(null, "Upgrade completed successfully!", "Upgrade completed!",
 						JOptionPane.INFORMATION_MESSAGE, null);

@@ -14,7 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.proserus.stocks.bp.events.Event;
 import com.proserus.stocks.bp.events.EventBus;
@@ -24,18 +25,15 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.utils.ShortcutUtils;
 import com.proserus.stocks.ui.view.actions.CloseApplicationAction;
 
-public class Window extends JFrame implements WindowListener, Observer,
-		PropertyChangeListener, EventListener {
-	
-	private static final Logger LOGGER = Logger
-			.getLogger(Window.class.getName());
+public class Window extends JFrame implements WindowListener, Observer, PropertyChangeListener, EventListener {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(Window.class.getName());
 
 	private static final long serialVersionUID = 201404031810L;
 
 	private static final String LOGO_GIF = "images/Logo.gif";// TODO move
 
-	private static final String PROSERUS_STOCKS_PORTFOLIO_0_1_BETA = "Stock Portfolio Manager "
-			+ Version.VERSION + Version.VERSION_SUFFIX;
+	private static final String PROSERUS_STOCKS_PORTFOLIO_0_1_BETA = "Stock Portfolio Manager " + Version.VERSION + Version.VERSION_SUFFIX;
 
 	JSplitPane split;
 
@@ -50,9 +48,9 @@ public class Window extends JFrame implements WindowListener, Observer,
 		// 0));
 		setLayout(new BorderLayout());
 
-		ShortcutUtils.apply(getRootPane());        
-        setJMenuBar(Menu.getInstance());
-        
+		ShortcutUtils.apply(getRootPane());
+		setJMenuBar(Menu.getInstance());
+
 		JPanel north = new JPanel();
 		north.setLayout(new BorderLayout());
 
@@ -72,8 +70,7 @@ public class Window extends JFrame implements WindowListener, Observer,
 
 		setVisible(true);
 		addWindowListener(this);
-		setIconImage(new ImageIcon(getClass().getClassLoader().getResource(
-				LOGO_GIF)).getImage());
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource(LOGO_GIF)).getImage());
 		setVisible(true);
 
 		EventBus.getInstance().add(this, ModelChangeEvents.DATABASE_SELECTED);
@@ -85,7 +82,7 @@ public class Window extends JFrame implements WindowListener, Observer,
 	}
 
 	public Window() {
-		
+
 	}
 
 	@Override
@@ -135,8 +132,8 @@ public class Window extends JFrame implements WindowListener, Observer,
 	@Override
 	public void update(Event event, Object model) {
 		if (ModelChangeEvents.DATABASE_SELECTED.equals(event)) {
-			setTitle(PROSERUS_STOCKS_PORTFOLIO_0_1_BETA + " - " + StringUtils.right
-					(ModelChangeEvents.DATABASE_SELECTED.resolveModel(model).getSelectedDatabase().getPath(),200));
+			setTitle(PROSERUS_STOCKS_PORTFOLIO_0_1_BETA + " - "
+					+ StringUtils.right(ModelChangeEvents.DATABASE_SELECTED.resolveModel(model).getSelectedDatabase().getPath(), 200));
 			LOGGER.info("Selected database: " + ModelChangeEvents.DATABASE_SELECTED.resolveModel(model).getSelectedDatabase());
 			ViewControllers.getController().checkDatabaseVersion();
 			ViewControllers.getController().refresh();

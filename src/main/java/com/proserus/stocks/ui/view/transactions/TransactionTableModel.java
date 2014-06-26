@@ -15,6 +15,7 @@ import com.proserus.stocks.bo.symbols.Symbol;
 import com.proserus.stocks.bo.transactions.Label;
 import com.proserus.stocks.bo.transactions.Transaction;
 import com.proserus.stocks.bo.transactions.TransactionType;
+import com.proserus.stocks.bo.utils.BigDecimalUtils;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 
@@ -96,7 +97,8 @@ public class TransactionTableModel extends AbstractTableModel {
 	 *            The row number of the field requested.
 	 * @param columnIndex
 	 *            The column number of the field requested.
-	 * @return The coressponding field of the contracotr at the specified row and column.
+	 * @return The coressponding field of the contracotr at the specified row
+	 *         and column.
 	 * @see Contractor
 	 */
 	public Object getValueAt(final int rowIndex, final int columnIndex) {
@@ -106,7 +108,7 @@ public class TransactionTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object obj, int row, int col) {
 		// TODO NullPointer when no data...
-	    setColValue((Transaction) data[row], obj, col);
+		setColValue((Transaction) data[row], obj, col);
 		fireTableCellUpdated(row, col);
 	}
 
@@ -126,11 +128,11 @@ public class TransactionTableModel extends AbstractTableModel {
 		case 4:
 		case 5:
 		case 6:
-		    return BigDecimal.class;
+			return BigDecimal.class;
 		case 7:
-		    return String.class;
+			return String.class;
 		}
-	    throw new AssertionError();
+		throw new AssertionError();
 	}
 
 	private Object getColValue(final Transaction transaction, final int column) {
@@ -146,17 +148,17 @@ public class TransactionTableModel extends AbstractTableModel {
 		case 4:
 			return transaction.getPrice();
 		case 5:
-			return transaction.getCommission();
+			return BigDecimalUtils.setDecimalWithScale(transaction.getCommission());
 		case 6:
 			return transaction.getPrice().multiply(transaction.getQuantity()).add(transaction.getCommission());
 		case 7:
-		    List<Label> sortedLabels = new ArrayList<Label>(transaction.getLabelsValues());
-		    Collections.sort(sortedLabels);
-		    StringBuilder labelString = new StringBuilder();
-			for(Label l: sortedLabels){
-			    labelString.append(l.getName() + ", ");
+			List<Label> sortedLabels = new ArrayList<Label>(transaction.getLabelsValues());
+			Collections.sort(sortedLabels);
+			StringBuilder labelString = new StringBuilder();
+			for (Label l : sortedLabels) {
+				labelString.append(l.getName() + ", ");
 			}
-			
+
 			return StringUtils.removeEnd(String.valueOf(labelString), ", ");
 		}
 

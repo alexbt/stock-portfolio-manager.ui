@@ -17,6 +17,7 @@ import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
+import com.proserus.stocks.ui.view.general.TableBigDecimalFieldEditor;
 import com.proserus.stocks.ui.view.transactions.TableRender;
 
 public class SymbolsModifTable extends AbstractTable implements EventListener, KeyListener {
@@ -46,6 +47,9 @@ public class SymbolsModifTable extends AbstractTable implements EventListener, K
 		setRowSorter(sorter);
 		setRowHeight(getRowHeight() + 5);
 		setVisible(true);
+
+		TableBigDecimalFieldEditor numberEditor = new TableBigDecimalFieldEditor(true);
+		getColumnModel().getColumn(2).setCellEditor(numberEditor);
 
 		EventBus.getInstance().add(this, ModelChangeEvents.SYMBOLS_UPDATED);
 

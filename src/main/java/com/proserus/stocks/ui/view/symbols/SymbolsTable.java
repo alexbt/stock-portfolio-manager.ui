@@ -30,8 +30,8 @@ import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.actions.ShowEditSymbolAction;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
-import com.proserus.stocks.ui.view.transactions.ComboEditor;
-import com.proserus.stocks.ui.view.transactions.ComboRender;
+import com.proserus.stocks.ui.view.general.ComboBoxModelEditor;
+import com.proserus.stocks.ui.view.general.ComboBoxModelRenderer;
 import com.proserus.stocks.ui.view.transactions.TableRender;
 
 public class SymbolsTable extends AbstractTable implements EventListener, KeyListener, MouseListener {
@@ -69,21 +69,21 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 		setVisible(true);
 		TableColumn sportColumn = getColumnModel().getColumn(3);
 		JComboBox comboBox = new JComboBox();
-		comboBox.setRenderer(new ComboRender());
-		comboBox.setEditor(new ComboEditor());
+		comboBox.setRenderer(new ComboBoxModelRenderer());
+		comboBox.setEditor(new ComboBoxModelEditor());
 		for (CurrencyEnum cur : CurrencyEnum.values()) {
 			if (cur.isVisible()) {
 				comboBox.addItem(cur);
 			}
 		}
-		comboBox.setRenderer(new ComboRender());
+		comboBox.setRenderer(new ComboBoxModelRenderer());
 		comboBox.setMaximumRowCount(12);
 		sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
 
 		TableColumn sportColumnSector = getColumnModel().getColumn(4);
 		JComboBox comboBoxSector = new JComboBox();
-		comboBoxSector.setRenderer(new ComboRender());
-		comboBoxSector.setEditor(new ComboEditor());
+		comboBoxSector.setRenderer(new ComboBoxModelRenderer());
+		comboBoxSector.setEditor(new ComboBoxModelEditor());
 		for (SectorEnum cur : SectorEnum.retrieveSortedSectors()) {
 			comboBoxSector.addItem(cur);
 		}

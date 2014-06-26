@@ -8,19 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.JWindow;
-import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -34,13 +26,16 @@ import com.proserus.stocks.bp.events.EventBus;
 import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.bp.model.Filter;
-import com.proserus.stocks.bp.utils.DateUtils;
 import com.proserus.stocks.ui.controller.PortfolioController;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractTable;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
 import com.proserus.stocks.ui.view.general.ColorSettingsDialog;
+import com.proserus.stocks.ui.view.general.ComboBoxModelEditor;
+import com.proserus.stocks.ui.view.general.ComboBoxModelRenderer;
 import com.proserus.stocks.ui.view.general.LabelsList;
+import com.proserus.stocks.ui.view.general.TableDateFieldEditor;
+import com.proserus.stocks.ui.view.general.TableBigDecimalFieldEditor;
 
 public class TransactionTable extends AbstractTable implements EventListener, ActionListener, MouseListener {
 	private static final long serialVersionUID = 201404042021L;
@@ -77,20 +72,25 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 		setRowSorter(sorter);
 		setRowHeight(getRowHeight() + 5);
 		setBorder(null);
-		TableColumn sportColumn = getColumnModel().getColumn(2);
 
 		JComboBox comboBox = new JComboBox();
-		comboBox.setRenderer(new ComboRender());
-		comboBox.setEditor(new ComboEditor());
+		comboBox.setRenderer(new ComboBoxModelRenderer());
+		comboBox.setEditor(new ComboBoxModelEditor());
 		for (TransactionType transactionType : TransactionType.values()) {
 			if (transactionType.isVisible()) {
 				comboBox.addItem(transactionType);
 			}
 		}
+		// setCellEditor(new MyTableCellEditor());
+		getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
 
-		sportColumn.setCellEditor(new DefaultCellEditor(comboBox));
-		sportColumn = getColumnModel().getColumn(0);
-		sportColumn.setCellEditor(new MyDateEditor());
+		getColumnModel().getColumn(0).setCellEditor(new TableDateFieldEditor());
+		TableBigDecimalFieldEditor ne = new TableBigDecimalFieldEditor(false);
+		TableBigDecimalFieldEditor neWithZero = new TableBigDecimalFieldEditor(true);
+		getColumnModel().getColumn(3).setCellEditor(ne);
+		getColumnModel().getColumn(4).setCellEditor(ne);
+		getColumnModel().getColumn(5).setCellEditor(neWithZero);
+		// getColumnModel().getColumn(6).setCellEditor(ne);
 		// setDefaultEditor(Symbol.class, editor);
 		setVisible(true);
 		setFirstRowSorted(false);
@@ -116,8 +116,8 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 		} else if (ModelChangeEvents.SYMBOLS_UPDATED.equals(event)) {
 			TableColumn sportColumn = getColumnModel().getColumn(1);
 			JComboBox comboBox = new JComboBox(comboTickers);
-			comboBox.setRenderer(new ComboRender());
-			comboBox.setEditor(new ComboEditor());
+			comboBox.setRenderer(new ComboBoxModelRenderer());
+			comboBox.setEditor(new ComboBoxModelEditor());
 
 			if (comboTickers.getSize() > 0) {
 				getSelectionModel().clearSelection();
@@ -126,8 +126,9 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 			for (Symbol symbol : ModelChangeEvents.SYMBOLS_UPDATED.resolveModel(model)) {
 				comboTickers.addElement(symbol);
 			}
+			getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(comboBox));
 
-			sportColumn.setCellEditor(new NotNullEditor(comboBox));
+			// sportColumn.setCellEditor(new NotNullEditor(comboBox));
 		}
 	}
 
@@ -202,66 +203,4 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 	public void mouseReleased(MouseEvent e) {
 	}
 
-}
-
-class MyDateEditor extends DefaultCellEditor {
-	private static final long serialVersionUID = 201108112016L;
-
-	private DateFormat parseFormat = new SimpleDateFormat("yyyyMMdd");
-	private DateFormat editFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private Calendar data;
-
-	public MyDateEditor() {
-		// TODO use INputVerifier ? DateVerifier
-		super(new JTextField());
-		getComponent().setName("Table.editor");
-	}
-
-	@Override
-	public boolean stopCellEditing() {
-		String str = (String) super.getCellEditorValue();
-		if ("".equals(str)) {
-			super.stopCellEditing();
-		}
-		str = str.replaceAll("[^0-9]", "");
-		try {
-			data = DateUtils.getCalendar(parseFormat.parse(str));
-		} catch (ParseException e) {
-			((JComponent) getComponent()).setBorder(new LineBorder(Color.red));
-			return false;
-		}
-		return super.stopCellEditing();
-	}
-
-	@Override
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-		this.data = null;
-		if (value instanceof Calendar) {
-			value = editFormat.format(((Calendar) value).getTime());
-		}
-		((JComponent) getComponent()).setBorder(new LineBorder(Color.black));
-		return super.getTableCellEditorComponent(table, value, isSelected, row, column);
-	}
-
-	@Override
-	public Object getCellEditorValue() {
-		return data;
-	}
-}
-
-class NotNullEditor extends DefaultCellEditor {
-	private static final long serialVersionUID = 201108112016L;
-
-	public NotNullEditor(JComboBox combobox) {
-		super(combobox);
-	}
-
-	@Override
-	public boolean stopCellEditing() {
-		JComboBox combo = (JComboBox) getComponent();
-		if (combo.getSelectedItem() == null) {
-			return false;
-		}
-		return super.stopCellEditing();
-	}
 }

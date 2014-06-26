@@ -17,7 +17,7 @@ import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
-import com.proserus.stocks.ui.view.transactions.ComboRender;
+import com.proserus.stocks.ui.view.general.ComboBoxModelRenderer;
 
 public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implements ActionListener, EventListener, KeyListener {
 	private static final long serialVersionUID = 201404041920L;
@@ -35,7 +35,7 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 				getCurrencyField().addItem(cur);
 			}
 		}
-		getCurrencyField().setRenderer(new ComboRender());
+		getCurrencyField().setRenderer(new ComboBoxModelRenderer());
 		getCurrencyField().setMaximumRowCount(12);
 
 		for (SectorEnum sector : SectorEnum.retrieveSortedSectors()) {
@@ -99,14 +99,17 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getActionCommand().startsWith("add")) {
-			addSymbol();
+			if (!addSymbol()) {
+				return;
+			}
 		}
+		// covers 'add & close' + 'close' buttons
 		if (arg0.getActionCommand().endsWith("lose")) {
 			((AbstractDialog) getParent().getParent().getParent().getParent()).dispose();
 		}
 	}
 
-	private void addSymbol() {
+	private boolean addSymbol() {
 		if (!getSymbolField().getText().isEmpty()) {
 			Symbol s = ViewControllers.getBoBuilder().getSymbol();
 			s.setTicker(getSymbolField().getText());
@@ -123,14 +126,18 @@ public class AddEditSymbolPanelImpl extends AbstractAddEditSymbolPanel implement
 			getSectorField().setSelectedItem(SectorEnum.UNKNOWN);
 			getCompanyNameField().setText("");
 			getUseCustomPriceField().setSelected(false);
+			return true;
 		} else {
+			getSymbolField().setBackground(Color.red);
 			JOptionPane.showConfirmDialog(this, REQUIRED_FIELD_S_MISSING, CANNOT_ADD_SYMBOL, JOptionPane.DEFAULT_OPTION,
 					JOptionPane.WARNING_MESSAGE);
+			return false;
 		}
 	}
 
 	private void updateNameWithCurrentSymbol() {
 		Symbol s = null;
+		getSymbolField().setBackground(Color.white);
 		Object o = getSymbolField().getText().trim();
 		if (o instanceof String) {
 			s = ((String) o).isEmpty() ? null : ViewControllers.getController().getSymbol((String) o);

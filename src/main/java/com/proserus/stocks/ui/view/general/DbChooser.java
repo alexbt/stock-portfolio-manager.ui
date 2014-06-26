@@ -14,8 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.proserus.stocks.bo.common.Database;
 import com.proserus.stocks.bo.common.DatabasePaths;
@@ -25,11 +25,9 @@ import com.proserus.stocks.bp.events.EventListener;
 import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
-import com.proserus.stocks.ui.view.transactions.ComboEditor;
-import com.proserus.stocks.ui.view.transactions.ComboRender;
 
 public class DbChooser implements EventListener, ActionListener, ComponentListener {
-	private static final Logger LOGGER = Logger.getLogger(DbChooser.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(DbChooser.class.getName());
 
 	private JComboBox comboBox;
 	private SortedComboBoxModel comboModel;
@@ -50,8 +48,8 @@ public class DbChooser implements EventListener, ActionListener, ComponentListen
 
 		comboModel = new SortedComboBoxModel();
 		comboBox = new JComboBox(comboModel);
-		comboBox.setRenderer(new ComboRender());
-		comboBox.setEditor(new ComboEditor());
+		comboBox.setRenderer(new ComboBoxModelRenderer());
+		comboBox.setEditor(new ComboBoxModelEditor());
 
 		JLabel lblIfYouWish = new JLabel(
 				"<html>If you wish to avoid of this message, <br/>please choose the <i>unwanted</i> database and '<i>File -> Delete current portfolio</i>'</html>'");
@@ -129,10 +127,10 @@ public class DbChooser implements EventListener, ActionListener, ComponentListen
 		if (e.getActionCommand().equals("ok")) {
 			dialog.dispose();
 			databases.setSelectedDatabase((Database) comboBox.getSelectedItem());
-			LOGGER.log(Level.INFO, "Selected database is: " + databases.getSelectedDatabase());
+			LOGGER.info("Selected database is: " + databases.getSelectedDatabase());
 			ModelChangeEvents.DATABASE_SELECTED.fire(databases);
 		} else if (e.getActionCommand().equals("cancel")) {
-			LOGGER.log(Level.INFO, "User dit not choose a database, closing the application");
+			LOGGER.info("User dit not choose a database, closing the application");
 			System.exit(1);
 		}
 	}
