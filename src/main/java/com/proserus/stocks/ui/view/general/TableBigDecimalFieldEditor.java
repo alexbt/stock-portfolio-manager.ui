@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +13,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
-import com.proserus.stocks.bo.utils.BigDecimalUtils;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier;
+import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier.AllowedValues;
 
 public class TableBigDecimalFieldEditor extends DefaultCellEditor {
 	private static final long serialVersionUID = 201408112016L;
@@ -25,8 +23,8 @@ public class TableBigDecimalFieldEditor extends DefaultCellEditor {
 		private static final long serialVersionUID = 201407071234L;
 
 		{
-			put(true, new NumberVerifier(true, true));
-			put(false, new NumberVerifier(false, false));
+			put(true, new NumberVerifier(AllowedValues.EMPTY_OR_GREATER_EQUALS_TO_ZERO));
+			put(false, new NumberVerifier(AllowedValues.NOTEMPTY_AND_GREATER_THAN_ZERO));
 		}
 	};
 
@@ -40,8 +38,7 @@ public class TableBigDecimalFieldEditor extends DefaultCellEditor {
 		JTextField field = (JTextField) getComponent();
 		boolean b = numberVerifiers.get(isZeroAccepted).verify(field);
 		if (!b) {
-			field.setText((BigDecimalUtils.formatNumber(field.getText())));
-			return true;
+			return false;
 		}
 		return super.stopCellEditing();
 	}
@@ -50,11 +47,7 @@ public class TableBigDecimalFieldEditor extends DefaultCellEditor {
 	public Object getCellEditorValue() {
 		String no = (String) super.getCellEditorValue();
 		BigDecimal number;
-		try {
-			number = BigDecimal.valueOf(NumberFormat.getInstance().parse(no).doubleValue());
-		} catch (ParseException e) {
-			number = BigDecimal.ZERO;
-		}
+		number = BigDecimal.valueOf(Double.valueOf(no));
 
 		((JComponent) getComponent()).setBorder(new LineBorder(Color.black));
 		((JComponent) getComponent()).setBackground(Color.white);

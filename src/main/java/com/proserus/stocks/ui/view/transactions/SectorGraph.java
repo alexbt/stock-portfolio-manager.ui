@@ -22,11 +22,7 @@ public class SectorGraph extends ChartPanel {
 
 	public void updateData(Collection<? extends SectorAnalysis> col) {
 
-		JFreeChart chart = ChartFactory.createPieChart("Market Value by Sectors (%)", // chart
-																						// title
-				createDataset(col), // data
-				false, // include legend
-				false, false);
+		JFreeChart chart = ChartFactory.createPieChart("Market Value by Sectors (%)", createDataset(col), false, false, false);
 		final PiePlot plot = (PiePlot) chart.getPlot();
 		// plot.set
 		// PieRenderer renderer = ((BarRenderer) chart.getPlot().getRenderer());

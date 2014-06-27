@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
@@ -33,7 +34,9 @@ import com.proserus.stocks.bp.utils.DateUtils;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.SortedComboBoxModel;
+import com.proserus.stocks.ui.view.common.verifiers.DateVerifier;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier;
+import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier.AllowedValues;
 import com.proserus.stocks.ui.view.general.ComboBoxModelRenderer;
 import com.proserus.stocks.ui.view.symbols.EmptySymbol;
 
@@ -110,19 +113,17 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		((JTextField) getSymbolField().getEditor().getEditorComponent()).setBorder(getTextboxBorder());
 		getSymbolField().getEditor().getEditorComponent().addKeyListener(this);
 		getSymbolField().setMaximumRowCount(12);
-		// ((JTextField)
-		// (getSymbolField().getEditor().getEditorComponent())).setInputVerifier(new
-		// SymbolVerifier());
 
-		NumberVerifier verifMandatory = new NumberVerifier(false, false);
-		NumberVerifier verifReinvest = new NumberVerifier(false, true);
+		NumberVerifier verifMandatory = new NumberVerifier(AllowedValues.NOTEMPTY_AND_GREATER_THAN_ZERO);
+		NumberVerifier verifReinvest = new NumberVerifier(AllowedValues.EMPTY_OR_GREATER_THAN_ZERO);
 		getPriceField().setInputVerifier(verifMandatory);
 		getTotalField().setInputVerifier(verifMandatory);
 		getQuantityField().setInputVerifier(verifMandatory);
-		getCommissionField().setInputVerifier(new NumberVerifier(true, true));
+		getCommissionField().setInputVerifier(new NumberVerifier(AllowedValues.EMPTY_OR_GREATER_EQUALS_TO_ZERO));
 		getReinvestPriceField().setInputVerifier(verifReinvest);
 		getReinvestTotalField().setInputVerifier(verifReinvest);
 		getReinvestQuantityField().setInputVerifier(verifReinvest);
+		((JFormattedTextField) dateDateTextField()).setInputVerifier(new DateVerifier());
 		getDateField().setToolTipText("Format is yyyy-MM-dd");
 
 		getCompanyNameField().setDisabledTextColor(Color.BLACK);
@@ -183,6 +184,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 	}
 
 	protected boolean addTransaction() {
+		dateDateTextField().getInputVerifier().verify(dateDateTextField());
 		getPriceField().getInputVerifier().verify(getPriceField());
 		getTotalField().getInputVerifier().verify(getTotalField());
 		getQuantityField().getInputVerifier().verify(getQuantityField());
@@ -198,7 +200,6 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		}
 		Object o = getSymbolField().getSelectedItem();
 		if (o == null || (o instanceof String && ((String) o).isEmpty())) {
-			// getSymbolField().setBackground(Color.red);
 			getSymbolField().getEditor().getEditorComponent().setBackground(Color.red);
 		}
 
@@ -206,7 +207,7 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		if (fieldHasError(getPriceField()) || fieldHasError(getQuantityField()) || fieldHasError(getCommissionField())
 				|| getDateField().getDate() == null || getPriceField().getText().isEmpty() || fieldHasError(getTotalField())
 				|| getQuantityField().getText().isEmpty() || fieldHasError(getReinvestQuantityField())
-				|| fieldHasError(getReinvestPriceField()) || fieldHasError(getReinvestTotalField())) {
+				|| fieldHasError(getReinvestPriceField()) || fieldHasError(getReinvestTotalField()) || fieldHasError(dateDateTextField())) {
 
 		} else {
 
@@ -241,6 +242,10 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		}
 
 		return success;
+	}
+
+	private JFormattedTextField dateDateTextField() {
+		return (JFormattedTextField) getDateField().getComponent(0);
 	}
 
 	private boolean fieldHasError(JTextField field) {

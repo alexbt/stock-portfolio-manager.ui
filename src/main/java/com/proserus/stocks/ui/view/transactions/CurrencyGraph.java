@@ -22,11 +22,7 @@ public class CurrencyGraph extends ChartPanel {
 
 	public void updateData(Collection<? extends CurrencyAnalysis> col) {
 
-		JFreeChart chart = ChartFactory.createPieChart("Market Value by Currencies (%)", // chart
-																							// title
-				createDataset(col), // data
-				false, // include legend
-				false, false);
+		JFreeChart chart = ChartFactory.createPieChart("Market Value by Currencies (%)", createDataset(col), false, false, false);
 		final PiePlot plot = (PiePlot) chart.getPlot();
 		plot.setLabelGenerator(new StandardPieSectionLabelGenerator("{0} = {2}", NumberFormat.getNumberInstance(), NumberFormat
 				.getPercentInstance()));
