@@ -96,7 +96,7 @@ public abstract class AbstractAddTransactionPanel extends JPanel {
 		dateField = new DatePicker(Calendar.getInstance().getTime(), new SimpleDateFormat("yyyy-MM-dd"));
 		// dateField.setcColumns(10);
 
-		JLabel symbolLabel = new JLabel("Symbol:");
+		JLabel symbolLabel = new JLabel("Symbol (Yahoo finance):");
 		priceField = new JTextField();
 		priceField.setColumns(10);
 

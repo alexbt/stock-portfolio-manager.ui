@@ -27,11 +27,8 @@ public class YearGraph extends ChartPanel {
 
 	public void updateData(Collection<? extends YearAnalysis> col) {
 
-		JFreeChart chart = ChartFactory.createBarChart("Overall Return per Year (%)", // chart
-																						// title
-				"", "", createDataset(col), // data
-				PlotOrientation.HORIZONTAL, false, // include legend
-				false, false);
+		JFreeChart chart = ChartFactory.createBarChart("Overall Return per Year (%)", "", "", createDataset(col),
+				PlotOrientation.HORIZONTAL, false, false, false);
 
 		if (!col.isEmpty()) {
 			BarRenderer renderer = (BarRenderer) chart.getCategoryPlot().getRenderer();

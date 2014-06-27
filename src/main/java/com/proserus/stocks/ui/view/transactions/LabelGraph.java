@@ -26,11 +26,8 @@ public class LabelGraph extends ChartPanel {
 
 	public void updateData(Collection<? extends LabelAnalysis> col) {
 
-		JFreeChart chart = ChartFactory.createBarChart("Market Value by Labels (may overlap)", // chart
-																								// title
-				"", "", createDataset(col), // data
-				PlotOrientation.HORIZONTAL, false, // include legend
-				false, false);
+		JFreeChart chart = ChartFactory.createBarChart("Market Value by Labels (may overlap)", "", "", createDataset(col),
+				PlotOrientation.HORIZONTAL, false, false, false);
 		BarRenderer renderer = ((BarRenderer) chart.getCategoryPlot().getRenderer());
 		renderer.setSeriesPaint(0, Color.green);
 		renderer.setMaximumBarWidth(.10d);

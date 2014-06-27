@@ -28,6 +28,7 @@ import com.proserus.stocks.bp.events.ModelChangeEvents;
 import com.proserus.stocks.ui.controller.ViewControllers;
 import com.proserus.stocks.ui.view.common.AbstractDialog;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier;
+import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier.AllowedValues;
 import com.proserus.stocks.ui.view.common.verifiers.YearVerifier;
 
 public class SymbolsModificationView extends AbstractDialog implements ActionListener, FocusListener, EventListener {
@@ -117,7 +118,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = .25;
 		southPanel.add(customPrice, gridBagConstraints);
-		customPrice.setInputVerifier(new NumberVerifier(true, true));
+		customPrice.setInputVerifier(new NumberVerifier(AllowedValues.EMPTY_OR_GREATER_EQUALS_TO_ZERO));
 
 		gridBagConstraints.fill = GridBagConstraints.VERTICAL;
 		gridBagConstraints.anchor = GridBagConstraints.CENTER;
