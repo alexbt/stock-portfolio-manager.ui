@@ -226,7 +226,6 @@ public class TransactionImpl implements Transaction {
 	public void setLabels(Collection<Label> labels) {
 		Validate.notNull(labels);
 		Validate.isTrue(!labels.contains(null));
-		Validate.isTrue(!labels.contains(""));
 
 		for (Label label : labels) {
 			label.removeTransaction(this);
