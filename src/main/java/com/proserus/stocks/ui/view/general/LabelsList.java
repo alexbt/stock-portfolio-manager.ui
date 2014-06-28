@@ -369,7 +369,7 @@ public class LabelsList extends JPanel implements KeyListener, EventListener, Ac
 		}
 		CheckListItem item = (CheckListItem) list.getModel().getElementAt(index);
 
-		if (item == null || event == null || item.getIcon() == null || item.getIcon().getLocation() == null) {
+		if (item == null || item.getIcon() == null || item.getIcon().getLocation() == null) {
 			return;
 		}
 		if ((item.getIcon().getLocation().getX() != 0) && item.getIcon().getLocation().getX() < event.getPoint().getX()) {

@@ -163,7 +163,7 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		if (e.getSource().equals(northPanel.getSymbolField()) && !northPanel.getSymbolField().equals(symbol.getTicker())) {
+		if (e.getSource().equals(northPanel.getSymbolField()) && !northPanel.getSymbolField().getText().equals(symbol.getTicker())) {
 			String oldValue = symbol.getTicker();
 			symbol.setTicker(northPanel.getSymbolField().getText());
 			symbol.setName("");
@@ -175,17 +175,20 @@ public class SymbolsModificationView extends AbstractDialog implements ActionLis
 				northPanel.getSymbolField().setText(oldValue);
 			}
 		} else {
-			if (e.getSource().equals(northPanel.getCompanyNameField()) && !northPanel.getCompanyNameField().equals(symbol.getName())) {
+			if (e.getSource().equals(northPanel.getCompanyNameField())
+					&& !northPanel.getCompanyNameField().getText().equals(symbol.getName())) {
 				symbol.setName(northPanel.getCompanyNameField().getText());
 				ViewControllers.getController().updateSymbol(symbol);
 			} else if (e.getSource().equals(northPanel.getUseCustomPriceField())
-					&& !northPanel.getUseCustomPriceField().equals(symbol.isCustomPriceFirst())) {
+					&& northPanel.getUseCustomPriceField().isSelected() != symbol.isCustomPriceFirst()) {
 				symbol.setCustomPriceFirst(northPanel.getUseCustomPriceField().isSelected());
 				ViewControllers.getController().updateSymbol(symbol);
-			} else if (e.getSource().equals(northPanel.getCurrencyField()) && !northPanel.getCurrencyField().equals(symbol.getCurrency())) {
+			} else if (e.getSource().equals(northPanel.getCurrencyField())
+					&& !northPanel.getCurrencyField().getSelectedItem().equals(symbol.getCurrency())) {
 				symbol.setCurrency((CurrencyEnum) northPanel.getCurrencyField().getSelectedItem());
 				ViewControllers.getController().updateSymbol(symbol);
-			} else if (e.getSource().equals(northPanel.getSectorField()) && !northPanel.getSectorField().equals(symbol.getSector())) {
+			} else if (e.getSource().equals(northPanel.getSectorField())
+					&& !northPanel.getSectorField().getSelectedItem().equals(symbol.getSector())) {
 				symbol.setSector((SectorEnum) northPanel.getSectorField().getSelectedItem());
 				ViewControllers.getController().updateSymbol(symbol);
 			}

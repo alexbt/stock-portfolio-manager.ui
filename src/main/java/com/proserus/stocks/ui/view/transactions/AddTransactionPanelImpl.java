@@ -354,26 +354,26 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 			s = (Symbol) o;
 		}
 
-		boolean isNew = s instanceof EmptySymbol;
-		getCompanyNameField().setEditable(isNew);
-		getCompanyNameField().setEnabled(isNew);
-		getCurrencyField().setEnabled(isNew);
-		getSectorField().setEnabled(isNew);
-		getSectorField().setSelectedItem(s.getSector());
-		getCurrencyField().setSelectedItem(s.getCurrency());
-		getCompanyNameField().setText(s.getName());
+		if (s != null) {
+			boolean isNew = s instanceof EmptySymbol;
+			getCompanyNameField().setEditable(isNew);
+			getCompanyNameField().setEnabled(isNew);
+			getCurrencyField().setEnabled(isNew);
+			getSectorField().setEnabled(isNew);
+			getSectorField().setSelectedItem(s.getSector());
+			getCurrencyField().setSelectedItem(s.getCurrency());
+			getCompanyNameField().setText(s.getName());
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		if (arg0.isConsumed())
-			if (!getQuantityField().getText().isEmpty() && !getPriceField().getText().isEmpty()) {
-			}
 
-		// TODO 0.24 remove arg0.getComponent().getParent()!=null after testing
-		if (arg0.getComponent().getParent().equals(getSymbolField()) && arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
-			updateNameWithCurrentSymbol();
-		}
+			// TODO remove arg0.getComponent().getParent()!=null after testing
+			if (arg0.getComponent().getParent().equals(getSymbolField()) && arg0.getKeyCode() != KeyEvent.VK_ESCAPE) {
+				updateNameWithCurrentSymbol();
+			}
 
 		autoCalculateTotal(arg0, getCommissionField(), getPriceField(), getQuantityField(), getTotalField());
 		autoComputeFields(arg0, getCommissionField(), getPriceField(), getTotalField(), getQuantityField());

@@ -39,7 +39,7 @@ public class AnalysisTest extends AbstractUnit {
 		t = createTransaction(TransactionType.BUY, c, new BigDecimal(10), new BigDecimal(25), new BigDecimal(1000), s, labels);
 		col.add(t);
 
-		t = createTransaction(TransactionType.DIVIDEND, c, BigDecimal.ZERO, new BigDecimal(.04), new BigDecimal(1000), s, labels);
+		t = createTransaction(TransactionType.DIVIDEND, c, BigDecimal.ZERO, new BigDecimal(".04"), new BigDecimal(1000), s, labels);
 		col.add(t);
 
 		c.add(Calendar.MONTH, 3);

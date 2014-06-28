@@ -208,7 +208,9 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 			String versionFromWeb;
 
 			versionFromWeb = in.readLine();
-			value = Double.parseDouble(versionFromWeb);
+			if (versionFromWeb != null) {
+				value = Double.parseDouble(versionFromWeb);
+			}
 
 		} catch (MalformedURLException e) {
 		} catch (IOException e) {

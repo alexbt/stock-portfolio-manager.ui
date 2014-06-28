@@ -289,7 +289,6 @@ public class SymbolImpl implements Comparable<Symbol>, Symbol {
 	public void setPrices(Set<HistoricalPrice> prices) {
 		Validate.notNull(prices);
 		Validate.isTrue(!prices.contains(null));
-		Validate.isTrue(!prices.contains(""));
 
 		this.prices = prices;
 		mapPrices.clear();
