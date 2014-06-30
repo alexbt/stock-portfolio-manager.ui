@@ -134,7 +134,8 @@ public class Window extends JFrame implements WindowListener, Observer, Property
 		if (ModelChangeEvents.DATABASE_SELECTED.equals(event)) {
 			setTitle(PROSERUS_STOCKS_PORTFOLIO_0_1_BETA + " - "
 					+ StringUtils.right(ModelChangeEvents.DATABASE_SELECTED.resolveModel(model).getSelectedDatabase().getPath(), 200));
-			LOGGER.info("Selected database: " + ModelChangeEvents.DATABASE_SELECTED.resolveModel(model).getSelectedDatabase());
+			LOGGER.info("Selected database: {}", new Object[] { ModelChangeEvents.DATABASE_SELECTED.resolveModel(model)
+					.getSelectedDatabase() });
 			ViewControllers.getController().checkDatabaseVersion();
 			ViewControllers.getController().refresh();
 		}
