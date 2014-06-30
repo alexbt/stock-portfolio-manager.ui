@@ -9,6 +9,8 @@ import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import com.proserus.stocks.bp.utils.DateUtils;
+
 public class DateVerifier extends InputVerifier {
 	private static final String EMPTY_STR = "";
 	private static final String FORMAT_IS_YYYYMMDD = "format is yyyymmdd";
@@ -34,7 +36,7 @@ public class DateVerifier extends InputVerifier {
 				c.set(Calendar.YEAR, year);
 				c.set(Calendar.MONTH, month);
 				c.set(Calendar.DAY_OF_MONTH, day);
-				if (c.before(Calendar.getInstance()) && c.get(Calendar.YEAR) == year && c.get(Calendar.MONTH) == month
+				if (c.before(DateUtils.getTomorrow()) && c.get(Calendar.YEAR) == year && c.get(Calendar.MONTH) == month
 						&& c.get(Calendar.DAY_OF_MONTH) == day) {
 					calendar = c;
 				}
