@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 
 import javax.persistence.PersistenceException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,8 @@ public class Launch {
 		LOGGER.info("**********************************");
 		LOGGER.info("Starting...");
 		LOGGER.info("**********************************");
-		LOGGER.info("installation.folder: " + PathUtils.getInstallationFolder());
-		LOGGER.info("current.folder: " + PathUtils.getCurrentFolder());
+		LOGGER.info("installation.folder: {}", new Object[] { PathUtils.getInstallationFolder() });
+		LOGGER.info("current.folder: {}", new Object[] { PathUtils.getCurrentFolder() });
 
 		try {
 			EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
@@ -38,8 +39,23 @@ public class Launch {
 
 			ViewControllers.getController().checkNewVersion();
 			ViewControllers.getWindow().start();
-			new DbChooser();
-			ViewControllers.getController().checkDatabaseDuplicate();
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					new DbChooser();
+				}
+			});
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					new Thread() {
+						@Override
+						public void run() {
+							ViewControllers.getController().checkDatabaseDuplicate();
+						}
+					}.start();
+				}
+			});
 
 		} catch (PersistenceException e) {
 			JOptionPane.showMessageDialog(null, "Database error!\n" + "There seem to be an error with the database\n"

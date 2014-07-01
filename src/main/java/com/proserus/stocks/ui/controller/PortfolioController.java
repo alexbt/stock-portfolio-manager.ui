@@ -142,6 +142,7 @@ public class PortfolioController {
 		// analysisBp.recalculate(new FilterBp());
 		refreshFilteredData();
 		refreshOther();
+		ModelChangeEvents.LOADING_COMPLETED.fire();
 	}
 
 	public void refreshOther() {
@@ -346,17 +347,17 @@ public class PortfolioController {
 	public void checkDatabaseDuplicate() {
 		final DatabasePaths dbPaths = new DatabasePaths();
 
-		dbPaths.setBinaryCurrentFolder(PathUtils.getInstallationFolder());
-		dbPaths.setOsCurrentFolder(PathUtils.getCurrentFolder());
+		dbPaths.setInstallationFolder(PathUtils.getInstallationFolder());
+		dbPaths.setCurrentFolder(PathUtils.getCurrentFolder());
 
-		boolean isBinAndOsSame = new File(dbPaths.getBinaryCurrentFolder()).equals(new File(dbPaths.getOsCurrentFolder()));
+		boolean isBinAndOsSame = new File(dbPaths.getInstallationFolder()).equals(new File(dbPaths.getCurrentFolder()));
 
-		List<File> col = RecursiveFileUtils.listFiles(new File(dbPaths.getBinaryCurrentFolder()), 3, "db.script");
+		List<File> col = RecursiveFileUtils.listFiles(new File(dbPaths.getInstallationFolder()), 2, "db.script");
 		if (!isBinAndOsSame) {
-			col.addAll(RecursiveFileUtils.listFiles(new File(dbPaths.getOsCurrentFolder()), 3, "db.script"));
+			col.addAll(RecursiveFileUtils.listFiles(new File(dbPaths.getCurrentFolder()), 1, "db.script"));
 		}
 		if (col.isEmpty()) {
-			dbPaths.addDb(new Database(dbPaths.getBinaryCurrentFolder() + System.getProperty("file.separator") + "data"
+			dbPaths.addDb(new Database(dbPaths.getInstallationFolder() + System.getProperty("file.separator") + "data"
 					+ System.getProperty("file.separator") + "db"));
 		} else {
 			for (File file : col) {
@@ -364,7 +365,7 @@ public class PortfolioController {
 			}
 		}
 
-		LOGGER.info("Databases detected: " + dbPaths.getDatabases());
+		LOGGER.info("Databases detected: {}", new Object[] { dbPaths.getDatabases() });
 		ModelChangeEvents.DATABASE_DETECTED.fire(dbPaths);
 	}
 

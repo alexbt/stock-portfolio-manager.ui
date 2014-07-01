@@ -118,7 +118,7 @@ public class BackupAction extends AbstractAction implements EventListener {
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(null, "Failed to create backup archive " + backupZipFile.getName(),
 						"Error creating backup archive", JOptionPane.ERROR_MESSAGE, null);
-				LOGGER.error("Failed to create backup archive " + backupZipFile.getName(), e);
+				LOGGER.error("Failed to create backup archive {}", new Object[] { backupZipFile.getName() }, e);
 			}
 		}
 	}
@@ -131,10 +131,10 @@ public class BackupAction extends AbstractAction implements EventListener {
 		List<Database> sortedList = new ArrayList<Database>(db.getDatabases());
 		Collections.sort(sortedList);
 
-		writeMeta(db.getOsCurrentFolder(), db.getBinaryCurrentFolder(), db.getSelectedDatabase(), sortedList, out);
+		writeMeta(db.getCurrentFolder(), db.getInstallationFolder(), db.getSelectedDatabase(), sortedList, out);
 
-		addFiles(out, db.getBinaryCurrentFolder(), BINARY_CURRENT, true);
-		listFiles(out, db.getBinaryCurrentFolder(), BINARY_CURRENT);
+		addFiles(out, db.getInstallationFolder(), BINARY_CURRENT, true);
+		listFiles(out, db.getInstallationFolder(), BINARY_CURRENT);
 
 		int i = 1;
 		for (Database dat : sortedList) {

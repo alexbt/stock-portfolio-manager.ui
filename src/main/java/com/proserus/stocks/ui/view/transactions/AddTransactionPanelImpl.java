@@ -174,11 +174,11 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 
 		if (arg0.getActionCommand().equals("addClose")) {
 			if (addTransaction()) {
-				emptySymbolSpecificFields();
+				emptyAllFields();
 				((AbstractDialog) getParent().getParent().getParent().getParent()).dispose();
 			}
 		} else if (arg0.getActionCommand().equals("close")) {
-			emptySymbolSpecificFields();
+			emptyAllFields();
 			((AbstractDialog) getParent().getParent().getParent().getParent()).dispose();
 		}
 	}
@@ -289,12 +289,6 @@ public class AddTransactionPanelImpl extends AbstractAddTransactionPanel impleme
 		getReinvestTotalField().setEnabled(true);
 		getReinvestPriceField().setEnabled(true);
 		getReinvestQuantityField().setEnabled(true);
-	}
-
-	private void emptySymbolSpecificFields() {
-		getSymbolField().setSelectedItem("");
-		getCompanyNameField().setName(EMPTY_STR);
-		getTypeField().setSelectedIndex(0);
 	}
 
 	private Transaction createTransaction(Symbol s, Date date, TransactionType type, String price, String quantity, String commission,

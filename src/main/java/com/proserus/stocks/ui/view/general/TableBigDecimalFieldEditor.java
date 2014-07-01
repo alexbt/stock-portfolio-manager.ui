@@ -13,6 +13,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import com.proserus.stocks.bo.utils.BigDecimalUtils;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier;
 import com.proserus.stocks.ui.view.common.verifiers.NumberVerifier.AllowedValues;
 
@@ -47,7 +48,7 @@ public class TableBigDecimalFieldEditor extends DefaultCellEditor {
 	public Object getCellEditorValue() {
 		String no = (String) super.getCellEditorValue();
 		BigDecimal number;
-		number = BigDecimal.valueOf(Double.valueOf(no));
+		number = BigDecimal.valueOf(Double.valueOf(BigDecimalUtils.formatNumberForDouble(no)));
 
 		((JComponent) getComponent()).setBorder(new LineBorder(Color.black));
 		((JComponent) getComponent()).setBackground(Color.white);
