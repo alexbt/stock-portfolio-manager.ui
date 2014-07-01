@@ -13,6 +13,7 @@ import javax.swing.AbstractAction;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
@@ -43,11 +44,12 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 	private PortfolioController controller = ViewControllers.getController();
 	private TableRender tableRender = new TableRender();
 
-	private SymbolsTableModel tableModel;;
+	private SymbolsTableModel tableModel;
 	private HashMap<String, Color> colors = new HashMap<String, Color>();
 	private TableRowSorter<SymbolsTableModel> sorter;
 	private AbstractAction openSymbol = ShowEditSymbolAction.getInstance();
 	private static SymbolsTable symbolTable = new SymbolsTable();
+	private Symbol selectSymbol = null;
 
 	static public SymbolsTable getInstance() {
 		return symbolTable;
@@ -98,7 +100,9 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 			}
 			i++;
 		}
+		getSelectionModel().addListSelectionListener(this);
 
+		tableModel.addTableModelListener(this);
 		addKeyListener(this);
 		setFirstRowSorted();
 		addMouseListener(this);
@@ -171,12 +175,6 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 		if (getSelectedRow() < 0) {
 			return;
 		}
-		int row = getRowSorter().convertRowIndexToModel(getSelectedRow());
-		Symbol symbol = tableModel.getSymbol(row);
-
-		if (!evt.isAltGraphDown() && !evt.isControlDown()) {
-			controller.setSelection(symbol);
-		}
 		if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() == 2 && getSelectedColumn() == 2) {
 			openSymbol.actionPerformed(null);
 		}
@@ -184,5 +182,19 @@ public class SymbolsTable extends AbstractTable implements EventListener, KeyLis
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		super.valueChanged(e);
+		if (getSelectedRow() < 0) {
+			return;
+		}
+		int row = getRowSorter().convertRowIndexToModel(getSelectedRow());
+		Symbol symbol = tableModel.getSymbol(row);
+		if (!symbol.equals(selectSymbol)) {
+			selectSymbol = symbol;
+			controller.setSelection(selectSymbol);
+		}
 	}
 }
