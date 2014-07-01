@@ -32,17 +32,16 @@ public class DbUtils {
 				s = s.trim();
 				if (!s.isEmpty() && !s.startsWith("--")) {
 					try {
-						LOGGER.debug("Executing " + s);
+						LOGGER.debug("Executing {}", new Object[] { s });
 						pm.createNativeQuery(s).executeUpdate();
 						LOGGER.debug("Executed successfully");
 					} catch (PersistenceException e) {
-						// LOGGER.error("Failed to execute " + s, e);
 						if (!e.getCause().getCause().toString().toLowerCase().contains("already exists")) {
 							LOGGER.info("A problem occured executing {}: {}", new Object[] { s, e.getCause().getCause() });
 							pm.getTransaction().setRollbackOnly();
 						}
 					} catch (RuntimeException e) {
-						LOGGER.error("Failed to execute " + s, e);
+						LOGGER.error("Failed to execute {}", new Object[] { s }, e);
 						pm.getTransaction().setRollbackOnly();
 						throw e;
 					}

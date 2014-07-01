@@ -273,7 +273,7 @@ public class Menu extends JMenuBar implements EventListener {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
 			menuItem.setAction(new ShowHideTableColumnsAction(OverviewSymbolTable.getInstance()));
 			menuItem.setText(str);
-			menuItem.setActionCommand("" + i);
+			menuItem.setActionCommand(String.valueOf(i));
 			menuItem.setSelected(true);
 			submenu.add(menuItem);
 			i++;
@@ -288,7 +288,7 @@ public class Menu extends JMenuBar implements EventListener {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
 			menuItem.setAction(new ShowHideTableColumnsAction(OverviewCurrencyTable.getInstance()));
 			menuItem.setText(str);
-			menuItem.setActionCommand("" + i);
+			menuItem.setActionCommand(String.valueOf(i));
 			menuItem.setSelected(true);
 			submenu.add(menuItem);
 			i++;
@@ -308,7 +308,7 @@ public class Menu extends JMenuBar implements EventListener {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
 			menuItem.setAction(new ShowHideTableColumnsAction(TransactionTable.getInstance()));
 			menuItem.setText(str);
-			menuItem.setActionCommand("" + i);
+			menuItem.setActionCommand(String.valueOf(i));
 			menuItem.setSelected(true);
 			submenu.add(menuItem);
 			i++;
@@ -329,7 +329,7 @@ public class Menu extends JMenuBar implements EventListener {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
 			menuItem.setAction(new ShowHideTableColumnsAction(SymbolsTable.getInstance()));
 			menuItem.setText(str);
-			menuItem.setActionCommand("" + i);
+			menuItem.setActionCommand(String.valueOf(i));
 			menuItem.setSelected(true);
 			submenu.add(menuItem);
 			i++;
@@ -354,7 +354,7 @@ public class Menu extends JMenuBar implements EventListener {
 			menuItem.setAction(new ShowHideTableColumnsAction(PerformanceSymbolTable.getInstance()));
 			menuItem.setText(str);
 			menuItem.setName(str);
-			menuItem.setActionCommand("" + i);
+			menuItem.setActionCommand(String.valueOf(i));
 			menuItem.setSelected(true);
 			submenu.add(menuItem);
 			i++;
@@ -368,7 +368,7 @@ public class Menu extends JMenuBar implements EventListener {
 		for (String str : PerformanceCurrencyModel.COLUMN_NAMES) {
 			JMenuItem menuItem = new JCheckBoxMenuItem(str);
 			menuItem.setAction(new ShowHideTableColumnsAction(PerformanceCurrencyTable.getInstance()));
-			menuItem.setActionCommand("" + i);
+			menuItem.setActionCommand(String.valueOf(i));
 			menuItem.setSelected(true);
 			menuItem.setText(str);
 			submenu.add(menuItem);

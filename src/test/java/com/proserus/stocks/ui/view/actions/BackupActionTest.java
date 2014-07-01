@@ -77,8 +77,8 @@ public class BackupActionTest extends AbstractUnit {
 				db.addDb(database);
 			}
 
-			db.setBinaryCurrentFolder(new File("src/test/resources/testZipBackup/installationFolder").getCanonicalPath());
-			db.setOsCurrentFolder(new File("src/test/resources/testZipBackup/currentDirectory").getCanonicalPath());
+			db.setInstallationFolder(new File("src/test/resources/testZipBackup/installationFolder").getCanonicalPath());
+			db.setCurrentFolder(new File("src/test/resources/testZipBackup/currentDirectory").getCanonicalPath());
 
 			assertEquals(10, db.getDatabases().size());// TODO was 11.. is 10
 														// good?
@@ -157,8 +157,8 @@ public class BackupActionTest extends AbstractUnit {
 				db.addDb(database);
 			}
 
-			db.setBinaryCurrentFolder(new File("src/test/resources/testZipBackup/installationFolder").getCanonicalPath());
-			db.setOsCurrentFolder(new File("src/test/resources/testZipBackup/currentDirectory").getCanonicalPath());
+			db.setInstallationFolder(new File("src/test/resources/testZipBackup/installationFolder").getCanonicalPath());
+			db.setCurrentFolder(new File("src/test/resources/testZipBackup/currentDirectory").getCanonicalPath());
 
 			BackupAction.getInstance().createBackupFile(newExpectedZip, db);
 		} catch (FileNotFoundException e) {

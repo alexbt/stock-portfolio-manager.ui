@@ -13,6 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,14 +33,24 @@ public class DbChooser implements EventListener, ActionListener, ComponentListen
 	private JComboBox comboBox;
 	private SortedComboBoxModel comboModel;
 	private DatabasePaths databases;
+	private LoadingAnimation loadingAnimation;
 
 	private AbstractDialog dialog = new AbstractDialog() {
 		private static final long serialVersionUID = 201404261332L;
 	};
 
 	public DbChooser() {
+		loadingAnimation = new LoadingAnimation();
 		init();
 		EventBus.getInstance().add(this, ModelChangeEvents.DATABASE_DETECTED);
+		EventBus.getInstance().add(this, ModelChangeEvents.LOADING_COMPLETED);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				loadingAnimation.setVisibile(true);
+			}
+		});
+
 	}
 
 	private void init() {
@@ -117,8 +128,12 @@ public class DbChooser implements EventListener, ActionListener, ComponentListen
 					comboModel.addElement(db);
 				}
 				comboBox.setSelectedIndex(0);
+				loadingAnimation.setVisibile(false);
 				dialog.setVisible(true);
 			}
+		} else if (ModelChangeEvents.LOADING_COMPLETED.equals(event)) {
+			loadingAnimation.setVisibile(false);
+			loadingAnimation.dispose();
 		}
 	}
 
@@ -127,8 +142,14 @@ public class DbChooser implements EventListener, ActionListener, ComponentListen
 		if (e.getActionCommand().equals("ok")) {
 			dialog.dispose();
 			databases.setSelectedDatabase((Database) comboBox.getSelectedItem());
-			LOGGER.info("Selected database is: " + databases.getSelectedDatabase());
-			ModelChangeEvents.DATABASE_SELECTED.fire(databases);
+			LOGGER.info("Selected database is: {}", new Object[] { databases.getSelectedDatabase() });
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					ModelChangeEvents.DATABASE_SELECTED.fire(databases);
+				}
+			});
+			loadingAnimation.setVisibile(true);
 		} else if (e.getActionCommand().equals("cancel")) {
 			LOGGER.info("User dit not choose a database, closing the application");
 			System.exit(1);

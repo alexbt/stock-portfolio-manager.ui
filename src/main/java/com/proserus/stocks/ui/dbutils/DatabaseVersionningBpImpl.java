@@ -58,7 +58,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 
 		try {
 			version = (DBVersion) persistenceManager.createNamedQuery("version.find").getSingleResult();
-			LOGGER.debug("database version: " + version.getDatabaseVersion());
+			LOGGER.debug("database version: {}", new Object[] { version.getDatabaseVersion() });
 		} catch (PersistenceException e2) {
 		}
 
@@ -74,7 +74,8 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 	@Override
 	public void upgrade(DBVersion version) {
 
-		LOGGER.debug("Upgrading from Version " + version.getDatabaseVersion() + " to " + DatabaseUpgradeEnum.getLatestVersion());
+		LOGGER.debug("Upgrading from Version {} to {}",
+				new Object[] { version.getDatabaseVersion(), DatabaseUpgradeEnum.getLatestVersion() });
 		boolean isFirstTime = version.getDatabaseVersion() == DatabaseUpgradeEnum.VERSION_0.getVersion();
 		if (!isFirstTime && !ignorePopop) {
 			int n = JOptionPane.showConfirmDialog(null, "This new version will perform an update on the data format.\n "
@@ -91,7 +92,7 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 		try {
 			for (DatabaseUpgradeEnum dbEnu : DatabaseUpgradeEnum.values()) {
 				persistenceManager.getTransaction().begin();
-				LOGGER.debug("Upgrading to " + dbEnu.getVersion());
+				LOGGER.debug("Upgrading to {}", new Object[] { dbEnu.getVersion() });
 				if (version.getDatabaseVersion() < dbEnu.getVersion() && !persistenceManager.getTransaction().getRollbackOnly()) {
 					for (DatabaseStrategy dbStrategy : dbEnu.getStrategies()) {
 						dbStrategy.applyUpgrade(persistenceManager);
@@ -107,14 +108,14 @@ public class DatabaseVersionningBpImpl implements DatabaseVersionningBp {
 			}
 		} catch (Throwable e) {
 			if (persistenceManager.getTransaction().isActive()) {
-				LOGGER.debug("Exception while upgrading database to " + version, e);
+				LOGGER.debug("Exception while upgrading database to {}", new Object[] { version }, e);
 				persistenceManager.getTransaction().setRollbackOnly();
 			}
 		}
 
 		if (persistenceManager.getTransaction().isActive() && persistenceManager.getTransaction().getRollbackOnly()) {
 			persistenceManager.getTransaction().rollback();
-			LOGGER.debug("Rolling back database upgrade from version " + version + " back to " + initialVersion);
+			LOGGER.debug("Rolling back database upgrade from version {} back to {}", new Object[] { version, initialVersion });
 			throw new AssertionError();
 
 			// if (!isFirstTime && !ignorePopop) {

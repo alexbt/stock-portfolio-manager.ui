@@ -37,10 +37,11 @@ public class NumberVerifier extends InputVerifier {
 			ok = true;
 		} else {
 			try {
-				String no = BigDecimalUtils.formatNumber(number.getText());
-				number.setText(no);
-				Double val = Double.parseDouble(no);
-				if ((no.matches(PRICE_MASK) && val >= GREATER_THAN_ZERO)
+				String formattedForDouble = BigDecimalUtils.formatNumberForDouble(number.getText());
+				String formattedForDisplay = BigDecimalUtils.formatNumberForDisplay(number.getText());
+				number.setText(formattedForDisplay);
+				Double val = Double.parseDouble(formattedForDouble);
+				if ((formattedForDisplay.matches(PRICE_MASK) && val >= GREATER_THAN_ZERO)
 						|| (allowedValues.equals(AllowedValues.EMPTY_OR_GREATER_EQUALS_TO_ZERO) && val == ZERO)) {
 					ok = true;
 				}

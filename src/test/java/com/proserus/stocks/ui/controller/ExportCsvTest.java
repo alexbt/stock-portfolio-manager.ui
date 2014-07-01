@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -20,6 +21,7 @@ public class ExportCsvTest extends AbstractUIUnit {
 
 	@Test
 	public void test() throws IOException {
+		Locale.setDefault(Locale.CANADA);
 		Injector inject = Guice.createInjector(new GuiceModuleMock());
 		inject.getInstance(ViewControllers.class);
 
