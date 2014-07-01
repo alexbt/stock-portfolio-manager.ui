@@ -10,15 +10,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 
-import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.event.ChangeEvent;
-import javax.swing.table.TableCellEditor;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
@@ -48,6 +44,8 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 	private static final String ONE = "1";
 
 	private static final String ZERO = "0";
+
+	private Transaction selectedTransaction = null;
 
 	private PortfolioController controller = ViewControllers.getController();
 
@@ -85,7 +83,6 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 				comboBox.addItem(transactionType);
 			}
 		}
-		setCellEditor(new MyTableCellEditor());
 		getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
 
 		getColumnModel().getColumn(0).setCellEditor(new TableDateFieldEditor());
@@ -96,6 +93,8 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 		getColumnModel().getColumn(5).setCellEditor(neWithZero);
 		// getColumnModel().getColumn(6).setCellEditor(ne);
 		// setDefaultEditor(Symbol.class, editor);
+		tableModel.addTableModelListener(this);
+		getSelectionModel().addListSelectionListener(this);
 		setVisible(true);
 		setFirstRowSorted(false);
 		addMouseListener(this);
@@ -206,34 +205,17 @@ public class TransactionTable extends AbstractTable implements EventListener, Ac
 	public void mouseReleased(MouseEvent e) {
 	}
 
-}
-
-class MyTableCellEditor extends AbstractCellEditor implements TableCellEditor {
-	JComponent component = new JTextField();
-
 	@Override
-	public boolean stopCellEditing() {
-		return true;
-	}
+	public void valueChanged(ListSelectionEvent e) {
+		super.valueChanged(e);
 
-	@Override
-	public Object getCellEditorValue() {
-		return ((JTextField) component).getText();
-	}
-
-	// This method is called when a cell value is edited by the user.
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int rowIndex, int vColIndex) {
-		// 'value' is value contained in the cell located at (rowIndex,
-		// vColIndex)
-
-		if (isSelected) {
-			// cell (and perhaps other cells) are selected
+		if (getSelectedRow() < 0) {
+			return;
 		}
-
-		// Configure the component with the specified value
-		((JTextField) component).setText((String) value);
-
-		// Return the configured component
-		return component;
+		Transaction t = sorter.getModel().getTransaction(sorter.convertRowIndexToModel(getSelectedRow()));
+		if (!t.equals(selectedTransaction)) {
+			selectedTransaction = t;
+			controller.setSelection(selectedTransaction);
+		}
 	}
 }
