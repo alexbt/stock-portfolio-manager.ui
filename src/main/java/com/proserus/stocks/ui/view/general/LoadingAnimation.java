@@ -25,15 +25,13 @@ public class LoadingAnimation extends AbstractDialog {
 		panel.setLayout(layoutMgr);
 
 		ClassLoader cldr = this.getClass().getClassLoader();
-		java.net.URL imageURL = cldr.getResource("images/Logo.gif");
+		java.net.URL imageURL = cldr.getResource("images/Loading.gif");
 		ImageIcon imageIcon = new ImageIcon(imageURL);
 		JLabel iconLabel = new JLabel();
 		iconLabel.setIcon(imageIcon);
 		imageIcon.setImageObserver(iconLabel);
 
-		JLabel label = new JLabel("                      Loading...");
 		panel.add(iconLabel);
-		panel.add(label);
 		return panel;
 	}
 }
