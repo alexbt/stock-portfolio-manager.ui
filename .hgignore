@@ -13,3 +13,7 @@ syntax: regexp
 ^version\.properties$
 syntax: regexp
 \.zip$
+syntax: regexp
+^build$
+syntax: regexp
+^dependencies$

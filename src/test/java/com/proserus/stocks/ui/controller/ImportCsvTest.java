@@ -29,6 +29,7 @@ public class ImportCsvTest extends AbstractUIUnit {
 		File expectedFile = new File("src/test/resources/expectedDbImportCsv.script");
 
 		List<String> expectedLines = FileUtils.readLines(expectedFile);
+		System.out.println(FileUtils.readFileToString(originalDbFile));
 		List<String> nowLines = FileUtils.readLines(originalDbFile);
 		int i = -1;
 		for (String line : nowLines) {
@@ -71,5 +72,6 @@ public class ImportCsvTest extends AbstractUIUnit {
 		new ImportCsvTest().importFile(originalDbFile);
 		FileUtils.copyFile(new File("src/test/resources/TestUIdb/data/db.script"),
 				new File("src/test/resources/expectedDbImportCsv.script"));
+		System.exit(0);
 	}
 }
