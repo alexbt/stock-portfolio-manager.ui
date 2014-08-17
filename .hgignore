@@ -1,0 +1,19 @@
+
+syntax: regexp
+^\.settings$
+syntax: regexp
+^target$
+syntax: regexp
+^data$
+syntax: regexp
+^logs$
+syntax: regexp
+^config\.properties$
+syntax: regexp
+^version\.properties$
+syntax: regexp
+\.zip$
+syntax: regexp
+^build$
+syntax: regexp
+^dependencies$
