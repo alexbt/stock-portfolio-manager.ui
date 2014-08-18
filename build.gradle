@@ -1,0 +1,36 @@
+    dependencies {
+       dependencies {
+       compile project(':stock-portfolio-manager.bo'), project(':stock-portfolio-manager.bp')
+       compile libraries.guice
+		compile libraries.apache
+		compile libraries.log4j
+		compile libraries.microba
+		compile libraries.jta
+		compile libraries.javassist
+		compile libraries.commonscollections
+		compile libraries.hsqldb
+		compile libraries.antlr
+		compile libraries.hibernate
+		compile libraries.antlr2
+		compile libraries.dom4j
+		compile libraries.inject
+		compile libraries.opencsv
+		compile libraries.aopalliance
+		compile libraries.joda
+		compile libraries.reflections
+		testCompile libraries.mockito
+		testCompile libraries.sikuli
+		testCompile "com.googlecode.javacv:javacv:0.1"
+		}
+    }
+    
+    jar.doFirst {
+    	archiveName = 'StockPortfolioLauncher.jar'
+	    manifest {
+	    	attributes("Created-By": "Gradle",
+	        		"Main-Class": 'com.proserus.stocks.ui.Launch',
+	        		"Class-Path": ' . ' + configurations.compile.collect { it.getName() }.join(' libs/')
+	        	)
+	    }
+	}
+		

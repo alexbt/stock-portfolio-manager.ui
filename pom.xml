@@ -25,7 +25,7 @@
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							<addClasspath>true</addClasspath>
 							<classpathLayoutType>custom</classpathLayoutType>
-							<customClasspathLayout>lib/$${artifact.artifactId}-$${artifact.version}$${dashClassifier?}.$${artifact.extension}</customClasspathLayout>
+							<customClasspathLayout>libs/$${artifact.artifactId}-$${artifact.version}$${dashClassifier?}.$${artifact.extension}</customClasspathLayout>
 							<mainClass>com.proserus.stocks.ui.Launch</mainClass>
 						</manifest>
 						<manifestEntries>
