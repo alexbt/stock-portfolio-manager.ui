@@ -80,8 +80,7 @@ public class BackupActionTest extends AbstractUnit {
 			db.setInstallationFolder(new File("src/test/resources/testZipBackup/installationFolder").getCanonicalPath());
 			db.setCurrentFolder(new File("src/test/resources/testZipBackup/currentDirectory").getCanonicalPath());
 
-			assertEquals(10, db.getDatabases().size());// TODO was 11.. is 10
-														// good?
+			assertEquals(11, db.getDatabases().size());
 
 			BackupAction.getInstance().createBackupFile(backupZip, db);
 
@@ -92,8 +91,7 @@ public class BackupActionTest extends AbstractUnit {
 				expectedEntries.put(expectedEntry.getName(), expectedEntry);
 			}
 			expectedZip.close();
-			assertEquals(35, expectedEntries.size());// TODO was 35vs 41..which is
-														// good?
+			assertEquals(41, expectedEntries.size());
 
 			ZipFile testZip = new ZipFile(expectedFileZip);
 			for (Enumeration<?> e = testZip.entries(); e.hasMoreElements();) {

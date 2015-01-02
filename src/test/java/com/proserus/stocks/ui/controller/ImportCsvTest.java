@@ -20,58 +20,60 @@ import com.proserus.stocks.bp.utils.DateUtils;
 
 public class ImportCsvTest extends AbstractUIUnit {
 
-	@Test
-	@SuppressWarnings("unchecked")
-	public void test() throws IOException {
-		File originalDbFile = new File("src/test/resources/TestUIdb/data/db.script");
+    @Test
+    @SuppressWarnings("unchecked")
+    public void test() throws IOException {
+        File originalDbFile = new File("src/test/resources/TestUIdb/data/db.script");
 
-		importFile(originalDbFile);
-		File expectedFile = new File("src/test/resources/expectedDbImportCsv.script");
+        importFile(originalDbFile);
+        File expectedFile = new File("src/test/resources/expectedDbImportCsv.script");
 
-		List<String> expectedLines = FileUtils.readLines(expectedFile);
-		System.out.println(FileUtils.readFileToString(originalDbFile));
-		List<String> nowLines = FileUtils.readLines(originalDbFile);
-		int i = -1;
-		for (String line : nowLines) {
-			i++;
-			boolean toIgnore = false;
-			// Unfortunately, historical prices will change over time (for the
-			// current year (2014) and up)...
-			for (int year = 2014; year <= DateUtils.getCurrentYear(); year++) {
-				if (line.startsWith("INSERT INTO HISTORICALPRICE VALUES(") && line.endsWith("," + year + ")")) {
-					toIgnore = true;
-					break;
-				}
-			}
-			if (!toIgnore) {
-				assertEquals(expectedLines.get(i), line);
-			}
-		}
-		// assertEquals(FileUtils.readFileToString(expectedFile),
-		// FileToString(originalDbFile));
-	}
+        List<String> expectedLines = FileUtils.readLines(expectedFile);
+        List<String> nowLines = FileUtils.readLines(originalDbFile);
+        int i = -1;
+        for (String line : nowLines) {
+            if (line.startsWith("INSERT INTO SYMBOL_PRICES VALUES(") || line.startsWith("INSERT INTO HISTORICALPRICE VALUES(")) {
+                continue;
+            }
+            
+            i++;
+            boolean toIgnore = false;
+            // Unfortunately, historical prices will change over time (for the
+            // current year (2014) and up)...
+            for (int year = 2014; year <= DateUtils.getCurrentYear(); year++) {
+                if ((line.startsWith("INSERT INTO HISTORICALPRICE VALUES(") && line.endsWith("," + year + ")"))) {
+                    toIgnore = true;
+                    break;
+                }
+            }
 
-	private void importFile(File originalDbFile) throws IOException {
-		Injector inject = Guice.createInjector(new GuiceModuleMock());
-		inject.getInstance(ViewControllers.class);
+            if (!toIgnore) {
+                assertEquals(expectedLines.get(i), line);
+            }
+        }
+        // assertEquals(FileUtils.readFileToString(expectedFile),
+        // FileToString(originalDbFile));
+    }
 
-		DatabasePaths databases = new DatabasePaths();
-		databases.setSelectedDatabase(new Database("src/test/resources/testUIdb/data/db"));
-		ModelChangeEvents.DATABASE_SELECTED.fire(databases);
-		inject.getInstance(DatabaseVersionningBp.class).setIgnorePopop(true);
-		ViewControllers.getController().checkDatabaseVersion();
+    private void importFile(File originalDbFile) throws IOException {
+        Injector inject = Guice.createInjector(new GuiceModuleMock());
+        inject.getInstance(ViewControllers.class);
 
-		ViewControllers.getController().importTransactions(new File("src/test/resources/Portfolio.csv"));
+        DatabasePaths databases = new DatabasePaths();
+        databases.setSelectedDatabase(new Database("src/test/resources/testUIdb/data/db"));
+        ModelChangeEvents.DATABASE_SELECTED.fire(databases);
+        inject.getInstance(DatabaseVersionningBp.class).setIgnorePopop(true);
+        ViewControllers.getController().checkDatabaseVersion();
 
-		inject.getInstance(PersistenceManager.class).close();
-	}
+        ViewControllers.getController().importTransactions(new File("src/test/resources/Portfolio.csv"));
 
-	public static void main(String[] arg) throws IOException {
-		File originalDbFile = new File("src/test/resources/TestUIdb/data/db.script");
+        inject.getInstance(PersistenceManager.class).close();
+    }
 
-		new ImportCsvTest().importFile(originalDbFile);
-		FileUtils.copyFile(new File("src/test/resources/TestUIdb/data/db.script"),
-				new File("src/test/resources/expectedDbImportCsv.script"));
-		System.exit(0);
-	}
+    public static void main(String[] arg) throws IOException {
+        File originalDbFile = new File("src/test/resources/TestUIdb/data/db.script");
+
+        new ImportCsvTest().importFile(originalDbFile);
+        FileUtils.copyFile(new File("src/test/resources/TestUIdb/data/db.script"), new File("src/test/resources/expectedDbImportCsv.script"));
+    }
 }
